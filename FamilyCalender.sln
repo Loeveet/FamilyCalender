@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyCalender", "FamilyCalender\FamilyCalender.csproj", "{089C02E0-297D-46FA-A930-EE32B9AC5928}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyCalender.Web", "FamilyCalender\FamilyCalender.Web.csproj", "{089C02E0-297D-46FA-A930-EE32B9AC5928}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyCalender.Core", "FamilyCalender.Core\FamilyCalender.Core.csproj", "{E7883EA9-F3E6-4E6F-8036-D4F528290C95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyCalender.Infrastructure", "FamilyCalender.Infrastructure\FamilyCalender.Infrastructure.csproj", "{5E626CDB-0281-43F0-9E82-D34FC0848956}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{089C02E0-297D-46FA-A930-EE32B9AC5928}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{089C02E0-297D-46FA-A930-EE32B9AC5928}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{089C02E0-297D-46FA-A930-EE32B9AC5928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7883EA9-F3E6-4E6F-8036-D4F528290C95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7883EA9-F3E6-4E6F-8036-D4F528290C95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7883EA9-F3E6-4E6F-8036-D4F528290C95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7883EA9-F3E6-4E6F-8036-D4F528290C95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E626CDB-0281-43F0-9E82-D34FC0848956}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E626CDB-0281-43F0-9E82-D34FC0848956}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E626CDB-0281-43F0-9E82-D34FC0848956}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E626CDB-0281-43F0-9E82-D34FC0848956}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
