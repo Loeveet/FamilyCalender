@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Core.Models
 {
-	internal class Member
+    public class Member
 	{
-		public int Id { get; set; }
-		public string Name { get; set; }
+		public Guid Id { get; set; } = Guid.NewGuid();
+		public string? Name { get; set; }
 
-		public int CalendarId { get; set; }
-		public Calendar Calendar { get; set; }
+		public int? CalendarId { get; set; }
+		public Calendar? Calendar { get; set; }
 
-		public ICollection<Event> Events { get; set; }
+		public ICollection<Event>? Events { get; set; }
 	}
 }

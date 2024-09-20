@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace FamilyCalender.Pages
+namespace FamilyCalender.Web.Pages
 {
 	public class PrivacyModel(ILogger<PrivacyModel> logger) : PageModel
 	{

@@ -1,10 +1,59 @@
 ﻿@page
-@model IndexModel
+@model FamilyCalender.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Calendar";
+    var cultureInfo = new System.Globalization.CultureInfo("sv-SE");
+    var daysInMonth = Model.DaysInMonth;
+    var totalDays = daysInMonth?.Count ?? 0;
+    var members = Model.Members ?? new List<FamilyCalender.Core.Models.Member>(); // Säkerställ att members inte är null
+    var currentMonth = new DateTime(Model.CurrentYear, Model.CurrentMonth, 1);
+    var monthName = currentMonth.ToString("MMMM", new System.Globalization.CultureInfo("sv-SE"));
+    var capitalizedMonthName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(monthName);
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2>@capitalizedMonthName @Model.CurrentYear</h2>
+
+<div>
+    <a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 1 ? Model.CurrentYear - 1 : Model.CurrentYear)" asp-route-month="@(Model.CurrentMonth == 1 ? 12 : Model.CurrentMonth - 1)" class="btn btn-secondary">Föregående månad</a>
+    <a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 12 ? Model.CurrentYear + 1 : Model.CurrentYear)" asp-route-month="@(Model.CurrentMonth == 12 ? 1 : Model.CurrentMonth + 1)" class="btn btn-secondary">Nästa månad</a>
 </div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Dag</th>
+            @foreach (var member in members)
+            {
+                <th>@member.Name</th> 
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var day in daysInMonth)
+        {
+            <tr>
+                <td>
+                    @if (day.DayOfWeek == DayOfWeek.Monday || day.Day == 1)
+                    {
+                        var calendar = cultureInfo.Calendar;
+                        var weekOfYear = calendar.GetWeekOfYear(day, cultureInfo.DateTimeFormat.CalendarWeekRule, DayOfWeek.Monday);
+                        @($"{day.Day} {day.ToString("dddd", cultureInfo).First().ToString().ToUpper() + day.ToString("dddd", cultureInfo).Substring(1)}") 
+                        <br>
+                        @($"v. {weekOfYear}")
+                    }
+                    else
+                    {
+                        @($"{day.Day} {day.ToString("dddd", new System.Globalization.CultureInfo("sv-SE")).First().ToString().ToUpper() + day.ToString("dddd", cultureInfo).Substring(1)}") 
+                    }
+                </td>
+                @foreach (var member in members)
+                {
+                    var booking = Model.Events.FirstOrDefault(e => e.Member.Name == member.Name && e.Start.HasValue && e.Start.Value.Date == day.Date);
+                    <td>
+                        @(booking != null ? booking.Title : string.Empty)
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
