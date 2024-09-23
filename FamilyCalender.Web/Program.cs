@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using FamilyCalender.Infrastructure.Context;
+
 namespace FamilyCalender
 {
 	public class Program
@@ -9,7 +12,11 @@ namespace FamilyCalender
 			// Add services to the container.
 			builder.Services.AddRazorPages();
 
-			var app = builder.Build();
+            // Add DbContext with SQLite
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())
