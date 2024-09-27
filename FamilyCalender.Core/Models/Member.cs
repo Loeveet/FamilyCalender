@@ -8,8 +8,8 @@ namespace FamilyCalender.Core.Models
 {
     public class Member
 	{
-		public Guid Id { get; set; } = Guid.NewGuid();
-		public string? Name { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
 
 		public int? CalendarId { get; set; }
 		public Calendar? Calendar { get; set; }

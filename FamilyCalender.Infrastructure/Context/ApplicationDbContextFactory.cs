@@ -8,7 +8,7 @@ namespace FamilyCalender.Infrastructure.Context
         public ApplicationDbContext CreateDbContext(string[] args = null)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlite("Data Source=FamilyCalender.db");
+            optionsBuilder.UseSqlite("Data Source=../FamilyCalender.Infrastructure/FamilyCalender.db");
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }

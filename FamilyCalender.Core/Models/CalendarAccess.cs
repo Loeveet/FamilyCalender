@@ -8,7 +8,7 @@ namespace FamilyCalender.Core.Models
 {
     public class CalendarAccess
 	{
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
         public int? UserId { get; set; }
 		public User? User { get; set; }
 

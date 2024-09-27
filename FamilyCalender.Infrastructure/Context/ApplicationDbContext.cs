@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using FamilyCalender.Core.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 
 namespace FamilyCalender.Infrastructure.Context
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -15,7 +16,7 @@ namespace FamilyCalender.Infrastructure.Context
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("Data Source=FamilyCalender.db");
+                optionsBuilder.UseSqlite("Data Source=../FamilyCalender.Infrastructure/FamilyCalender.db");
             }
         }
 
@@ -23,7 +24,6 @@ namespace FamilyCalender.Infrastructure.Context
         public DbSet<CalendarAccess> CalendarAccesses { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Member> Members { get; set; }
-        public DbSet<User> Users { get; set; }
 
     }
 }

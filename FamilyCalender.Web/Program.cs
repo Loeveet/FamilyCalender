@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using FamilyCalender.Infrastructure.Context;
+using Microsoft.AspNetCore.Identity;
+using FamilyCalender.Core.Models;
+
 
 namespace FamilyCalender
 {
@@ -10,11 +13,21 @@ namespace FamilyCalender
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
-			builder.Services.AddRazorPages();
+
+            builder.Services.AddRazorPages()
+				.AddRazorPagesOptions(options =>
+				{
+					options.Conventions.AuthorizePage("/Account/Login");
+				});
+
 
             // Add DbContext with SQLite
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             var app = builder.Build();
 
@@ -31,7 +44,8 @@ namespace FamilyCalender
 
 			app.UseRouting();
 
-			app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
 			app.MapRazorPages();
 
