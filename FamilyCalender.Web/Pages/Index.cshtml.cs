@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FamilyCalender.Core.Models;
 using FamilyCalender.Core.Data;
@@ -12,6 +13,7 @@ namespace FamilyCalender.Web.Pages
         public int CurrentYear { get; private set; } = DateTime.Now.Year;
         public int CurrentMonth { get; private set; } = DateTime.Now.Month;
 
+        public CultureInfo CultureInfo = new("sv-SE");
 
         public void OnGet(int? year, int? month)
         {
@@ -22,21 +24,22 @@ namespace FamilyCalender.Web.Pages
 
             var members = TestData.GetTestMembers();
             Members = members;
-            Events = TestData.GetTestEvents(members);
+            Events = TestData.GetTestEvents(members, CurrentYear, CurrentMonth);
 
         }
 
         private static List<DateTime> GenerateMonthDays(int year, int month)
         {
-            int daysCount = DateTime.DaysInMonth(year, month);
+            var daysCount = DateTime.DaysInMonth(year, month);
             var days = new List<DateTime>();
 
-            for (int day = 1; day <= daysCount; day++)
+            for (var day = 1; day <= daysCount; day++)
             {
                 days.Add(new DateTime(year, month, day));
             }
 
             return days;
         }
+
     }
 }

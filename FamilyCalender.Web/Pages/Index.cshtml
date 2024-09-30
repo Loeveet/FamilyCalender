@@ -2,13 +2,15 @@
 @model FamilyCalender.Web.Pages.IndexModel
 @{
     ViewData["Title"] = "Calendar";
-    var cultureInfo = new System.Globalization.CultureInfo("sv-SE");
+    var cultureInfo = Model.CultureInfo;
     var daysInMonth = Model.DaysInMonth;
-    var totalDays = daysInMonth?.Count ?? 0;
     var members = Model.Members ?? new List<FamilyCalender.Core.Models.Member>(); // Säkerställ att members inte är null
     var currentMonth = new DateTime(Model.CurrentYear, Model.CurrentMonth, 1);
     var monthName = currentMonth.ToString("MMMM", new System.Globalization.CultureInfo("sv-SE"));
     var capitalizedMonthName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(monthName);
+
+    var membersCount = members.Count;
+    var columnWidth = 100m / (membersCount + 1);
 }
 
 <h2>@capitalizedMonthName @Model.CurrentYear</h2>
@@ -18,13 +20,13 @@
     <a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 12 ? Model.CurrentYear + 1 : Model.CurrentYear)" asp-route-month="@(Model.CurrentMonth == 12 ? 1 : Model.CurrentMonth + 1)" class="btn btn-secondary">Nästa månad</a>
 </div>
 
-<table class="table table-bordered">
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>Dag</th>
+            <th style="width:@(columnWidth)%">Dag</th>
             @foreach (var member in members)
             {
-                <th>@member.Name</th> 
+                <th style="width:@(columnWidth)%">@member.Name</th>
             }
         </tr>
     </thead>
@@ -37,14 +39,17 @@
                     {
                         var calendar = cultureInfo.Calendar;
                         var weekOfYear = calendar.GetWeekOfYear(day, cultureInfo.DateTimeFormat.CalendarWeekRule, DayOfWeek.Monday);
-                        @($"{day.Day} {day.ToString("dddd", cultureInfo).First().ToString().ToUpper() + day.ToString("dddd", cultureInfo).Substring(1)}") 
-                        <br>
-                        @($"v. {weekOfYear}")
+                        <b>@($"v. {weekOfYear}")</b>
+                        <br/>
                     }
-                    else
-                    {
-                        @($"{day.Day} {day.ToString("dddd", new System.Globalization.CultureInfo("sv-SE")).First().ToString().ToUpper() + day.ToString("dddd", cultureInfo).Substring(1)}") 
+                    
+                    @{
+                        var dayOfWeek = day.ToString("dddd", Model.CultureInfo);
+                        var friendlyDayOfWeek = $"{dayOfWeek[0].ToString().ToUpper()}{dayOfWeek.Substring(1)}";
                     }
+
+                    @($"{day.Day} {friendlyDayOfWeek}")
+
                 </td>
                 @foreach (var member in members)
                 {

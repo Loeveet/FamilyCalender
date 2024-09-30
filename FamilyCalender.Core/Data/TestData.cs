@@ -17,14 +17,14 @@ namespace FamilyCalender.Core.Data
             };
         }
 
-        public static List<Event> GetTestEvents(List<Member> members)
+        public static List<Event> GetTestEvents(List<Member> members, int year, int month)
         {
             return new List<Event>
             {
-                new Event { Title = "Bokad aktivitet", Start = new DateTime(2024, 9, 5), Member = members[0] },
-                new Event { Title = "Läxor", Start = new DateTime(2024, 9, 15), Member = members[1] },
-                new Event { Title = "Skolprojekt", Start = new DateTime(2024, 10, 10), Member = members[2] },
-                new Event { Title = "Dammsuga", Start = new DateTime(2024, 10, 11), Member = members[3] }
+                new Event { Title = "Bokad aktivitet", Start = new DateTime(year, month, 5), Member = members[0] },
+                new Event { Title = "Läxor", Start = new DateTime(year, month, 15), Member = members[1] },
+                new Event { Title = "Skolprojekt", Start = new DateTime(year, month, 10), Member = members[2] },
+                new Event { Title = "Dammsuga", Start = new DateTime(year, month, 11), Member = members[3] }
             };
         }
     }
