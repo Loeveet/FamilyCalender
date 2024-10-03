@@ -3,6 +3,7 @@ using System;
 using FamilyCalender.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyCalender.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241002115233_ChangedStructure")]
+    partial class ChangedStructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -45,13 +48,13 @@ namespace FamilyCalender.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CalendarId")
+                    b.Property<int?>("CalendarId")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsOwner")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserId1")
@@ -75,7 +78,7 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.Property<DateTime?>("End")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("MemberId")
+                    b.Property<int?>("MemberId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("Start")
@@ -97,7 +100,7 @@ namespace FamilyCalender.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CalendarId")
+                    b.Property<int?>("CalendarId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -315,9 +318,7 @@ namespace FamilyCalender.Infrastructure.Migrations
                 {
                     b.HasOne("FamilyCalender.Core.Models.Calendar", "Calendar")
                         .WithMany()
-                        .HasForeignKey("CalendarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CalendarId");
 
                     b.HasOne("FamilyCalender.Core.Models.User", "User")
                         .WithMany("CalendarAccesses")
@@ -332,9 +333,7 @@ namespace FamilyCalender.Infrastructure.Migrations
                 {
                     b.HasOne("FamilyCalender.Core.Models.Member", "Member")
                         .WithMany("Events")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MemberId");
 
                     b.Navigation("Member");
                 });
@@ -343,9 +342,7 @@ namespace FamilyCalender.Infrastructure.Migrations
                 {
                     b.HasOne("FamilyCalender.Core.Models.Calendar", "Calendar")
                         .WithMany("Members")
-                        .HasForeignKey("CalendarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CalendarId");
 
                     b.Navigation("Calendar");
                 });

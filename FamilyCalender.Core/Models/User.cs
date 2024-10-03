@@ -4,8 +4,8 @@ namespace FamilyCalender.Core.Models
 {
     public class User : IdentityUser
     {
-		public ICollection<CalendarAccess>? CalendarAccesses { get; set; }
-		public ICollection<Calendar>? OwnedCalendars { get; set; }
+		public ICollection<CalendarAccess> CalendarAccesses { get; set; } = [];
+		public ICollection<Calendar> OwnedCalendars { get; set; } = [];
 
 	}
 }

@@ -13,7 +13,7 @@ namespace FamilyCalender.Core.Models
 		public DateTime? Start { get; set; }
 		public DateTime? End { get; set; }
 
-		public int? MemberId { get; set; }
+		public int MemberId { get; set; }
 		public Member? Member { get; set; }
 	}
 }

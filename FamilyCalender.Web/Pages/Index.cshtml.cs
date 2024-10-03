@@ -2,12 +2,13 @@ using System.Globalization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FamilyCalender.Core.Models;
 using FamilyCalender.Core.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FamilyCalender.Web.Pages
 {
     public class IndexModel() : PageModel
     {
-        public List<Event>? Events { get; set; }  // Använd din Event-modell från core
+        public List<Event>? Events { get; set; }
         public List<Member>? Members { get; set; }
         public List<DateTime> DaysInMonth { get; private set; }
         public int CurrentYear { get; private set; } = DateTime.Now.Year;

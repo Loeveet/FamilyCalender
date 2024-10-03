@@ -1,0 +1,13 @@
+﻿@page
+@model FamilyCalender.Web.Pages.CreateCalendarModel
+@{
+}
+
+<form method="post">
+    <div>
+        <label for="Calendar.Name">Kalendernamn:</label>
+        <input asp-for="Calendar.Name" />
+        <span asp-validation-for="Calendar.Name"></span>
+    </div>
+    <button type="submit">Skapa kalender</button>
+</form>

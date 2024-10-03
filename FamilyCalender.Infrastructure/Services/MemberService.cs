@@ -1,0 +1,31 @@
+﻿using FamilyCalender.Core.Interfaces.IRepositories;
+using FamilyCalender.Core.Interfaces.IServices;
+using FamilyCalender.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FamilyCalender.Infrastructure.Services
+{
+    public class MemberService : IMemberService
+    {
+        private readonly IMemberRepository _memberRepository;
+        public MemberService(IMemberRepository memberRepository)
+        {
+            _memberRepository = memberRepository;
+        }
+        public async Task<Member> CreateMemberAsync(Member member)
+        {
+            // TODO: Add more validations
+            if (string.IsNullOrWhiteSpace(member.Name))
+            {
+                throw new ArgumentException("Member name cannot be empty.");
+            }
+
+            return await _memberRepository.AddAsync(member);
+        }
+    }
+}

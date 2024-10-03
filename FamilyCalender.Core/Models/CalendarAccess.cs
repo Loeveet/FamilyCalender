@@ -9,10 +9,10 @@ namespace FamilyCalender.Core.Models
     public class CalendarAccess
 	{
         public int Id { get; set; }
-        public int? UserId { get; set; }
+        public int UserId { get; set; }
 		public User? User { get; set; }
 
-		public int? CalendarId { get; set; }
+		public int CalendarId { get; set; }
 		public Calendar? Calendar { get; set; }
 
 		public bool IsOwner { get; set; } = false;
