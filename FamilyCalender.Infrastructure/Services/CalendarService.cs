@@ -12,25 +12,40 @@ namespace FamilyCalender.Infrastructure.Services
     public class CalendarService : ICalendarService
     {
         private readonly ICalendarRepository _calendarRepository;
+        private readonly ICalendarAccessService _calendarAccessService;
 
-        public CalendarService(ICalendarRepository calendarRepository)
+        public CalendarService(ICalendarRepository calendarRepository, ICalendarAccessService calendarAccessService)
         {
             _calendarRepository = calendarRepository;
+            _calendarAccessService = calendarAccessService;
         }
 
-        public async Task<Calendar> CreateCalendarAsync(Calendar calendar)
+        public async Task<Calendar> CreateCalendarAsync(Calendar calendar, User user)
         {
             if (string.IsNullOrWhiteSpace(calendar.Name))
             {
                 throw new ArgumentException("Calendar name cannot be empty.");
             }
-            if (calendar.OwnerId == 0)
-            {
-                throw new ArgumentException("Calendar must have an owner.");
-            }
+
+            calendar.OwnerId = user.Id;
+            calendar.Owner = user;
+
             try
             {
-                return await _calendarRepository.AddAsync(calendar);
+                var newCalendar = await _calendarRepository.AddAsync(calendar);
+
+                var access = new CalendarAccess()
+                {
+                    Calendar = newCalendar,
+                    CalendarId = newCalendar.Id,
+                    User = user,
+                    UserId = user.Id,
+                    IsOwner = true
+                };
+
+                await _calendarAccessService.CreateCalendarAccessAsync(access);
+
+                return newCalendar;
             }
             catch (Exception ex)
             {

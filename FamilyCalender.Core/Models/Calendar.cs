@@ -10,10 +10,10 @@ namespace FamilyCalender.Core.Models
 	{
         public int Id { get; set; }
         public string? Name { get; set; }
-
-		public int OwnerId { get; set; }
+		public string? OwnerId { get; set; }
 		public User? Owner { get; set; }
+		public ICollection<MemberCalendar> MemberCalendars { get; set; } = [];
+        public ICollection<CalendarAccess> Accesses { get; set; } = [];
 
-		public ICollection<Member> Members { get; set; } = [];
-	}
+    }
 }

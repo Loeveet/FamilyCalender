@@ -32,6 +32,38 @@
         </tr>
     </thead>
     <tbody>
+    @foreach (var day in daysInMonth)
+    {
+        <tr>
+            <td>
+                @if (day.DayOfWeek == DayOfWeek.Monday || day.Day == 1)
+                {
+                    var calendar = cultureInfo.Calendar;
+                    var weekOfYear = calendar.GetWeekOfYear(day, cultureInfo.DateTimeFormat.CalendarWeekRule, DayOfWeek.Monday);
+                    <b>@($"v. {weekOfYear}")</b>
+                    <br/>
+                }
+
+                @{
+                    var dayOfWeek = day.ToString("dddd", Model.CultureInfo);
+                    var friendlyDayOfWeek = $"{dayOfWeek[0].ToString().ToUpper()}{dayOfWeek.Substring(1)}";
+                }
+                @($"{day.Day} {friendlyDayOfWeek}")
+            </td>
+            @foreach (var member in members)
+            {
+                var booking = Model.Events
+                    .FirstOrDefault(e => e.MemberCalendars.Any(mc => mc.Member.Name == member.Name) && 
+                                         e.Start.HasValue && 
+                                         e.Start.Value.Date == day.Date);
+                <td>
+                    @(booking != null ? booking.Title : string.Empty)
+                </td>
+            }
+        </tr>
+    }
+</tbody>
+    @* <tbody>
         @foreach (var day in daysInMonth)
         {
             <tr>
@@ -61,5 +93,5 @@
                 }
             </tr>
         }
-    </tbody>
+    </tbody> *@
 </table>

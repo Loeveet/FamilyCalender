@@ -27,7 +27,7 @@ namespace FamilyCalender.Infrastructure.Repositories
             return calendar;
         }
 
-        public async Task<IEnumerable<Calendar>> GetAllByUserAsync(int userId)
+        public async Task<IEnumerable<Calendar>> GetAllByUserAsync(string userId)
         {
             return await _context.Calendars.Where(u => u.OwnerId == userId).ToListAsync();
         }

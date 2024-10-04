@@ -6,6 +6,6 @@ namespace FamilyCalender.Core.Models
     {
 		public ICollection<CalendarAccess> CalendarAccesses { get; set; } = [];
 		public ICollection<Calendar> OwnedCalendars { get; set; } = [];
-
-	}
+        public ICollection<Member> Members { get; set; } = [];
+    }
 }

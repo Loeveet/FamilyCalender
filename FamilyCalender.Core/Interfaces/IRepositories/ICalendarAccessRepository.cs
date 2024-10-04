@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FamilyCalender.Core.Interfaces.IServices
+namespace FamilyCalender.Core.Interfaces.IRepositories
 {
-    public interface IMemberService
+    public interface ICalendarAccessRepository
     {
-        Task<Member> CreateMemberAsync(Member member, User user);
+        Task AddAsync(CalendarAccess access);
+
     }
 }

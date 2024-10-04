@@ -25,7 +25,9 @@ namespace FamilyCalender.Web.Pages
 
             var members = TestData.GetTestMembers();
             Members = members;
-            Events = TestData.GetTestEvents(members, CurrentYear, CurrentMonth);
+
+            var calendars = TestData.GetTestCalendars(members);
+            Events = TestData.GetTestEvents(members, calendars[0]);
 
         }
 

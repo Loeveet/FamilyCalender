@@ -17,14 +17,15 @@ namespace FamilyCalender.Infrastructure.Services
         {
             _memberRepository = memberRepository;
         }
-        public async Task<Member> CreateMemberAsync(Member member)
+        public async Task<Member> CreateMemberAsync(Member member, User user)
         {
             // TODO: Add more validations
             if (string.IsNullOrWhiteSpace(member.Name))
             {
                 throw new ArgumentException("Member name cannot be empty.");
             }
-
+            member.UserId = user.Id;
+            member.User = user;
             return await _memberRepository.AddAsync(member);
         }
     }

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Core.Interfaces.IServices
 {
-    public interface IMemberService
+    public interface IMemberCalendarService
     {
-        Task<Member> CreateMemberAsync(Member member, User user);
+        Task CreateMemberCalendarAsync(int memberId, int calendarId);
     }
 }

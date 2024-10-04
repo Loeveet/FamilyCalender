@@ -1,7 +1,9 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Models;
+using FamilyCalender.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +12,18 @@ namespace FamilyCalender.Infrastructure.Repositories
 {
     public class MemberRepository : IMemberRepository
     {
-        public Task<Member> AddAsync(Member member)
+        private readonly ApplicationDbContext _context;
+
+        public MemberRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<Member> AddAsync(Member member)
+        {
+            _context.Members.Add(member);
+            await _context.SaveChangesAsync();
+            return member;
+
         }
 
         public Task<IEnumerable<Member>> GetAllByCalendarAsync(int calendarId)

@@ -9,7 +9,7 @@ namespace FamilyCalender.Core.Interfaces.IServices
 {
     public interface ICalendarService
     {
-        Task<Calendar> CreateCalendarAsync(Calendar calendar);
+        Task<Calendar> CreateCalendarAsync(Calendar calendar, User user);
 
     }
 }

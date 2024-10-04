@@ -10,7 +10,7 @@ namespace FamilyCalender.Core.Interfaces.IRepositories
     public interface ICalendarRepository
     {
         Task<Calendar?> GetByIdAsync(int calendarId);
-        Task<IEnumerable<Calendar>> GetAllByUserAsync(int userId);
+        Task<IEnumerable<Calendar>> GetAllByUserAsync(string userId);
         Task<Calendar> AddAsync(Calendar calendar);
         Task<Calendar> UpdateAsync(Calendar calendar);
         Task RemoveAsync(int calendarId);

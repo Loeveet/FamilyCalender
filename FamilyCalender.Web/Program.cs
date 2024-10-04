@@ -53,9 +53,11 @@ namespace FamilyCalender
             builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
             builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 			builder.Services.AddScoped<IEventRepository, EventRepository>();
+            builder.Services.AddScoped<ICalendarAccessRepository, CalendarAccessRepository>();
             builder.Services.AddScoped<ICalendarService, CalendarService>();
             builder.Services.AddScoped<IMemberService, MemberService>();
             builder.Services.AddScoped<IEventService, EventService>();
+            builder.Services.AddScoped<ICalendarAccessService, CalendarAccessService>();
 
 
             var app = builder.Build();
