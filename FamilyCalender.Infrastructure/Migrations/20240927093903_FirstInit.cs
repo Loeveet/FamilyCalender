@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FamilyCalender.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdToJT : Migration
+    public partial class FirstInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -163,33 +163,15 @@ namespace FamilyCalender.Infrastructure.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
-                    OwnerId = table.Column<string>(type: "TEXT", nullable: true)
+                    OwnerId = table.Column<int>(type: "INTEGER", nullable: true),
+                    OwnerId1 = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Calendars", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Calendars_AspNetUsers_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Members",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Members", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Members_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Calendars_AspNetUsers_OwnerId1",
+                        column: x => x.OwnerId1,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -200,24 +182,43 @@ namespace FamilyCalender.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: true),
-                    CalendarId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    UserId1 = table.Column<string>(type: "TEXT", nullable: true),
+                    CalendarId = table.Column<int>(type: "INTEGER", nullable: true),
                     IsOwner = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CalendarAccesses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CalendarAccesses_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_CalendarAccesses_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CalendarAccesses_Calendars_CalendarId",
                         column: x => x.CalendarId,
                         principalTable: "Calendars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Members",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    CalendarId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Members", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Members_Calendars_CalendarId",
+                        column: x => x.CalendarId,
+                        principalTable: "Calendars",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -229,69 +230,16 @@ namespace FamilyCalender.Infrastructure.Migrations
                     Title = table.Column<string>(type: "TEXT", nullable: true),
                     Start = table.Column<DateTime>(type: "TEXT", nullable: true),
                     End = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    CalendarId = table.Column<int>(type: "INTEGER", nullable: false)
+                    MemberId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Events_Calendars_CalendarId",
-                        column: x => x.CalendarId,
-                        principalTable: "Calendars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MemberCalendars",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    MemberId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CalendarId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MemberCalendars", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MemberCalendars_Calendars_CalendarId",
-                        column: x => x.CalendarId,
-                        principalTable: "Calendars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MemberCalendars_Members_MemberId",
+                        name: "FK_Events_Members_MemberId",
                         column: x => x.MemberId,
                         principalTable: "Members",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MemberEvents",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    MemberId = table.Column<int>(type: "INTEGER", nullable: false),
-                    EventId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MemberEvents", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MemberEvents_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MemberEvents_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -337,44 +285,24 @@ namespace FamilyCalender.Infrastructure.Migrations
                 column: "CalendarId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CalendarAccesses_UserId",
+                name: "IX_CalendarAccesses_UserId1",
                 table: "CalendarAccesses",
-                column: "UserId");
+                column: "UserId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Calendars_OwnerId",
+                name: "IX_Calendars_OwnerId1",
                 table: "Calendars",
-                column: "OwnerId");
+                column: "OwnerId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_CalendarId",
+                name: "IX_Events_MemberId",
                 table: "Events",
-                column: "CalendarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MemberCalendars_CalendarId",
-                table: "MemberCalendars",
-                column: "CalendarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MemberCalendars_MemberId",
-                table: "MemberCalendars",
                 column: "MemberId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberEvents_EventId",
-                table: "MemberEvents",
-                column: "EventId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MemberEvents_MemberId",
-                table: "MemberEvents",
-                column: "MemberId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Members_UserId",
+                name: "IX_Members_CalendarId",
                 table: "Members",
-                column: "UserId");
+                column: "CalendarId");
         }
 
         /// <inheritdoc />
@@ -399,16 +327,10 @@ namespace FamilyCalender.Infrastructure.Migrations
                 name: "CalendarAccesses");
 
             migrationBuilder.DropTable(
-                name: "MemberCalendars");
-
-            migrationBuilder.DropTable(
-                name: "MemberEvents");
+                name: "Events");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Events");
 
             migrationBuilder.DropTable(
                 name: "Members");

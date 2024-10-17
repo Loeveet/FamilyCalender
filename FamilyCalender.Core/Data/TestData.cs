@@ -16,47 +16,16 @@ namespace FamilyCalender.Core.Data
                 new Member { Name = "Maja" }
             };
         }
-        public static List<Calendar> GetTestCalendars(List<Member> members)
+
+        public static List<Event> GetTestEvents(List<Member> members, int year, int month)
         {
-            var calendar = new Calendar { Name = "Familjekalender" };
-
-            var memberCalendars = new List<MemberCalendar>();
-            foreach (var member in members)
+            return new List<Event>
             {
-                memberCalendars.Add(new MemberCalendar
-                {
-                    Member = member,
-                    Calendar = calendar
-                });
-            }
-
-            calendar.MemberCalendars = memberCalendars;
-
-            return new List<Calendar> { calendar };
-        }
-
-        public static List<Event> GetTestEvents(List<Member> members, Calendar calendar)
-        {
-            var events = new List<Event>
-            {
-                new Event { Title = "Bokad aktivitet", Start = new DateTime(2024, 10, 5), Calendar = calendar },
-                new Event { Title = "Läxor", Start = new DateTime(2024, 10, 15), Calendar = calendar },
-                new Event { Title = "Skolprojekt", Start = new DateTime(2024, 11, 10), Calendar = calendar },
-                new Event { Title = "Dammsuga", Start = new DateTime(2024, 11, 11), Calendar = calendar }
+                new Event { Title = "Bokad aktivitet", Start = new DateTime(year, month, 5), Member = members[0] },
+                new Event { Title = "Läxor", Start = new DateTime(year, month, 15), Member = members[1] },
+                new Event { Title = "Skolprojekt", Start = new DateTime(year, month, 10), Member = members[2] },
+                new Event { Title = "Dammsuga", Start = new DateTime(year, month, 11), Member = members[3] }
             };
-
-            for (int i = 0; i < events.Count; i++)
-            {
-                events[i].MemberEvents =
-                [
-                    new MemberEvent
-                    {
-                        Member = members[i % members.Count],
-                        Event = events[i]                    }
-                ];
-            }
-
-            return events;
         }
     }
 }
