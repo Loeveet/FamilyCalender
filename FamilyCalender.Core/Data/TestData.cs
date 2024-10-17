@@ -18,6 +18,7 @@ namespace FamilyCalender.Core.Data
         }
         public static List<Calendar> GetTestCalendars(List<Member> members)
         {
+            //TEST!!!
             var calendar = new Calendar { Name = "Familjekalender" };
 
             var memberCalendars = new List<MemberCalendar>();

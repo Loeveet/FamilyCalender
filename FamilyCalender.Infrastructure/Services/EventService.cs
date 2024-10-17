@@ -21,6 +21,8 @@ namespace FamilyCalender.Infrastructure.Services
         }
         public async Task<List<Event>> GetEventForCalendarAsync(int calendarId)
         {
+
+
             return await _eventRepository.GetByCalendar(calendarId);
         }
     }
