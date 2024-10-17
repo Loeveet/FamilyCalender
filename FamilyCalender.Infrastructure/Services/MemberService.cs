@@ -28,5 +28,10 @@ namespace FamilyCalender.Infrastructure.Services
             member.User = user;
             return await _memberRepository.AddAsync(member);
         }
+
+        public async Task<List<Member>> GetMembersForCalendarAsync(int calendarId)
+        {
+            return await _memberRepository.GetAllByCalendarAsync(calendarId);
+        }
     }
 }

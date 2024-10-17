@@ -15,6 +15,6 @@ namespace FamilyCalender.Core.Models
 		public DateTime? End { get; set; }
         public int CalendarId { get; set; }
         public Calendar? Calendar { get; set; }
-        public ICollection<MemberCalendar> MemberCalendars { get; set; } = []; // För att kunna sätta event på flera medlemmar inom samma kalender
+        public ICollection<MemberEvent> MemberEvents { get; set; } = [];
     }
 }

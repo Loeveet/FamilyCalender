@@ -15,16 +15,41 @@
 <a class="btn btn-primary" asp-page="/CreateCalendar">Skapa en ny kalender</a>
 
 <h2>@capitalizedMonthName @Model.CurrentYear</h2>
+<h3>@Model.CalendarName</h3>
 
 <div>
-    <a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 1 ? Model.CurrentYear - 1 : Model.CurrentYear)" asp-route-month="@(Model.CurrentMonth == 1 ? 12 : Model.CurrentMonth - 1)" class="btn btn-secondary">Föregående månad</a>
-    <a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 12 ? Model.CurrentYear + 1 : Model.CurrentYear)" asp-route-month="@(Model.CurrentMonth == 12 ? 1 : Model.CurrentMonth + 1)" class="btn btn-secondary">Nästa månad</a>
+    <a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 1 ? Model.CurrentYear - 1 : Model.CurrentYear)"
+       asp-route-month="@(Model.CurrentMonth == 1 ? 12 : Model.CurrentMonth - 1)"
+       asp-route-calendarId="@Model.SelectedCalendar?.Id"
+       class="btn btn-secondary">Föregående månad</a>
+
+    <a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 12 ? Model.CurrentYear + 1 : Model.CurrentYear)"
+       asp-route-month="@(Model.CurrentMonth == 12 ? 1 : Model.CurrentMonth + 1)"
+       asp-route-calendarId="@Model.SelectedCalendar?.Id"
+       class="btn btn-secondary">Nästa månad</a>
 </div>
 
+@if (Model.Calendars != null && Model.Calendars.Count > 0)
+{
+    <form method="get">
+        <select name="calendarId" onchange="this.form.submit()">
+            <option value="">Välj kalender</option>
+            @foreach (var calendar in Model.Calendars)
+            {
+                <option value="@calendar.Id"
+                        selected="@(calendar.Id == Model.SelectedCalendar?.Id ? "selected" : "")">
+                    @calendar.Name
+                </option>
+            }
+        </select>
+        <input type="hidden" name="year" value="@Model.CurrentYear" />
+        <input type="hidden" name="month" value="@Model.CurrentMonth" />
+    </form>
+}
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th style="width:@(columnWidth)%">Dag</th>
+            <th style="width:@(columnWidth)%">Dag</th> 
             @foreach (var member in members)
             {
                 <th style="width:@(columnWidth)%">@member.Name</th>
@@ -53,9 +78,9 @@
             @foreach (var member in members)
             {
                 var booking = Model.Events
-                    .FirstOrDefault(e => e.MemberCalendars.Any(mc => mc.Member.Name == member.Name) && 
-                                         e.Start.HasValue && 
-                                         e.Start.Value.Date == day.Date);
+                    .FirstOrDefault(e => e.MemberEvents.Any(me => me.Member.Name == member.Name) &&
+                    e.Start.HasValue &&
+                    e.Start.Value.Date == day.Date);
                 <td>
                     @(booking != null ? booking.Title : string.Empty)
                 </td>
@@ -63,35 +88,4 @@
         </tr>
     }
 </tbody>
-    @* <tbody>
-        @foreach (var day in daysInMonth)
-        {
-            <tr>
-                <td>
-                    @if (day.DayOfWeek == DayOfWeek.Monday || day.Day == 1)
-                    {
-                        var calendar = cultureInfo.Calendar;
-                        var weekOfYear = calendar.GetWeekOfYear(day, cultureInfo.DateTimeFormat.CalendarWeekRule, DayOfWeek.Monday);
-                        <b>@($"v. {weekOfYear}")</b>
-                        <br/>
-                    }
-                    
-                    @{
-                        var dayOfWeek = day.ToString("dddd", Model.CultureInfo);
-                        var friendlyDayOfWeek = $"{dayOfWeek[0].ToString().ToUpper()}{dayOfWeek.Substring(1)}";
-                    }
-
-                    @($"{day.Day} {friendlyDayOfWeek}")
-
-                </td>
-                @foreach (var member in members)
-                {
-                    var booking = Model.Events.FirstOrDefault(e => e.Member.Name == member.Name && e.Start.HasValue && e.Start.Value.Date == day.Date);
-                    <td>
-                        @(booking != null ? booking.Title : string.Empty)
-                    </td>
-                }
-            </tr>
-        }
-    </tbody> *@
 </table>

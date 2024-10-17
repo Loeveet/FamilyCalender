@@ -12,7 +12,7 @@ namespace FamilyCalender.Core.Models
         public string? Name { get; set; }
         public string? UserId { get; set; }
         public User? User { get; set; }
-        public ICollection<MemberCalendar> MemberCalendars { get; set; } = []; // För att kunna använda samma medlem på flera kalendrar
-        public ICollection<Event> Events { get; set; } = [];
-	}
+        public ICollection<MemberCalendar> MemberCalendars { get; set; } = []; 
+        public ICollection<MemberEvent> MemberEvents { get; set; } = [];
+    }
 }

@@ -49,20 +49,27 @@ namespace FamilyCalender.Web.Pages
                 createdCalendar = await _calendarService.CreateCalendarAsync(Calendar, user);
                 if (Members.Count > 0)
                 {
+                    var memberCalendars = new List<MemberCalendar>();
+
                     foreach (var member in Members)
                     {
                         if (!string.IsNullOrEmpty(member.Name))
                         {
                             var createdMember = await _memberService.CreateMemberAsync(member, user);
-                            
-                            Calendar.MemberCalendars.Add(new MemberCalendar
+
+                            memberCalendars.Add(new MemberCalendar
                             {
+                                Member = createdMember,
                                 MemberId = createdMember.Id,
+                                Calendar = createdCalendar,
                                 CalendarId = createdCalendar.Id
                             });
                         }
                     }
+                    createdCalendar.MemberCalendars = memberCalendars;
+                    await _calendarService.UpdateCalendarAsync(createdCalendar);
                 }
+
             }
             catch (Exception ex)
             {

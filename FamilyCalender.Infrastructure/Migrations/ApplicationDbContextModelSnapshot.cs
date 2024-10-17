@@ -72,9 +72,6 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.Property<DateTime?>("End")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("MemberId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime?>("Start")
                         .HasColumnType("TEXT");
 
@@ -84,8 +81,6 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CalendarId");
-
-                    b.HasIndex("MemberId");
 
                     b.ToTable("Events");
                 });
@@ -118,17 +113,12 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.Property<int>("CalendarId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("EventId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("MemberId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CalendarId");
-
-                    b.HasIndex("EventId");
 
                     b.HasIndex("MemberId");
 
@@ -377,14 +367,10 @@ namespace FamilyCalender.Infrastructure.Migrations
             modelBuilder.Entity("FamilyCalender.Core.Models.Event", b =>
                 {
                     b.HasOne("FamilyCalender.Core.Models.Calendar", "Calendar")
-                        .WithMany()
+                        .WithMany("Events")
                         .HasForeignKey("CalendarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("FamilyCalender.Core.Models.Member", null)
-                        .WithMany("Events")
-                        .HasForeignKey("MemberId");
 
                     b.Navigation("Calendar");
                 });
@@ -406,10 +392,6 @@ namespace FamilyCalender.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FamilyCalender.Core.Models.Event", null)
-                        .WithMany("MemberCalendars")
-                        .HasForeignKey("EventId");
-
                     b.HasOne("FamilyCalender.Core.Models.Member", "Member")
                         .WithMany("MemberCalendars")
                         .HasForeignKey("MemberId")
@@ -424,13 +406,13 @@ namespace FamilyCalender.Infrastructure.Migrations
             modelBuilder.Entity("FamilyCalender.Core.Models.MemberEvent", b =>
                 {
                     b.HasOne("FamilyCalender.Core.Models.Event", "Event")
-                        .WithMany()
+                        .WithMany("MemberEvents")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FamilyCalender.Core.Models.Member", "Member")
-                        .WithMany()
+                        .WithMany("MemberEvents")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -495,19 +477,21 @@ namespace FamilyCalender.Infrastructure.Migrations
                 {
                     b.Navigation("Accesses");
 
+                    b.Navigation("Events");
+
                     b.Navigation("MemberCalendars");
                 });
 
             modelBuilder.Entity("FamilyCalender.Core.Models.Event", b =>
                 {
-                    b.Navigation("MemberCalendars");
+                    b.Navigation("MemberEvents");
                 });
 
             modelBuilder.Entity("FamilyCalender.Core.Models.Member", b =>
                 {
-                    b.Navigation("Events");
-
                     b.Navigation("MemberCalendars");
+
+                    b.Navigation("MemberEvents");
                 });
 
             modelBuilder.Entity("FamilyCalender.Core.Models.User", b =>

@@ -47,13 +47,12 @@ namespace FamilyCalender.Core.Data
 
             for (int i = 0; i < events.Count; i++)
             {
-                events[i].MemberCalendars =
+                events[i].MemberEvents =
                 [
-                    new MemberCalendar
+                    new MemberEvent
                     {
                         Member = members[i % members.Count],
-                        Calendar = calendar
-                    }
+                        Event = events[i]                    }
                 ];
             }
 

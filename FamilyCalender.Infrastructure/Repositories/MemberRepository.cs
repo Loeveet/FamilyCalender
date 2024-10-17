@@ -1,6 +1,7 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Models;
 using FamilyCalender.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -26,9 +27,12 @@ namespace FamilyCalender.Infrastructure.Repositories
 
         }
 
-        public Task<IEnumerable<Member>> GetAllByCalendarAsync(int calendarId)
+        public async Task<List<Member>> GetAllByCalendarAsync(int calendarId)
         {
-            throw new NotImplementedException();
+            return await _context.Members
+                .Include(m => m.MemberCalendars)
+                .Where(m => m.MemberCalendars.Any(mc => mc.CalendarId == calendarId))
+                .ToListAsync();
         }
 
         public Task<Member> GetByIdAsync(int memberId)

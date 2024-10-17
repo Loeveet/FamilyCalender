@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FamilyCalender.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace FamilyCalender.Core.Interfaces.IServices
 {
     public interface IEventService
     {
+        Task<List<Event>> GetEventForCalendarAsync(int calendarId);
     }
 }

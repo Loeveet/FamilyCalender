@@ -27,12 +27,23 @@ namespace FamilyCalender.Infrastructure.Repositories
             return calendar;
         }
 
-        public async Task<IEnumerable<Calendar>> GetAllByUserAsync(string userId)
+        public async Task<List<Calendar>> GetAllByUserAsync(string userId)
         {
-            return await _context.Calendars.Where(u => u.OwnerId == userId).ToListAsync();
+            var calendarAccesses = await _context.CalendarAccesses
+                .Where(ca => ca.UserId == userId)
+                .Include(ca => ca.Calendar) 
+                .ToListAsync();
+
+            var calendars = calendarAccesses
+                .Select(ca => ca.Calendar)
+                .Distinct()
+                .ToList();
+
+            return calendars;
+
         }
 
-        public async Task<Calendar?> GetByIdAsync(int calendarId)
+        public async Task<Calendar> GetByIdAsync(int calendarId)
         {
             return await _context.Calendars.FirstOrDefaultAsync(c => c.Id == calendarId);
         }
@@ -44,7 +55,17 @@ namespace FamilyCalender.Infrastructure.Repositories
 
         public async Task<Calendar> UpdateAsync(Calendar calendar)
         {
-            throw new NotImplementedException();
+            var existingCalendar = await _context.Calendars
+                .Include(c => c.MemberCalendars)
+                .FirstOrDefaultAsync(c => c.Id == calendar.Id);
+
+            if (existingCalendar != null)
+            {
+                _context.Calendars.Update(calendar);
+                await _context.SaveChangesAsync();
+                return calendar;
+            }
+            return null;
         }
     }
 }

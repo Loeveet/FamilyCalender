@@ -14,6 +14,7 @@ namespace FamilyCalender.Core.Models
 		public User? Owner { get; set; }
 		public ICollection<MemberCalendar> MemberCalendars { get; set; } = [];
         public ICollection<CalendarAccess> Accesses { get; set; } = [];
+        public ICollection<Event> Events { get; set; } = [];
 
     }
 }

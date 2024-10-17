@@ -52,5 +52,32 @@ namespace FamilyCalender.Infrastructure.Services
                 throw new ArgumentException("Something went wrong while creating the calendar.", ex);
             }
         }
+
+        public Task<Calendar> GetCalendarByIdAsync(int calendarId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<Calendar>> GetCalendarsForUserAsync(string id)
+        {
+            return await _calendarRepository.GetAllByUserAsync(id);
+        }
+
+        public Task<List<Event>> GetEventsForCalendarAsync(int calendarId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Member>> GetMembersForCalendarAsync(int calendarId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Calendar> UpdateCalendarAsync(Calendar calendar)
+        {
+            var updatedCalendar = await _calendarRepository.UpdateAsync(calendar);
+            return updatedCalendar;
+        }
+
     }
 }
