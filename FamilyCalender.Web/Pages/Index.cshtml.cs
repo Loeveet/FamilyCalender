@@ -85,6 +85,7 @@ namespace FamilyCalender.Web.Pages
                 }
                 CalendarName = SelectedCalendar.Name;
 
+
             }
 
         }
