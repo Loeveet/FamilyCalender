@@ -8,17 +8,16 @@ namespace FamilyCalender.Core.Data
     {
         public static List<Member> GetTestMembers()
         {
-            return new List<Member>
-            {
+            return
+            [
                 new Member { Name = "Robin" },
                 new Member { Name = "Jenny" },
                 new Member { Name = "Ida" },
                 new Member { Name = "Maja" }
-            };
+            ];
         }
         public static List<Calendar> GetTestCalendars(List<Member> members)
         {
-            //TEST!!!
             var calendar = new Calendar { Name = "Familjekalender" };
 
             var memberCalendars = new List<MemberCalendar>();
@@ -33,17 +32,17 @@ namespace FamilyCalender.Core.Data
 
             calendar.MemberCalendars = memberCalendars;
 
-            return new List<Calendar> { calendar };
+            return [calendar];
         }
 
         public static List<Event> GetTestEvents(List<Member> members, Calendar calendar)
         {
             var events = new List<Event>
             {
-                new Event { Title = "Bokad aktivitet", Start = new DateTime(2024, 10, 5), Calendar = calendar },
-                new Event { Title = "Läxor", Start = new DateTime(2024, 10, 15), Calendar = calendar },
-                new Event { Title = "Skolprojekt", Start = new DateTime(2024, 11, 10), Calendar = calendar },
-                new Event { Title = "Dammsuga", Start = new DateTime(2024, 11, 11), Calendar = calendar }
+                new() { Title = "Bokad aktivitet", Start = new DateTime(2024, 10, 5), Calendar = calendar },
+                new() { Title = "Läxor", Start = new DateTime(2024, 10, 15), Calendar = calendar },
+                new() { Title = "Skolprojekt", Start = new DateTime(2024, 11, 10), Calendar = calendar },
+                new() { Title = "Dammsuga", Start = new DateTime(2024, 11, 11), Calendar = calendar }
             };
 
             for (int i = 0; i < events.Count; i++)

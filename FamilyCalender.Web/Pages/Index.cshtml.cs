@@ -18,14 +18,14 @@ namespace FamilyCalender.Web.Pages
         private readonly IMemberService _memberService;
 
 
-        public List<Core.Models.Calendar>? Calendars { get; set; } = [];
-        public Core.Models.Calendar? SelectedCalendar { get; set; }
-        public List<Event>? Events { get; set; } = [];
-        public List<Member>? Members { get; set; } = [];
+        public List<Core.Models.Calendar> Calendars { get; set; } = [];
+        public Core.Models.Calendar SelectedCalendar { get; set; } = new Core.Models.Calendar();
+        public List<Event> Events { get; set; } = [];
+        public List<Member> Members { get; set; } = [];
         public List<DateTime> DaysInMonth { get; private set; } = [];
         public int CurrentYear { get; private set; } = DateTime.Now.Year;
         public int CurrentMonth { get; private set; } = DateTime.Now.Month;
-        public string CalendarName { get; set; }
+        public string CalendarName { get; set; } = string.Empty;
 
         public CultureInfo CultureInfo = new("sv-SE");
 
@@ -39,55 +39,59 @@ namespace FamilyCalender.Web.Pages
             _memberService = memberService;
             _userManager = userManager;
         }
-        public async Task OnGetAsync(int? year, int? month, int? calendarId)
+        public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 RedirectToPage("/Account/Login");
-                return;
             }
-            if (year.HasValue) CurrentYear = year.Value;
-            if (month.HasValue) CurrentMonth = month.Value;
+
+            SetCurrentYearAndMonth(year, month);
 
             DaysInMonth = GenerateMonthDays(CurrentYear, CurrentMonth);
 
             Calendars = await _calendarService.GetCalendarsForUserAsync(user.Id);
 
-            if (Calendars.Count == 0)
+            if (Calendars == null || Calendars.Count == 0)
             {
-                var testMembers = TestData.GetTestMembers();
-                var testCalendar = TestData.GetTestCalendars(testMembers).FirstOrDefault();
-
-                if (testCalendar != null)
-                {
-                    Calendars.Add(testCalendar);
-                    SelectedCalendar = testCalendar;
-                    Events = TestData.GetTestEvents(testMembers, testCalendar);
-                    Members = testMembers;
-                }
+                LoadTestCalendarData();
             }
             else
             {
-                if (calendarId.HasValue && Calendars.Any(c => c.Id == calendarId.Value))
-                {
-                    SelectedCalendar = Calendars.FirstOrDefault(c => c.Id == calendarId.Value);
-                }
-                else
-                {
-                    SelectedCalendar = Calendars.FirstOrDefault();
-                }
-
-                if (SelectedCalendar != null)
-                {
-                    Events = await _eventService.GetEventForCalendarAsync(SelectedCalendar.Id);
-                    Members = await _memberService.GetMembersForCalendarAsync(SelectedCalendar.Id);
-                }
-                CalendarName = SelectedCalendar.Name;
-
-
+                await LoadSelectedCalendarData(calendarId);
             }
 
+            return Page();
+        }
+
+        private async Task LoadSelectedCalendarData(int? calendarId)
+        {
+            SelectedCalendar = calendarId.HasValue && Calendars!.Any(c => c.Id == calendarId.Value)
+                ? Calendars.FirstOrDefault(c => c.Id == calendarId.Value)
+                : Calendars.FirstOrDefault();
+
+            if (SelectedCalendar != null)
+            {
+                Events = await _eventService.GetEventForCalendarAsync(SelectedCalendar.Id);
+                Members = await _memberService.GetMembersForCalendarAsync(SelectedCalendar.Id);
+                CalendarName = SelectedCalendar.Name;
+            }
+        }
+
+        private void LoadTestCalendarData()
+        {
+            var testMembers = TestData.GetTestMembers();
+            var testCalendar = TestData.GetTestCalendars(testMembers).FirstOrDefault();
+
+            if (testCalendar != null)
+            {
+                Calendars.Add(testCalendar);
+                SelectedCalendar = testCalendar;
+                Events = TestData.GetTestEvents(testMembers, testCalendar);
+                Members = testMembers;
+                CalendarName = testCalendar.Name;
+            }
         }
 
         private static List<DateTime> GenerateMonthDays(int year, int month)
@@ -101,6 +105,12 @@ namespace FamilyCalender.Web.Pages
             }
 
             return days;
+        }
+
+        private void SetCurrentYearAndMonth(int? year, int? month)
+        {
+            if (year.HasValue) CurrentYear = year.Value;
+            if (month.HasValue) CurrentMonth = month.Value;
         }
 
     }
