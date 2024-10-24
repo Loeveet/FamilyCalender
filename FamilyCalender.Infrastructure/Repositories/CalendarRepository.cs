@@ -21,7 +21,6 @@ namespace FamilyCalender.Infrastructure.Repositories
 
         public async Task<Calendar> AddAsync(Calendar calendar)
         {
-            //calendar.CreatedAt = DateTime.UtcNow;
             _context.Calendars.Add(calendar);
             await _context.SaveChangesAsync();
             return calendar;
@@ -31,7 +30,8 @@ namespace FamilyCalender.Infrastructure.Repositories
         {
             var calendarAccesses = await _context.CalendarAccesses
                 .Where(ca => ca.UserId == userId)
-                .Include(ca => ca.Calendar) 
+                .Include(ca => ca.Calendar)
+                .ThenInclude(c => c.Events)
                 .ToListAsync();
 
             var calendars = calendarAccesses

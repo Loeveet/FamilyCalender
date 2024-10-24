@@ -1,91 +1,175 @@
 ﻿@page
 @model FamilyCalender.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = "Calendar";
-    var cultureInfo = Model.CultureInfo;
-    var daysInMonth = Model.DaysInMonth;
-    var members = Model.Members ?? new List<FamilyCalender.Core.Models.Member>(); // Säkerställ att members inte är null
-    var currentMonth = new DateTime(Model.CurrentYear, Model.CurrentMonth, 1);
-    var monthName = currentMonth.ToString("MMMM", new System.Globalization.CultureInfo("sv-SE"));
-    var capitalizedMonthName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(monthName);
+	ViewData["Title"] = "Calendar";
+	var cultureInfo = Model.CultureInfo;
+	var daysInMonth = Model.DaysInMonth;
+	var members = Model.Members ?? new List<FamilyCalender.Core.Models.Member>(); // Säkerställ att members inte är null
+	var currentMonth = new DateTime(Model.CurrentYear, Model.CurrentMonth, 1);
+	var monthName = currentMonth.ToString("MMMM", new System.Globalization.CultureInfo("sv-SE"));
+	var capitalizedMonthName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(monthName);
 
-    var membersCount = members.Count;
-    var columnWidth = 100m / (membersCount + 1);
+	var membersCount = members.Count;
+	var fixedDayColumnWidth = 8;
+	var remainingColumnWidth = membersCount > 0 ? 100m / membersCount : 0;
 }
 <a class="btn btn-primary" asp-page="/CreateCalendar">Skapa en ny kalender</a>
 
 <h2>@capitalizedMonthName @Model.CurrentYear</h2>
-<h3>@Model.CalendarName</h3>
+<h3>@Model.SelectedCalendar.Name</h3>
 
 <div>
-    <a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 1 ? Model.CurrentYear - 1 : Model.CurrentYear)"
-       asp-route-month="@(Model.CurrentMonth == 1 ? 12 : Model.CurrentMonth - 1)"
-       asp-route-calendarId="@Model.SelectedCalendar?.Id"
-       class="btn btn-secondary">Föregående månad</a>
+	<a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 1 ? Model.CurrentYear - 1 : Model.CurrentYear)"
+	   asp-route-month="@(Model.CurrentMonth == 1 ? 12 : Model.CurrentMonth - 1)"
+	   asp-route-calendarId="@Model.SelectedCalendar?.Id"
+	   class="btn btn-secondary">Föregående månad</a>
 
-    <a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 12 ? Model.CurrentYear + 1 : Model.CurrentYear)"
-       asp-route-month="@(Model.CurrentMonth == 12 ? 1 : Model.CurrentMonth + 1)"
-       asp-route-calendarId="@Model.SelectedCalendar?.Id"
-       class="btn btn-secondary">Nästa månad</a>
+	<a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 12 ? Model.CurrentYear + 1 : Model.CurrentYear)"
+	   asp-route-month="@(Model.CurrentMonth == 12 ? 1 : Model.CurrentMonth + 1)"
+	   asp-route-calendarId="@Model.SelectedCalendar?.Id"
+	   class="btn btn-secondary">Nästa månad</a>
 </div>
 
 @if (Model.Calendars != null && Model.Calendars.Count > 0)
 {
-    <form method="get">
-        <select name="calendarId" onchange="this.form.submit()">
-            <option value="">Välj kalender</option>
-            @foreach (var calendar in Model.Calendars)
-            {
-                <option value="@calendar.Id"
-                        selected="@(calendar.Id == Model.SelectedCalendar?.Id ? "selected" : "")">
-                    @calendar.Name
-                </option>
-            }
-        </select>
-        <input type="hidden" name="year" value="@Model.CurrentYear" />
-        <input type="hidden" name="month" value="@Model.CurrentMonth" />
-    </form>
+	<form method="get">
+		<select name="calendarId" onchange="this.form.submit()">
+			<option value="">Välj kalender</option>
+			@foreach (var calendar in Model.Calendars)
+			{
+				<option value="@calendar.Id"
+						selected="@(calendar.Id == Model.SelectedCalendar?.Id ? "selected" : "")">
+					@calendar.Name
+				</option>
+			}
+		</select>
+		<input type="hidden" name="year" value="@Model.CurrentYear" />
+		<input type="hidden" name="month" value="@Model.CurrentMonth" />
+	</form>
 }
 <table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th style="width:@(columnWidth)%">Dag</th> 
-            @foreach (var member in members)
-            {
-                <th style="width:@(columnWidth)%">@member.Name</th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var day in daysInMonth)
-    {
-        <tr>
-            <td>
-                @if (day.DayOfWeek == DayOfWeek.Monday || day.Day == 1)
-                {
-                    var calendar = cultureInfo.Calendar;
-                    var weekOfYear = calendar.GetWeekOfYear(day, cultureInfo.DateTimeFormat.CalendarWeekRule, DayOfWeek.Monday);
-                    <b>@($"v. {weekOfYear}")</b>
-                    <br/>
-                }
+	<thead>
+		<tr>
+			<th style="width:@($"{fixedDayColumnWidth}%")">Dag</th>
+			@foreach (var member in members)
+			{
+				<th style="width:@($"{remainingColumnWidth}%")">@member.Name</th>
+			}
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var day in daysInMonth)
+		{
+			<tr>
+				<td>
+					@if (day.DayOfWeek == DayOfWeek.Monday || day.Day == 1)
+					{
+						var calendar = cultureInfo.Calendar;
+						var weekOfYear = calendar.GetWeekOfYear(day, cultureInfo.DateTimeFormat.CalendarWeekRule, DayOfWeek.Monday);
+						<b>@($"v. {weekOfYear}")</b>
+						<br />
+					}
 
-                @{
-                    var dayOfWeek = day.ToString("dddd", Model.CultureInfo);
-                    var friendlyDayOfWeek = $"{dayOfWeek[0].ToString().ToUpper()}{dayOfWeek.Substring(1)}";
-                }
-                @($"{day.Day} {friendlyDayOfWeek}")
-            </td>
-            @foreach (var member in members)
-            {
-                var booking = Model.Events
-                    .FirstOrDefault(e => e.MemberEvents.Any(me => me.Member.Name == member.Name) &&
-                    e.Start.HasValue &&
-                    e.Start.Value.Date == day.Date);
-                <td>
-                    @(booking != null ? booking.Title : string.Empty)
-                </td>
-            }
-        </tr>
-    }
-</tbody>
+					@{
+						var dayOfWeek = day.ToString("dddd", Model.CultureInfo);
+						var friendlyDayOfWeek = $"{dayOfWeek[0].ToString().ToUpper()}{dayOfWeek.Substring(1)}";
+					}
+					@($"{day.Day} {friendlyDayOfWeek}")
+				</td>
+				@foreach (var member in members)
+				{
+					var bookings = Model.SelectedCalendar.Events
+					.Where(e => e.MemberEvents.Any(me => me.Member.Name == member.Name) &&
+					e.EventDates.Any(d => d.Date == day.Date))
+					.ToList();
+
+
+
+					<td>
+						<div class="d-flex flex-column">
+							<div class="d-flex justify-content-between align-items-start">
+								<span class="text-start">
+									@if (bookings.Any())
+									{
+										foreach (var eventItem in bookings)
+										{
+											@eventItem.Title
+											<br />
+										}
+									}
+									else
+									{
+										<span class="text-muted">Inga event</span>
+									}
+								</span>
+								<a href="javascript:void(0)"
+								   class="text-decoration-none ms-2"
+								   data-bs-toggle="modal"
+								   data-bs-target="#eventModal"
+								   data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
+								   data-member-id="@member.Id"
+								   data-calendar-id="@Model.SelectedCalendar?.Id"
+								   data-member-name="@member.Name"
+								   onclick="setModalValues(this)">
+									<i class="bi bi-plus-circle event-icon" title="Lägg till event"></i>
+								</a>
+							</div>
+						</div>
+					</td>
+
+
+				}
+
+			</tr>
+		}
+	</tbody>
 </table>
+
+
+<!-- The Modal -->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h5 class="modal-title">Lägg till event</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<!-- Modal body -->
+			<div class="modal-body">
+				<form method="post" asp-page-handler="AddEvent">
+					<div class="mb-3">
+						<label for="modalCalenderId" class="form-label">@Model.SelectedCalendar.Name</label>
+						<input type="hidden" id="modalCalenderId" name="calenderId">
+					</div>
+					<div class="mb-3">
+						<label for="modalSelectedDate" class="form-label">Datum</label>
+						<input type="text" class="form-control" id="modalSelectedDate" name="selectedDate" readonly>
+					</div>
+					<div class="mb-3">
+						<label for="" id="modalMemberLabel" class="form-label"></label>
+						<input type="hidden" id="modalMemberId" name="memberId">
+						<input type="hidden" id="modalCalenderId" name="calenderId">
+						<input type="hidden" id="modalEventDate" name="eventDate">
+						<!-- Om du vill visa medlemsnamnet kan du göra det här -->
+					</div>
+					<!-- Lägg till eventdetaljer här -->
+					<div class="mb-3">
+						<label for="eventTitle" class="form-label">Titel</label>
+						<input type="text" class="form-control" id="eventTitle" name="eventTitle">
+					</div>
+					<button type="submit" class="btn btn-primary">Skapa Event</button>
+				</form>
+			</div>
+
+			<!-- Modal footer -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+

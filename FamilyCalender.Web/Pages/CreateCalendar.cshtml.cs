@@ -77,9 +77,6 @@ namespace FamilyCalender.Web.Pages
                 return Page();
             }
 
-
-
-
             return RedirectToPage("/Index");
         }
 

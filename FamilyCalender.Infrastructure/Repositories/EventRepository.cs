@@ -20,7 +20,9 @@ namespace FamilyCalender.Infrastructure.Repositories
         }
         public async Task<Event> AddAsync(Event e)
         {
-            throw new NotImplementedException();
+            await _context.Events.AddAsync(e);
+            await _context.SaveChangesAsync();
+            return e;
         }
 
         public async Task<IEnumerable<Event>> GetAllByMemberAsync(int memberId)
@@ -28,14 +30,19 @@ namespace FamilyCalender.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<List<Event>> GetByCalendar(int calendarId)
-        {
-            return await _context.Events.Where(e => e.CalendarId == calendarId).ToListAsync();
-        }
+		public async Task<List<Event>> GetByCalendar(int calendarId)
+		{
+			return await _context.Events
+				.Where(e => e.CalendarId == calendarId)
+				.Include(e => e.MemberEvents)
+				.ThenInclude(me => me.Member) 
+				.ToListAsync();
+		}
 
-        public async Task<Event?> GetByIdAsync(int eventId)
+
+		public async Task<Event?> GetByIdAsync(int eventId)
         {
-            throw new NotImplementedException();
+            return _context.Events.Where(e => e.Id == eventId).FirstOrDefault();
         }
 
         public async Task RemoveAsync(int eventId)

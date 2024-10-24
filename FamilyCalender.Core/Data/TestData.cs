@@ -39,10 +39,10 @@ namespace FamilyCalender.Core.Data
         {
             var events = new List<Event>
             {
-                new() { Title = "Bokad aktivitet", Start = new DateTime(2024, 10, 5), Calendar = calendar },
-                new() { Title = "Läxor", Start = new DateTime(2024, 10, 15), Calendar = calendar },
-                new() { Title = "Skolprojekt", Start = new DateTime(2024, 11, 10), Calendar = calendar },
-                new() { Title = "Dammsuga", Start = new DateTime(2024, 11, 11), Calendar = calendar }
+                new() { Title = "Bokad aktivitet", EventDates = new List<DateTime> { new(2024, 10, 5) }, Calendar = calendar },
+                new() { Title = "Läxor", EventDates = new List<DateTime> { new DateTime(2024, 10, 15) }, Calendar = calendar },
+                new() { Title = "Skolprojekt", EventDates = new List<DateTime> { new DateTime(2024, 11, 10) }, Calendar = calendar },
+                new() { Title = "Dammsuga", EventDates = new List<DateTime> { new DateTime(2024, 11, 11) }, Calendar = calendar }
             };
 
             for (int i = 0; i < events.Count; i++)

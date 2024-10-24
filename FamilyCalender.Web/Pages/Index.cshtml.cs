@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using FamilyCalender.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Mvc;
 using FamilyCalender.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace FamilyCalender.Web.Pages
 {
@@ -25,9 +26,10 @@ namespace FamilyCalender.Web.Pages
         public List<DateTime> DaysInMonth { get; private set; } = [];
         public int CurrentYear { get; private set; } = DateTime.Now.Year;
         public int CurrentMonth { get; private set; } = DateTime.Now.Month;
-        public string CalendarName { get; set; } = string.Empty;
 
         public CultureInfo CultureInfo = new("sv-SE");
+        public DateTime? SelectedDate { get; set; }
+        public Member? SelectedMember { get; set; }
 
         public IndexModel(UserManager<User> userManager, 
             ICalendarService calendarService, 
@@ -64,22 +66,41 @@ namespace FamilyCalender.Web.Pages
 
             return Page();
         }
+		public async Task<IActionResult> OnPostAddEventAsync()
+		{
+			var eventTitle = Request.Form["eventTitle"];
+			var eventDatesString = Request.Form["selectedDate"];
+			var memberId = int.Parse(Request.Form["memberId"]);
+			var calendarId = int.Parse(Request.Form["calenderId"]);
 
-        private async Task LoadSelectedCalendarData(int? calendarId)
-        {
-            SelectedCalendar = calendarId.HasValue && Calendars!.Any(c => c.Id == calendarId.Value)
-                ? Calendars.FirstOrDefault(c => c.Id == calendarId.Value)
-                : Calendars.FirstOrDefault();
+			if (!IsValidInput(eventTitle, eventDatesString, memberId, calendarId))
+			{
+				ModelState.AddModelError(string.Empty, "Titel, datum, medlem och kalender är obligatoriskt.");
+				return Page();
+			}
 
-            if (SelectedCalendar != null)
-            {
-                Events = await _eventService.GetEventForCalendarAsync(SelectedCalendar.Id);
-                Members = await _memberService.GetMembersForCalendarAsync(SelectedCalendar.Id);
-                CalendarName = SelectedCalendar.Name;
-            }
-        }
+			var eventDates = ParseEventDates(eventDatesString);
+			await CreateAndSaveEventAsync(eventTitle, eventDates, calendarId, memberId);
+			return RedirectToPage("./Index");
+		}
+		private async Task LoadSelectedCalendarData(int? calendarId)
+		{
+			if (Calendars == null || Calendars.Count == 0)
+			{
+				// Hantera situationen där det inte finns några kalendrar
+				return;
+			}
 
-        private void LoadTestCalendarData()
+			var calendar = Calendars.FirstOrDefault(c => c.Id == calendarId);
+			SelectedCalendar = calendar ?? Calendars.FirstOrDefault() ?? new Core.Models.Calendar();
+
+			if (SelectedCalendar != null)
+			{
+				Events = await _eventService.GetEventForCalendarAsync(SelectedCalendar.Id);
+				Members = await _memberService.GetMembersForCalendarAsync(SelectedCalendar.Id);
+			}
+		}
+		private void LoadTestCalendarData()
         {
             var testMembers = TestData.GetTestMembers();
             var testCalendar = TestData.GetTestCalendars(testMembers).FirstOrDefault();
@@ -93,7 +114,6 @@ namespace FamilyCalender.Web.Pages
                 CalendarName = testCalendar.Name;
             }
         }
-
         private static List<DateTime> GenerateMonthDays(int year, int month)
         {
             var daysCount = DateTime.DaysInMonth(year, month);
@@ -106,12 +126,30 @@ namespace FamilyCalender.Web.Pages
 
             return days;
         }
-
         private void SetCurrentYearAndMonth(int? year, int? month)
         {
             if (year.HasValue) CurrentYear = year.Value;
             if (month.HasValue) CurrentMonth = month.Value;
         }
+		private bool IsValidInput(string eventTitle, string eventDatesString, int memberId, int calendarId)
+		{
+			return !string.IsNullOrEmpty(eventTitle) &&
+				   !string.IsNullOrEmpty(eventDatesString) &&
+				   memberId > 0 &&
+				   calendarId > 0;
+		}
+		private List<DateTime> ParseEventDates(string eventDatesString)
+		{
+			return eventDatesString
+				.ToString()
+				.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+				.Select(d => DateTime.Parse(d.Trim()))
+				.ToList();
+		}
+		private async Task CreateAndSaveEventAsync(string eventTitle, List<DateTime> eventDates, int calendarId, int memberId)
+		{
+			await _eventService.CreateEventAsync(eventTitle, eventDates, calendarId, memberId);
+		}
 
-    }
+	}
 }

@@ -11,9 +11,8 @@ namespace FamilyCalender.Core.Models
 	{
         public int Id { get; set; }
         public string? Title { get; set; }
-		public DateTime? Start { get; set; }
-		public DateTime? End { get; set; }
-        public int CalendarId { get; set; }
+		public List<DateTime> EventDates { get; set; } = [];
+		public int CalendarId { get; set; }
         public Calendar? Calendar { get; set; }
         public ICollection<MemberEvent> MemberEvents { get; set; } = [];
     }

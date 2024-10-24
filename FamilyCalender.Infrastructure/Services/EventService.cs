@@ -3,6 +3,7 @@ using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,16 +14,36 @@ namespace FamilyCalender.Infrastructure.Services
     {
         private readonly ICalendarRepository _calendarRepository;
         private readonly IEventRepository _eventRepository;
+		private readonly IMemberEventService _memberEventService;
 
-        public EventService(ICalendarRepository calendarRepository, IEventRepository eventRepository)
+        public EventService(ICalendarRepository calendarRepository, IEventRepository eventRepository, IMemberEventService memberEventService)
         {
             _calendarRepository = calendarRepository;
             _eventRepository = eventRepository;
-        }
-        public async Task<List<Event>> GetEventForCalendarAsync(int calendarId)
+			_memberEventService = memberEventService;
+		}
+
+		public async Task<Event> CreateEventAsync(string eventTitle, List<DateTime> eventDates, int calendarId, int memberId)
+		{
+			var newEvent = new Event
+			{
+				Title = eventTitle,
+				EventDates = eventDates,
+				CalendarId = calendarId
+			};
+            var addedEvent = await _eventRepository.AddAsync(newEvent);
+			await _memberEventService.CreateMemberEventAsync(memberId, addedEvent);
+
+			return addedEvent;
+		}
+
+		public async Task<Event> GetEventByIdAsync(int eventId)
+		{
+			return await _eventRepository.GetByIdAsync(eventId);
+		}
+
+		public async Task<List<Event>> GetEventForCalendarAsync(int calendarId)
         {
-
-
             return await _eventRepository.GetByCalendar(calendarId);
         }
     }

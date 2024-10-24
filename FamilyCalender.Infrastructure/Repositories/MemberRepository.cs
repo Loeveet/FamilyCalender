@@ -35,9 +35,9 @@ namespace FamilyCalender.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public Task<Member> GetByIdAsync(int memberId)
+        public async Task<Member> GetByIdAsync(int memberId)
         {
-            throw new NotImplementedException();
+            return await _context.Members.FirstOrDefaultAsync(m => m.Id == memberId);
         }
 
         public Task RemoveAsync(int memberId)
