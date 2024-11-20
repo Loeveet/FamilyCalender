@@ -67,6 +67,7 @@ else
 					<td class="col-12 col-md-2">
 						@{
 							var isCurrentDay = day.Date == DateTime.Today;
+							var isPastDay = day.Date < DateTime.Today;
 							var calendar = cultureInfo.Calendar;
 							var weekOfYear = calendar.GetWeekOfYear(day, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
 
@@ -80,9 +81,21 @@ else
 							var friendlyDayOfWeek = $"{dayOfWeek[0].ToString().ToUpper()}{dayOfWeek.Substring(1)}";
 						}
 
-						<span class="@((isCurrentDay ? "fw-bold" : ""))">
+						<span class="@((isCurrentDay ? "fw-bold" : "") + (isPastDay ? " text-muted" : ""))">
 							@($"{day.Day} {friendlyDayOfWeek}")
 						</span>
+						@if (!isPastDay)
+						{							
+							<a href="javascript:void(0)"
+							   class="text-decoration-none ms-2"
+							   data-bs-toggle="modal"
+							   data-bs-target="#eventModal"
+							   data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
+							   data-calendar-id="@Model.SelectedCalendar?.Id"
+							   onclick="setModalValues(this)">
+								<i class="bi bi-plus-circle event-icon" title="Lägg till event"></i>
+							</a>
+						}
 					</td>
 
 					@foreach (var member in members)
@@ -104,17 +117,7 @@ else
 											}
 										}
 									</span>
-									<a href="javascript:void(0)"
-									   class="text-decoration-none ms-2"
-									   data-bs-toggle="modal"
-									   data-bs-target="#eventModal"
-									   data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
-									   data-member-id="@member.Id"
-									   data-calendar-id="@Model.SelectedCalendar?.Id"
-									   data-member-name="@member.Name"
-									   onclick="setModalValues(this)">
-										<i class="bi bi-plus-circle event-icon" title="Lägg till event"></i>
-									</a>
+
 								</div>
 							</div>
 						</td>
