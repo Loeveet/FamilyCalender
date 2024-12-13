@@ -149,6 +149,20 @@ else
 						<input type="text" class="form-control" id="modalSelectedDate" name="selectedDate" readonly>
 					</div>
 					<div class="mb-3">
+						<label class="form-label">Välj Medlemmar</label>
+						<div>
+							@foreach (var member in Model.Members)
+							{
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="@member.Id" id="member_@member.Id" name="memberIds">
+									<label class="form-check-label" for="member_@member.Id">
+										@member.Name
+									</label>
+								</div>
+							}
+						</div>
+					</div>
+					<div class="mb-3">
 						<label for="" id="modalMemberLabel" class="form-label"></label>
 						<input type="hidden" id="modalMemberId" name="memberId">
 						<input type="hidden" id="modalEventDate" name="eventDate">

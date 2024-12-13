@@ -23,7 +23,7 @@ namespace FamilyCalender.Infrastructure.Services
 			_memberEventService = memberEventService;
 		}
 
-		public async Task<Event> CreateEventAsync(string eventTitle, List<DateTime> eventDates, int calendarId, int memberId)
+		public async Task<Event> CreateEventAsync(string eventTitle, List<DateTime> eventDates, int calendarId, List<int> memberIds)
 		{
 			var newEvent = new Event
 			{
@@ -31,11 +31,17 @@ namespace FamilyCalender.Infrastructure.Services
 				EventDates = eventDates,
 				CalendarId = calendarId
 			};
-            var addedEvent = await _eventRepository.AddAsync(newEvent);
-			await _memberEventService.CreateMemberEventAsync(memberId, addedEvent);
+
+			var addedEvent = await _eventRepository.AddAsync(newEvent);
+
+			foreach (var memberId in memberIds)
+			{
+				await _memberEventService.CreateMemberEventAsync(memberId, addedEvent);
+			}
 
 			return addedEvent;
 		}
+
 
 		public async Task<Event> GetEventByIdAsync(int eventId)
 		{

@@ -30,6 +30,7 @@ namespace FamilyCalender.Web.Pages
 		public DateTime? SelectedDate { get; set; }
 		public Member? SelectedMember { get; set; }
 
+
 		public IndexModel(UserManager<User> userManager,
 			ICalendarService calendarService,
 			IEventService eventService,
@@ -57,6 +58,7 @@ namespace FamilyCalender.Web.Pages
 			if (Calendars != null || Calendars.Count > 0)
 			{
 				await LoadSelectedCalendarData(calendarId);
+				Members = await _memberService.GetMembersForCalendarAsync(SelectedCalendar.Id);
 			}
 
 			return Page();
@@ -65,19 +67,19 @@ namespace FamilyCalender.Web.Pages
 		{
 			var eventTitle = Request.Form["eventTitle"];
 			var eventDatesString = Request.Form["selectedDate"];
-			var memberId = int.Parse(Request.Form["memberId"]);
+			var memberIds = Request.Form["memberIds"].ToString().Split(",").Select(int.Parse).ToList();
 			var calendarId = int.Parse(Request.Form["calenderId"]);
 			CurrentYear = int.Parse(Request.Form["currentYear"]);
 			CurrentMonth = int.Parse(Request.Form["currentMonth"]);
 
-			if (!IsValidInput(eventTitle, eventDatesString, memberId, calendarId))
+			if (!IsValidInput(eventTitle, eventDatesString, memberIds, calendarId))
 			{
 				ModelState.AddModelError(string.Empty, "Titel, datum, medlem och kalender är obligatoriskt.");
 				return Page();
 			}
 
 			var eventDates = ParseEventDates(eventDatesString);
-			await CreateAndSaveEventAsync(eventTitle, eventDates, calendarId, memberId);
+			await CreateAndSaveEventAsync(eventTitle, eventDates, calendarId, memberIds);
 			return RedirectToPage("./Index", new
 			{
 				year = CurrentYear,
@@ -110,13 +112,15 @@ namespace FamilyCalender.Web.Pages
 			CurrentYear = year ?? CurrentYear;
 			CurrentMonth = month ?? CurrentMonth;
 		}
-		private bool IsValidInput(string eventTitle, string eventDatesString, int memberId, int calendarId)
+		private bool IsValidInput(string eventTitle, string eventDatesString, List<int> memberIds, int calendarId)
 		{
 			return !string.IsNullOrEmpty(eventTitle) &&
 				   !string.IsNullOrEmpty(eventDatesString) &&
-				   memberId > 0 &&
+				   memberIds != null &&
+				   memberIds.Any() &&
 				   calendarId > 0;
 		}
+
 		private List<DateTime> ParseEventDates(string eventDatesString)
 		{
 			return eventDatesString
@@ -125,10 +129,11 @@ namespace FamilyCalender.Web.Pages
 				.Select(d => DateTime.Parse(d.Trim()))
 				.ToList();
 		}
-		private async Task CreateAndSaveEventAsync(string eventTitle, List<DateTime> eventDates, int calendarId, int memberId)
+		private async Task CreateAndSaveEventAsync(string eventTitle, List<DateTime> eventDates, int calendarId, List<int> memberIds)
 		{
-			await _eventService.CreateEventAsync(eventTitle, eventDates, calendarId, memberId);
+			await _eventService.CreateEventAsync(eventTitle, eventDates, calendarId, memberIds);
 		}
+
 
 	}
 }
