@@ -140,39 +140,50 @@ else
 
 			<div class="modal-body">
 				<form method="post" asp-page-handler="AddEvent">
+
 					<div class="mb-3">
-						<label for="modalCalenderId" class="form-label">@Model.SelectedCalendar.Name</label>
-						<input type="hidden" id="modalCalenderId" name="calenderId">
+						<label class="form-label">@Model.SelectedCalendar.Name</label>
+						<input type="hidden" asp-for="SelectedCalendarId" value="@Model.SelectedCalendar.Id" />
 					</div>
+
 					<div class="mb-3">
 						<label for="modalSelectedDate" class="form-label">Datum</label>
-						<input type="text" class="form-control" id="modalSelectedDate" name="selectedDate" readonly>
+						<input type="date" class="form-control" asp-for="SelectedDate" />
 					</div>
+
+					@{
+						// Säkerställ att `SelectedMemberIds` är en lista av int
+						var selectedMemberIds = Model.SelectedMemberIds ?? new List<int>();
+					}
 					<div class="mb-3">
 						<label class="form-label">Välj Medlemmar</label>
 						<div>
-							@foreach (var member in Model.Members)
+							@for (int i = 0; i < Model.Members.Count; i++)
 							{
+								var member = Model.Members[i];
 								<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="@member.Id" id="member_@member.Id" name="memberIds">
-									<label class="form-check-label" for="member_@member.Id">
+									<input class="form-check-input"
+										   type="checkbox"
+										   value="@member.Id"
+										   id="member-@member.Id"
+									@(selectedMemberIds.Contains(member.Id) ? "checked" : "")
+										   name="SelectedMemberIds" />
+									<label class="form-check-label" for="member-@member.Id">
 										@member.Name
 									</label>
 								</div>
 							}
 						</div>
 					</div>
-					<div class="mb-3">
-						<label for="" id="modalMemberLabel" class="form-label"></label>
-						<input type="hidden" id="modalMemberId" name="memberId">
-						<input type="hidden" id="modalEventDate" name="eventDate">
-						<input type="hidden" name="currentYear" value="@Model.CurrentYear" />
-						<input type="hidden" name="currentMonth" value="@Model.CurrentMonth" />
-					</div>
+
 					<div class="mb-3">
 						<label for="eventTitle" class="form-label">Titel</label>
-						<input type="text" class="form-control" id="eventTitle" name="eventTitle">
+						<input type="text" class="form-control" asp-for="EventTitle" />
 					</div>
+
+					<input type="hidden" asp-for="CurrentYear" value="@Model.CurrentYear" />
+					<input type="hidden" asp-for="CurrentMonth" value="@Model.CurrentMonth" />
+
 					<button type="submit" class="btn btn-primary">Skapa Event</button>
 				</form>
 			</div>
@@ -184,4 +195,5 @@ else
 		</div>
 	</div>
 </div>
+
 
