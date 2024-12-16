@@ -46,9 +46,32 @@ function validateMembers() {
     return true;
 }
 
+function validateDate() {
+    const selectedDate = document.getElementById("modalSelectedDate").value;
+    const today = new Date().toISOString().split("T")[0];
+
+    const dateError = document.getElementById("dateError");
+
+    if (selectedDate < today) {
+        if (dateError) {
+            dateError.classList.remove("d-none"); 
+        }
+        document.getElementById("modalSelectedDate").classList.add("is-invalid");
+        return false;
+    }
+
+    if (dateError) {
+        dateError.classList.add("d-none");
+    }
+    document.getElementById("modalSelectedDate").classList.remove("is-invalid");
+    return true;
+}
+
 function validateForm() {
     const isTitleValid = validateEventTitle();
     const areMembersValid = validateMembers();
-    return isTitleValid && areMembersValid;
+    const isDateValid = validateDate();
+    return isTitleValid && areMembersValid && isDateValid;
 }
+
 

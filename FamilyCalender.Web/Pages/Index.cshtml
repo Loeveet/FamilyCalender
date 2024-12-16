@@ -149,6 +149,8 @@ else
 					<div class="mb-3">
 						<label for="modalSelectedDate" class="form-label">Datum</label>
 						<input type="date" class="form-control" asp-for="SelectedDate" id="modalSelectedDate" />
+						<small id="dateError" class="text-danger d-none">Datumet kan inte vara bakåt i tiden</small>
+
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Välj medlemmar</label>
@@ -161,7 +163,7 @@ else
 								</div>
 							}
 						</div>
-						<small id="memberError" class="text-danger d-none">Du måste välja minst en medlem!</small>
+						<small id="memberError" class="text-danger d-none">Du måste välja minst en medlem</small>
 					</div>
 
 
