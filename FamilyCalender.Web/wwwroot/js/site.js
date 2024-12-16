@@ -26,6 +26,33 @@ function validateEventTitle() {
     return true; // Tillåt formuläret att skickas
 }
 
+function validateMembers() {
+    const checkboxes = document.querySelectorAll(".member-checkbox");
+    const memberError = document.getElementById("memberError");
+    let isAnyChecked = false;
+
+    // Kontrollera om minst en checkbox är markerad
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            isAnyChecked = true;
+        }
+    });
+
+    if (!isAnyChecked) {
+        memberError.classList.remove("d-none"); // Visa felmeddelande
+        return false; // Stoppa formuläret från att skickas
+    }
+
+    memberError.classList.add("d-none"); // Dölj felmeddelande
+    return true; // Tillåt formuläret att skickas
+}
+
+function validateForm() {
+    const isTitleValid = validateEventTitle();
+    const areMembersValid = validateMembers();
+    return isTitleValid && areMembersValid; // Stoppar formuläret om något är fel
+}
+
 
 
 
