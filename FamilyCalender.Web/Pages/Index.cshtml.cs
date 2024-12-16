@@ -43,9 +43,17 @@ namespace FamilyCalender.Web.Pages
 
 		[BindProperty]
 		public int SelectedCalendarId { get; set; }
+        [BindProperty]
+        public DateTime? StartDate { get; set; }
+
+        [BindProperty]
+        public DateTime? EndDate { get; set; }
+        [BindProperty]
+        public List<string>? SelectedDays { get; set; }
 
 
-		public IndexModel(UserManager<User> userManager,
+
+        public IndexModel(UserManager<User> userManager,
 			ICalendarService calendarService,
 			IEventService eventService,
 			IMemberService memberService)
@@ -60,7 +68,7 @@ namespace FamilyCalender.Web.Pages
 			var user = await _userManager.GetUserAsync(User);
 			if (user == null)
 			{
-				RedirectToPage("/Account/Login");
+				return RedirectToPage("/Account/Login");
 			}
 
 			SetCurrentYearAndMonth(year, month);
@@ -86,19 +94,49 @@ namespace FamilyCalender.Web.Pages
 				return Page();
 			}
 
-			var eventDates = SelectedDate.HasValue
-							? new List<DateTime> { SelectedDate.Value }
-							: []; 
-			
-			await CreateAndSaveEventAsync(EventTitle, eventDates, SelectedCalendarId, SelectedMemberIds);
+            if (StartDate.HasValue && EndDate.HasValue && SelectedDays != null)
+            {
+				var eventDates = GenerateEventDatesInRangeWithWeekdays(StartDate.Value, EndDate.Value, SelectedDays);
 
-			return RedirectToPage("./Index", new
+				await CreateAndSaveEventAsync(EventTitle, eventDates, SelectedCalendarId, SelectedMemberIds);
+            }
+            else if (SelectedDate.HasValue)
+            {
+                var eventDates = new List<DateTime> { SelectedDate.Value };
+
+                await CreateAndSaveEventAsync(EventTitle, eventDates, SelectedCalendarId, SelectedMemberIds);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Ange ett giltigt datum eller intervall.");
+                return Page();
+            }
+
+            return RedirectToPage("./Index", new
 			{
 				year = CurrentYear,
 				month = CurrentMonth,
 				calendarId = SelectedCalendarId
 			});
 		}
+		private static List<DateTime> GenerateEventDatesInRangeWithWeekdays(DateTime start, DateTime end, List<string> selectedDays)
+		{
+			var dates = new List<DateTime>();
+
+			for (var date = start; date <= end; date = date.AddDays(1))
+			{
+				var dayOfWeek = date.DayOfWeek.ToString(); 
+
+				if (selectedDays.Contains(dayOfWeek))
+				{
+					dates.Add(date);
+				}
+			}
+
+			return dates;
+		}
+
+
 		private async Task LoadSelectedCalendarData(int? calendarId)
 		{
 			var calendar = Calendars.FirstOrDefault(c => c.Id == calendarId);

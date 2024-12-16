@@ -126,6 +126,7 @@ else
 			}
 		</tbody>
 	</table>
+
 }
 
 <!-- The Modal -->
@@ -149,9 +150,64 @@ else
 					<div class="mb-3">
 						<label for="modalSelectedDate" class="form-label">Datum</label>
 						<input type="date" class="form-control" asp-for="SelectedDate" id="modalSelectedDate" />
-						<small id="dateError" class="text-danger d-none">Datumet kan inte vara bakåt i tiden</small>
-
+						<small id="dateError" class="text-danger d-none">Datumet kan inte vara bakåt i tiden.</small>
 					</div>
+
+					<div class="accordion" id="eventOptionsAccordion">
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="headingOne">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+									Skapa intervall
+								</button>
+							</h2>
+							<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#eventOptionsAccordion">
+								<div class="accordion-body">
+									<div class="mb-3">
+										<label for="startDate" class="form-label">Startdatum</label>
+										<input type="date" class="form-control" id="startDate" name="StartDate" />
+									</div>
+
+									<div class="mb-3">
+										<label for="endDate" class="form-label">Slutdatum</label>
+										<input type="date" class="form-control" id="endDate" name="EndDate" />
+									</div>
+
+									<div class="mb-3">
+										<label class="form-label">Välj dagar</label>
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="monday" name="SelectedDays" value="Monday" />
+											<label class="form-check-label" for="monday">Måndag</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="tuesday" name="SelectedDays" value="Tuesday" />
+											<label class="form-check-label" for="tuesday">Tisdag</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="wednesday" name="SelectedDays" value="Wednesday" />
+											<label class="form-check-label" for="wednesday">Onsdag</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="thursday" name="SelectedDays" value="Thursday" />
+											<label class="form-check-label" for="thursday">Torsdag</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="friday" name="SelectedDays" value="Friday" />
+											<label class="form-check-label" for="friday">Fredag</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="saturday" name="SelectedDays" value="Saturday" />
+											<label class="form-check-label" for="saturday">Lördag</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="sunday" name="SelectedDays" value="Sunday" />
+											<label class="form-check-label" for="sunday">Söndag</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
 					<div class="mb-3">
 						<label class="form-label">Välj medlemmar</label>
 						<div id="memberList">
@@ -188,5 +244,4 @@ else
 		</div>
 	</div>
 </div>
-
 
