@@ -16,14 +16,14 @@ function validateEventTitle() {
     const eventTitle = eventTitleInput.value.trim();
 
     if (eventTitle === "") {
-        eventTitleError.classList.remove("d-none"); // Visa felmeddelande
-        eventTitleInput.classList.add("is-invalid"); // Markera input som röd
-        return false; // Stoppa formuläret från att skickas
+        eventTitleError.classList.remove("d-none");
+        eventTitleInput.classList.add("is-invalid");
+        return false; 
     }
 
-    eventTitleError.classList.add("d-none"); // Dölj felmeddelande
-    eventTitleInput.classList.remove("is-invalid"); // Ta bort röd markering
-    return true; // Tillåt formuläret att skickas
+    eventTitleError.classList.add("d-none"); 
+    eventTitleInput.classList.remove("is-invalid"); 
+    return true;
 }
 
 function validateMembers() {
@@ -31,7 +31,6 @@ function validateMembers() {
     const memberError = document.getElementById("memberError");
     let isAnyChecked = false;
 
-    // Kontrollera om minst en checkbox är markerad
     checkboxes.forEach(checkbox => {
         if (checkbox.checked) {
             isAnyChecked = true;
@@ -39,19 +38,17 @@ function validateMembers() {
     });
 
     if (!isAnyChecked) {
-        memberError.classList.remove("d-none"); // Visa felmeddelande
-        return false; // Stoppa formuläret från att skickas
+        memberError.classList.remove("d-none"); 
+        return false; 
     }
 
-    memberError.classList.add("d-none"); // Dölj felmeddelande
-    return true; // Tillåt formuläret att skickas
-}
+    memberError.classList.add("d-none");
+    return true; 
 
 function validateForm() {
     const isTitleValid = validateEventTitle();
     const areMembersValid = validateMembers();
-    return isTitleValid && areMembersValid; // Stoppar formuläret om något är fel
-}
+    return isTitleValid && areMembersValid; 
 
 
 
