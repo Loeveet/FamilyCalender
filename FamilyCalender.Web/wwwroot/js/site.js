@@ -18,11 +18,11 @@ function validateEventTitle() {
     if (eventTitle === "") {
         eventTitleError.classList.remove("d-none");
         eventTitleInput.classList.add("is-invalid");
-        return false; 
+        return false;
     }
 
-    eventTitleError.classList.add("d-none"); 
-    eventTitleInput.classList.remove("is-invalid"); 
+    eventTitleError.classList.add("d-none");
+    eventTitleInput.classList.remove("is-invalid");
     return true;
 }
 
@@ -38,18 +38,17 @@ function validateMembers() {
     });
 
     if (!isAnyChecked) {
-        memberError.classList.remove("d-none"); 
-        return false; 
+        memberError.classList.remove("d-none");
+        return false;
     }
 
     memberError.classList.add("d-none");
-    return true; 
+    return true;
+}
 
 function validateForm() {
     const isTitleValid = validateEventTitle();
     const areMembersValid = validateMembers();
-    return isTitleValid && areMembersValid; 
-
-
-
+    return isTitleValid && areMembersValid;
+}
 
