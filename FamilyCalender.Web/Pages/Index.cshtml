@@ -150,7 +150,7 @@ else
 					<div class="mb-3">
 						<label for="modalSelectedDate" class="form-label">Datum</label>
 						<input type="date" class="form-control" asp-for="SelectedDate" id="modalSelectedDate" />
-						<small id="selectedDateError" class="text-danger d-none">Datumet kan inte vara bakåt i tiden.</small>
+						<small id="error-selected-date" class="text-danger d-none"></small>
 					</div>
 
 					<div class="accordion" id="eventOptionsAccordion">
@@ -165,17 +165,16 @@ else
 									<div class="mb-3">
 										<label for="startDate" class="form-label">Startdatum</label>
 										<input type="date" class="form-control" id="startDate" name="StartDate" />
-										<small id="startDateError" class="text-danger d-none">Datumet kan inte vara bakåt i tiden.</small>
-										<div id="startDateError" class="text-danger d-none"></div>
+										<small id="error-start-date" class="text-danger d-none"></small>
+
 
 									</div>
 
 									<div class="mb-3">
 										<label for="endDate" class="form-label">Slutdatum</label>
 										<input type="date" class="form-control" id="endDate" name="EndDate" />
-										<small id="endDateError" class="text-danger d-none">Datumet kan inte vara bakåt i tiden.</small>
-										<small id="endDateBeforeStartDateError" class="text-danger d-none">Slutdatumet kan inte vara tidigare än startdatumet.</small>
-										<div id="endDateError" class="text-danger d-none"></div>
+										<small id="error-end-date" class="text-danger d-none"></small>
+
 									</div>
 
 									<div class="mb-3">
@@ -209,8 +208,10 @@ else
 											<label class="form-check-label" for="sunday">Söndag</label>
 										</div>
 									</div>
-								<small id="weekdayError" class="text-danger d-none"></small>
-									<div id="selectedDaysError" class="text-danger d-none"></div>
+									<small id="error-right-weekdays" class="text-danger d-none"></small>
+									<small id="error-interval-weekdays" class="text-danger d-none"></small>
+
+
 								</div>
 							</div>
 						</div>
