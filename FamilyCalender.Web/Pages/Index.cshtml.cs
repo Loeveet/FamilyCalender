@@ -94,15 +94,15 @@ namespace FamilyCalender.Web.Pages
 				return Page();
 			}
 
-            if (StartDate.HasValue && EndDate.HasValue && SelectedDays != null)
-            {
-				var eventDates = GenerateEventDatesInRangeWithWeekdays(StartDate.Value, EndDate.Value, SelectedDays);
+			var eventDates = ValidateAndGenerateEventDates(StartDate, EndDate, SelectedDays);
+			if (eventDates != null)
+			{
+				await CreateAndSaveEventAsync(EventTitle, eventDates, SelectedCalendarId, SelectedMemberIds!);
+			}
 
-				await CreateAndSaveEventAsync(EventTitle, eventDates, SelectedCalendarId, SelectedMemberIds);
-            }
-            else if (SelectedDate.HasValue)
+			else if (SelectedDate.HasValue)
             {
-                var eventDates = new List<DateTime> { SelectedDate.Value };
+                eventDates = new List<DateTime> { SelectedDate.Value };
 
                 await CreateAndSaveEventAsync(EventTitle, eventDates, SelectedCalendarId, SelectedMemberIds);
             }
@@ -136,6 +136,13 @@ namespace FamilyCalender.Web.Pages
 			return dates;
 		}
 
+		private List<DateTime>? ValidateAndGenerateEventDates(DateTime? startDate, DateTime? endDate, List<string>? selectedDays)
+		{
+			if (!IsValidIntervalInputs(startDate, endDate, selectedDays))
+				return null;
+
+			return GenerateEventDatesInRangeWithWeekdays(startDate!.Value, endDate!.Value, selectedDays!);
+		}
 
 		private async Task LoadSelectedCalendarData(int? calendarId)
 		{
@@ -166,10 +173,21 @@ namespace FamilyCalender.Web.Pages
 		{
 			return !string.IsNullOrEmpty(eventTitle) &&
 				   selectedDate.HasValue &&
+				   selectedDate.Value.Date >= DateTime.Now.Date &&
 				   memberIds != null &&
-				   memberIds.Any() &&
+				   memberIds.Count != 0 &&
 				   calendarId > 0;
 		}
+
+		private bool IsValidIntervalInputs(DateTime? startDate, DateTime? endDate, List<string>? selectedDays)
+		{
+			return startDate.HasValue &&
+				   endDate.HasValue &&
+				   startDate <= endDate &&
+				   selectedDays != null &&
+				   selectedDays.Count != 0;
+		}
+
 
 		private async Task CreateAndSaveEventAsync(string eventTitle, List<DateTime> eventDates, int calendarId, List<int> memberIds)
 		{

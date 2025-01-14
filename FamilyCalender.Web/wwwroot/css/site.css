@@ -20,3 +20,24 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.accordion-button.collapsed {
+    border: 1px solid #007bff;
+    transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.accordion-button.collapsed:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #0056b3;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.accordion-button:not(.collapsed):hover {
+    background-color: #004085;
+    color: white;
+}
