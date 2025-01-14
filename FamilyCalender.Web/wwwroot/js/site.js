@@ -217,21 +217,7 @@ function validateDateRange(startDateId, endDateId, errorFieldId) {
 
     return isValid;
 }
-//function validateDateRange(startDateFieldId, endDateFieldId, errorFieldId) {
-//    const startDateValue = document.getElementById(startDateFieldId).value;
-//    const endDateValue = document.getElementById(endDateFieldId).value;
-//    const dateRangeError = document.getElementById(errorFieldId);
 
-//    if (startDateValue && endDateValue && endDateValue < startDateValue) {
-//        dateRangeError.classList.remove("d-none");
-//        document.getElementById(endDateFieldId).classList.add("is-invalid");
-//        return false;
-//    }
-
-//    dateRangeError.classList.add("d-none");
-//    document.getElementById(endDateFieldId).classList.remove("is-invalid");
-//    return true;
-//}
 
 
 
