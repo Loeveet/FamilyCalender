@@ -1,75 +1,27 @@
-﻿@page
+﻿ @page
 @model FamilyCalender.Web.Pages.CreateCalendarModel
 @{
 }
 
-<form method="post">
-    <div>
-        <label for="Calendar.Name">Kalendernamn:</label>
-        <input asp-for="Calendar.Name" />
-        <span asp-validation-for="Calendar.Name"></span>
-    </div>
+<div class="container mt-5">
+    <h2>Skapa Kalender</h2>
+    <form method="post" class="mt-4">
+        <div class="mb-3">
+            <label for="Calendar.Name" class="form-label">Kalendernamn:</label>
+            <input asp-for="Calendar.Name" class="form-control" />
+            <span asp-validation-for="Calendar.Name" class="text-danger"></span>
+        </div>
 
-    <h4>Lägg till medlemmar</h4>
-    <div>
-        <input type="text" id="memberName" placeholder="Skriv namn här" />
-        <button type="button" onclick="addMember()">Lägg till</button>
-    </div>
+        <h4>Lägg till medlemmar</h4>
+        <div class="mb-3">
+            <input type="text" id="memberName" class="form-control" placeholder="Skriv namn här" />
+            <button type="button" class="btn btn-primary mt-2" onclick="addMember()">Lägg till</button>
+        </div>
 
-    <!-- Lista med tillagda medlemmar -->
-    <ul id="memberList"></ul>
+        <ul id="memberList" class="list-group mb-3"></ul>
 
-    <!-- Här läggs dolda inputs för varje medlem -->
-    <div id="hiddenMembersInputs"></div>
+        <div id="hiddenMembersInputs"></div>
 
-    <button type="submit">Skapa kalender</button>
-</form>
-
-<script>
-    var members = [];
-
-    function addMember() {
-        // Hämta input-värdet
-        var memberName = document.getElementById('memberName').value;
-
-        if (memberName) {
-            // Lägg till medlem i listan
-            members.push(memberName);
-
-            // Återställ inputfältet
-            document.getElementById('memberName').value = '';
-
-            // Uppdatera lista i gränssnittet
-            updateMemberList();
-
-            // Lägg till en dold input för varje medlem i listan
-            updateHiddenInputs();
-        }
-    }
-
-    function updateMemberList() {
-        var memberList = document.getElementById('memberList');
-        memberList.innerHTML = '';
-
-        // Lägg till varje medlem i en <li>
-        members.forEach(function (member) {
-            var li = document.createElement('li');
-            li.textContent = member;
-            memberList.appendChild(li);
-        });
-    }
-
-    function updateHiddenInputs() {
-        var hiddenMembersInputs = document.getElementById('hiddenMembersInputs');
-        hiddenMembersInputs.innerHTML = '';
-
-        // Skapa en dold input för varje medlem
-        members.forEach(function (member, index) {
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'Members[' + index + '].Name'; // Kalender.Members[i].Name mappas till backenden
-            input.value = member;
-            hiddenMembersInputs.appendChild(input);
-        });
-    }
-</script>
+        <button type="submit" class="btn btn-success">Skapa kalender</button>
+    </form>
+</div>

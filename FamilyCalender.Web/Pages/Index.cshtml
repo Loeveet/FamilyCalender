@@ -112,7 +112,8 @@ else
 											foreach (var eventItem in bookings)
 											{
 												<a asp-page="./EventDetails"
-												   asp-route-id="@eventItem.Id"
+												   asp-route-eventId="@eventItem.Id"
+												   asp-route-memberId="@member.Id"
 												   class="text-decoration-none text-dark">
 													@eventItem.Title
 												</a>

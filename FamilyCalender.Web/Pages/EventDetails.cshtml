@@ -3,14 +3,29 @@
 @{
 }
 <div>
-	@Model.EventDetails.Calendar.Name
-	@Model.EventDetails.Title
-	@foreach(var date in Model.EventDetails.EventDates)
+	Kalender: @Model.EventDetails.Calendar.Name
+</div>
+<div>
+	Titel: @Model.EventDetails.Title
+</div>
+<div>
+	Medlem jag tryckt på: @Model.Member.Name
+</div>
+<div>
+	Datum:
+	<br />
+	@foreach(var dates in Model.EventDetails.EventDates)
 	{
-		<div>@date</div>
+		@dates.Date.ToString("yyyy-MM-dd");
+		<br/>
 	}
-	@foreach(var member in Model.EventDetails.MemberEvents)
+</div>
+<div>
+	Alla medlemmar:
+	<br />
+	@foreach (var m in Model.EventDetails.MemberEvents.ToList())
 	{
-		<div>@member</div>
+		@m.Member.Name;
+		<br />
 	}
 </div>

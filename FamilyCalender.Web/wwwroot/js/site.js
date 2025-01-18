@@ -1,6 +1,5 @@
 ﻿function setModalValues(element) {
     const selectedDate = element.getAttribute("data-selected-date");
-    //const calendarId = element.getAttribute("data-calendar-id");
 
     document.getElementById("modalSelectedDate").value = selectedDate;
 }
@@ -21,6 +20,8 @@ $('#eventModal').on('hidden.bs.modal', function () {
         collapseOne.collapse('hide');
     }
 });
+
+// #region validations
 
 function validateForm() {
     const isInterval = isIntervalSelected();
@@ -219,12 +220,55 @@ function validateDateRange(startDateId, endDateId, errorFieldId) {
     return isValid;
 }
 
+// #region handle members in new calendar
 
+var members = [];
+function addMember() {
+    var memberName = document.getElementById('memberName').value;
 
+    if (memberName) {
+        members.push(memberName);
 
+        document.getElementById('memberName').value = '';
 
+        updateMemberList();
 
+        updateHiddenInputs();
+    }
+}
+function removeMember(index) {
+    members.splice(index, 1);
 
+    updateMemberList();
+    updateHiddenInputs();
+}
+function updateMemberList() {
+    var memberList = document.getElementById('memberList');
+    memberList.innerHTML = '';
 
+    members.forEach(function (member, index) {
+        var li = document.createElement('li');
+        li.classList.add('list-group-item');
+        li.textContent = member;
 
+        var removeBtn = document.createElement('button');
+        removeBtn.textContent = '✖';
+        removeBtn.classList.add('btn', 'btn-sm', 'float-end');
+        removeBtn.onclick = function () { removeMember(index); };
 
+        li.appendChild(removeBtn);
+        memberList.appendChild(li);
+    });
+}
+function updateHiddenInputs() {
+    var hiddenMembersInputs = document.getElementById('hiddenMembersInputs');
+    hiddenMembersInputs.innerHTML = '';
+
+    members.forEach(function (member, index) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'Members[' + index + '].Name'; 
+        input.value = member;
+        hiddenMembersInputs.appendChild(input);
+    });
+}

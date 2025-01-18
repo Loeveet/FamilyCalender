@@ -8,25 +8,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace FamilyCalender.Web.Pages
 {
     [Authorize]
-    public class CreateCalendarModel : PageModel
+    public class CreateCalendarModel(ICalendarService calendarService, IMemberService memberService, UserManager<User> userManager) : PageModel
     {
-        private readonly ICalendarService _calendarService;
-        private readonly IMemberService _memberService;
-        private readonly UserManager<User> _userManager;
+        private readonly ICalendarService _calendarService = calendarService;
+        private readonly IMemberService _memberService = memberService;
+        private readonly UserManager<User> _userManager = userManager;
 
         [BindProperty]
-        public Calendar Calendar { get; set; }
+        public Calendar? Calendar { get; set; }
 
         [BindProperty]
         public List<Member> Members { get; set; } = [];
-
-
-        public CreateCalendarModel(ICalendarService calendarService, IMemberService memberService, UserManager<User> userManager)
-        {
-            _calendarService = calendarService;
-            _memberService = memberService;
-            _userManager = userManager;
-        }
 
         public async Task<IActionResult> OnPostAsync()
         {
