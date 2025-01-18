@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FamilyCalender.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdToJT : Migration
+    public partial class FirstInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -227,8 +227,6 @@ namespace FamilyCalender.Infrastructure.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
-                    Start = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    End = table.Column<DateTime>(type: "TEXT", nullable: true),
                     CalendarId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -264,6 +262,26 @@ namespace FamilyCalender.Infrastructure.Migrations
                         name: "FK_MemberCalendars_Members_MemberId",
                         column: x => x.MemberId,
                         principalTable: "Members",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventDates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EventId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventDates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventDates_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -347,6 +365,11 @@ namespace FamilyCalender.Infrastructure.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EventDates_EventId",
+                table: "EventDates",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Events_CalendarId",
                 table: "Events",
                 column: "CalendarId");
@@ -397,6 +420,9 @@ namespace FamilyCalender.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "CalendarAccesses");
+
+            migrationBuilder.DropTable(
+                name: "EventDates");
 
             migrationBuilder.DropTable(
                 name: "MemberCalendars");

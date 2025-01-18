@@ -34,6 +34,7 @@ namespace FamilyCalender.Infrastructure.Repositories
 		{
 			return await _context.Events
 				.Where(e => e.CalendarId == calendarId)
+				.Include(e => e.EventDates)
 				.Include(e => e.MemberEvents)
 				.ThenInclude(me => me.Member) 
 				.ToListAsync();
@@ -42,8 +43,15 @@ namespace FamilyCalender.Infrastructure.Repositories
 
 		public async Task<Event?> GetByIdAsync(int eventId)
         {
-            return _context.Events.Where(e => e.Id == eventId).FirstOrDefault();
-        }
+			//return await _context.Events.Where(e => e.Id == eventId).FirstOrDefaultAsync();
+
+			return await _context.Events
+		        .Include(e => e.EventDates) 
+		        .Include(e => e.MemberEvents) 
+		        .ThenInclude(me => me.Member)
+		        .Include(e => e.Calendar)
+		        .FirstOrDefaultAsync(e => e.Id == eventId);
+		}
 
         public async Task RemoveAsync(int eventId)
         {

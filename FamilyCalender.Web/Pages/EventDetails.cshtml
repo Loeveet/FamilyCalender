@@ -1,0 +1,16 @@
+﻿@page
+@model FamilyCalender.Web.Pages.EventDetailsModel
+@{
+}
+<div>
+	@Model.EventDetails.Calendar.Name
+	@Model.EventDetails.Title
+	@foreach(var date in Model.EventDetails.EventDates)
+	{
+		<div>@date</div>
+	}
+	@foreach(var member in Model.EventDetails.MemberEvents)
+	{
+		<div>@member</div>
+	}
+</div>

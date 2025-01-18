@@ -10,12 +10,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamilyCalender.Web.Pages
 {
-	public class IndexModel : PageModel
+	public class IndexModel(UserManager<User> userManager,
+		ICalendarService calendarService,
+		IEventService eventService,
+		IMemberService memberService) : PageModel
 	{
-		private readonly UserManager<User> _userManager;
-		private readonly ICalendarService _calendarService;
-		private readonly IEventService _eventService;
-		private readonly IMemberService _memberService;
+		private readonly UserManager<User> _userManager = userManager;
+		private readonly ICalendarService _calendarService = calendarService;
+		private readonly IEventService _eventService = eventService;
+		private readonly IMemberService _memberService = memberService;
 
 
 		public List<Core.Models.Calendar> Calendars { get; set; } = [];
@@ -43,26 +46,14 @@ namespace FamilyCalender.Web.Pages
 
 		[BindProperty]
 		public int SelectedCalendarId { get; set; }
-        [BindProperty]
-        public DateTime? StartDate { get; set; }
+		[BindProperty]
+		public DateTime? StartDate { get; set; }
 
-        [BindProperty]
-        public DateTime? EndDate { get; set; }
-        [BindProperty]
-        public List<string>? SelectedDays { get; set; }
+		[BindProperty]
+		public DateTime? EndDate { get; set; }
+		[BindProperty]
+		public List<string>? SelectedDays { get; set; }
 
-
-
-        public IndexModel(UserManager<User> userManager,
-			ICalendarService calendarService,
-			IEventService eventService,
-			IMemberService memberService)
-		{
-			_calendarService = calendarService;
-			_eventService = eventService;
-			_memberService = memberService;
-			_userManager = userManager;
-		}
 		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
 		{
 			var user = await _userManager.GetUserAsync(User);
@@ -101,42 +92,52 @@ namespace FamilyCalender.Web.Pages
 			}
 
 			else if (SelectedDate.HasValue)
-            {
-                eventDates = new List<DateTime> { SelectedDate.Value };
+			{
+				eventDates = new List<EventDate>
+					{
+						new EventDate { Date = SelectedDate.Value }
+					};
 
-                await CreateAndSaveEventAsync(EventTitle, eventDates, SelectedCalendarId, SelectedMemberIds);
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Ange ett giltigt datum eller intervall.");
-                return Page();
-            }
+				await CreateAndSaveEventAsync(EventTitle, eventDates, SelectedCalendarId, SelectedMemberIds);
+			}
 
-            return RedirectToPage("./Index", new
+
+			else
+			{
+				ModelState.AddModelError(string.Empty, "Ange ett giltigt datum eller intervall.");
+				return Page();
+			}
+
+			return RedirectToPage("./Index", new
 			{
 				year = CurrentYear,
 				month = CurrentMonth,
 				calendarId = SelectedCalendarId
 			});
 		}
-		private static List<DateTime> GenerateEventDatesInRangeWithWeekdays(DateTime start, DateTime end, List<string> selectedDays)
+		private static List<EventDate> GenerateEventDatesInRangeWithWeekdays(DateTime start, DateTime end, List<string> selectedDays)
 		{
-			var dates = new List<DateTime>();
+			var dates = new List<EventDate>();
 
 			for (var date = start; date <= end; date = date.AddDays(1))
 			{
-				var dayOfWeek = date.DayOfWeek.ToString(); 
+				var culture = new CultureInfo("sv-SE");
 
-				if (selectedDays.Contains(dayOfWeek))
+				var dayOfWeek = culture.DateTimeFormat.GetDayName(date.DayOfWeek);
+
+				if (selectedDays.Any(day => day.Equals(dayOfWeek, StringComparison.OrdinalIgnoreCase)))
 				{
-					dates.Add(date);
+					dates.Add(new EventDate
+					{
+						Date = date
+					});
 				}
 			}
 
 			return dates;
 		}
 
-		private List<DateTime>? ValidateAndGenerateEventDates(DateTime? startDate, DateTime? endDate, List<string>? selectedDays)
+		private List<EventDate>? ValidateAndGenerateEventDates(DateTime? startDate, DateTime? endDate, List<string>? selectedDays)
 		{
 			if (!IsValidIntervalInputs(startDate, endDate, selectedDays))
 				return null;
@@ -189,7 +190,7 @@ namespace FamilyCalender.Web.Pages
 		}
 
 
-		private async Task CreateAndSaveEventAsync(string eventTitle, List<DateTime> eventDates, int calendarId, List<int> memberIds)
+		private async Task CreateAndSaveEventAsync(string eventTitle, List<EventDate> eventDates, int calendarId, List<int> memberIds)
 		{
 			await _eventService.CreateEventAsync(eventTitle, eventDates, calendarId, memberIds);
 		}

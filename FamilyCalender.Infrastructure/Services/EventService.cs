@@ -23,7 +23,7 @@ namespace FamilyCalender.Infrastructure.Services
 			_memberEventService = memberEventService;
 		}
 
-		public async Task<Event> CreateEventAsync(string eventTitle, List<DateTime> eventDates, int calendarId, List<int> memberIds)
+		public async Task<Event> CreateEventAsync(string eventTitle, List<EventDate> eventDates, int calendarId, List<int> memberIds)
 		{
 			var newEvent = new Event
 			{

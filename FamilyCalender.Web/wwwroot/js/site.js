@@ -1,13 +1,8 @@
 ﻿function setModalValues(element) {
     const selectedDate = element.getAttribute("data-selected-date");
-    const memberId = element.getAttribute("data-member-id");
-    const calendarId = element.getAttribute("data-calendar-id");
-    const memberName = element.getAttribute("data-member-name");
+    //const calendarId = element.getAttribute("data-calendar-id");
 
     document.getElementById("modalSelectedDate").value = selectedDate;
-    document.getElementById("modalMemberId").value = memberId;
-    document.getElementById("modalCalenderId").value = calendarId;
-    document.getElementById("modalMemberLabel").innerText = memberName;
 }
 
 $('#eventModal').on('hidden.bs.modal', function () {
@@ -82,6 +77,16 @@ function validateInterval() {
     const endDateError = document.getElementById("error-end-date");
     const selectedDaysError = document.getElementById("error-interval-weekdays");
 
+
+    const startDate = document.getElementById("startDate");
+
+    console.log("StartDate:", startDate);
+
+
+    if (!startDateValue && !endDateValue && selectedDays.length < 2) {
+        return true;
+    }
+
     startDateError.classList.add("d-none");
     endDateError.classList.add("d-none");
     selectedDaysError.classList.add("d-none");
@@ -117,8 +122,7 @@ function validateInterval() {
             isValid = false;
         }
     }
-    console.log("selecetedDays: ", selectedDays.length)
-    if (selectedDays.length === 0) {
+    if (selectedDays.length < 2) {
         selectedDaysError.textContent = "Du måste välja minst en veckodag.";
         selectedDaysError.classList.remove("d-none");
         isValid = false;
@@ -176,7 +180,6 @@ function validateEventTitle() {
     eventTitleInput.classList.remove("is-invalid");
     return true;
 }
-
 function validateMembers() {
     const checkboxes = document.querySelectorAll(".member-checkbox");
     const memberError = document.getElementById("memberError");
@@ -196,8 +199,6 @@ function validateMembers() {
     memberError.classList.add("d-none");
     return true;
 }
-
-
 function validateDateRange(startDateId, endDateId, errorFieldId) {
     const startDateValue = document.getElementById(startDateId).value;
     const endDateValue = document.getElementById(endDateId).value;
