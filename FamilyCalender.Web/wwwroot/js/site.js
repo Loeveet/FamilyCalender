@@ -21,7 +21,8 @@ $('#eventModal').on('hidden.bs.modal', function () {
     }
 });
 
-// #region validations
+
+// #region validations 
 
 function validateForm() {
     const isInterval = isIntervalSelected();
@@ -220,7 +221,9 @@ function validateDateRange(startDateId, endDateId, errorFieldId) {
     return isValid;
 }
 
-// #region handle members in new calendar
+// #endregion
+
+// #region handle-members-in-new-calendar
 
 var members = [];
 function addMember() {
@@ -272,3 +275,5 @@ function updateHiddenInputs() {
         hiddenMembersInputs.appendChild(input);
     });
 }
+
+// #endregion

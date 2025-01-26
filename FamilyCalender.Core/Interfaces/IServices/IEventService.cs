@@ -15,5 +15,7 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task<Event> CreateEventAsync(string eventTitle, List<EventDate> eventDates, int calenderId, List<int> memberId);
 
         Task<Event> GetEventByIdAsync(int eventId);
+        Task UpdateEventAsync(Event e);
+
 	}
 }

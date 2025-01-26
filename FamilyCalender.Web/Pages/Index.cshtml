@@ -114,6 +114,7 @@ else
 												<a asp-page="./EventDetails"
 												   asp-route-eventId="@eventItem.Id"
 												   asp-route-memberId="@member.Id"
+												   asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
 												   class="text-decoration-none text-dark">
 													@eventItem.Title
 												</a>
@@ -240,8 +241,8 @@ else
 						<label for="eventTitle" class="form-label">Titel</label>
 						<input type="text" class="form-control" asp-for="EventTitle" id="eventTitle" />
 						<small id="eventTitleError" class="text-danger d-none">Ange titel</small>
-
 					</div>
+
 
 					<input type="hidden" asp-for="CurrentYear" value="@Model.CurrentYear" />
 					<input type="hidden" asp-for="CurrentMonth" value="@Model.CurrentMonth" />

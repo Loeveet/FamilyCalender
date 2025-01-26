@@ -58,9 +58,24 @@ namespace FamilyCalender.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Event> UpdateAsync(Event e)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		public async Task UpdateAsync(Event e)
+		{
+			ArgumentNullException.ThrowIfNull(e);
+
+			try
+			{
+				_context.Events.Update(e);
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException ex)
+			{
+				throw new InvalidOperationException("Ett fel uppstod vid uppdatering av eventet.", ex);
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Ett okänt fel inträffade.", ex);
+			}
+		}
+
+	}
 }

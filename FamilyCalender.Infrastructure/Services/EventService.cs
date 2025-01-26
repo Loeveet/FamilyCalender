@@ -52,5 +52,10 @@ namespace FamilyCalender.Infrastructure.Services
         {
             return await _eventRepository.GetByCalendar(calendarId);
         }
+
+		public async Task UpdateEventAsync(Event e)
+		{
+			await _eventRepository.UpdateAsync(e);
+		}
     }
 }
