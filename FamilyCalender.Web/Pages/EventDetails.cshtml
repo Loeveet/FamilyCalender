@@ -65,6 +65,10 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
 				</div>
 				<div class="modal-body">
+					@if (Model.Day.HasValue)
+					{
+						<p>Du försöker ta bort eventet för den specifika dagen: <strong>@Model.Day.Value.ToString("yyyy-MM-dd")</strong></p>
+					}
 					<!-- Enkelt event på en dag och en person -->
 					@if (Model.EventDetails.EventDates.Count == 1 && Model.EventDetails.MemberEvents.Count == 1)
 					{
@@ -131,6 +135,8 @@
 				</div>
 				<div class="modal-footer">
 					<input type="hidden" asp-for="EventId" value="@Model.EventDetails.Id" />
+					<input type="hidden" asp-for="CalendarId" value="@Model.EventDetails.CalendarId" />
+					<input type="hidden" asp-for="Day" value="@Model.Day" />
 					<button type="submit" class="btn btn-danger">Radera</button>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
 				</div>

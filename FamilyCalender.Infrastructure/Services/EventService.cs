@@ -42,6 +42,11 @@ namespace FamilyCalender.Infrastructure.Services
 			return addedEvent;
 		}
 
+		public async Task DeleteEventAsync(int eventId)
+		{
+			var eventToDelete = await _eventRepository.GetByIdAsync(eventId) ?? throw new EntryPointNotFoundException();
+			await _eventRepository.RemoveAsync(eventToDelete);
+		}
 
 		public async Task<Event> GetEventByIdAsync(int eventId)
 		{

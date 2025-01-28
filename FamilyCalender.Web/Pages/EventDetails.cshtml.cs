@@ -14,6 +14,7 @@ namespace FamilyCalender.Web.Pages
 
 		public Event? EventDetails { get; private set; }
         public Member? Member { get; set; }
+		[BindProperty]
 		public DateTime? Day { get; set; }
 		public List<Member> Members { get; set; } = [];
         [BindProperty]
@@ -30,10 +31,16 @@ namespace FamilyCalender.Web.Pages
 		public DateTime NewDate { get; set; }
         [BindProperty]
         public int EventId { get; set; }
+		[BindProperty]
+		public int CalendarId { get; set; }
+		[BindProperty]
+		public int Year { get; set; }
+		[BindProperty]
+		public int Month { get; set; }
 
 
 
-        public async Task<IActionResult> OnGetAsync(int eventId, int memberId, DateTime day)
+		public async Task<IActionResult> OnGetAsync(int eventId, int memberId, DateTime day)
 		{
 			EventDetails = await _eventService.GetEventByIdAsync(eventId);
 
@@ -112,5 +119,20 @@ namespace FamilyCalender.Web.Pages
 
 			return RedirectToPage("./EventDetails", new { eventId = eventToUpdate.Id });
 		}
+		public async Task<IActionResult> OnPostDeleteEventAsync(List<int> selectedMemberIds)
+		{
+
+			//ta med eventId för radering. är det ett intervall och man vill ta bort endast för en dag, så raderar vi bara eventdate på den personen, eller de personerna. vill man bara radera eventet för en person, så radera bara memberevent
+			//det vi behöver ha med är eventId, en lista på medlemmar, ett datum om det är ett event i ett intervall vi vill ta bort. 
+			if (!ModelState.IsValid)
+			{
+				return Page();
+			}
+			await _eventService.DeleteEventAsync(EventId);
+			return RedirectToPage("./Index", new { year = Day.Value.Year, month = Day.Value.Month, calendarId = CalendarId });
+
+
+		}
+
 	}
 }

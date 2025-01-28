@@ -53,9 +53,10 @@ namespace FamilyCalender.Infrastructure.Repositories
 		        .FirstOrDefaultAsync(e => e.Id == eventId);
 		}
 
-        public async Task RemoveAsync(int eventId)
+        public async Task RemoveAsync(Event e)
         {
-            throw new NotImplementedException();
+			_context.Remove(e);
+			await _context.SaveChangesAsync();
         }
 
 		public async Task UpdateAsync(Event e)

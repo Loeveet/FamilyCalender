@@ -15,6 +15,6 @@ namespace FamilyCalender.Core.Interfaces.IRepositories
         Task<List<Event>> GetByCalendar(int calendarId);
         Task<Event> AddAsync(Event e);
         Task UpdateAsync(Event e);
-        Task RemoveAsync(int eventId);
+        Task RemoveAsync(Event e);
     }
 }
