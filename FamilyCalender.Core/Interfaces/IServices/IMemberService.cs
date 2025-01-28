@@ -12,5 +12,7 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task<Member> CreateMemberAsync(Member member, User user);
         Task<List<Member>> GetMembersForCalendarAsync(int calendarId);
         Task<Member> GetMemberByIdAsync(int memberId);
-    }
+		Task<List<Member>> GetMembersByIdAsync(List<int> memberIds);
+
+	}
 }

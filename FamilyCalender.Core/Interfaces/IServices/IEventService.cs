@@ -17,6 +17,9 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task<Event> GetEventByIdAsync(int eventId);
         Task UpdateEventAsync(Event e);
         Task DeleteEventAsync(int eventId);
+        Task DeleteMemberEventAsync(int eventId, int memberId);
+        Task DeleteEventDateAsync(int eventId, DateTime day);
+
 
 	}
 }

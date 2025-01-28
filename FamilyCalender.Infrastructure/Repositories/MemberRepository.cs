@@ -37,10 +37,17 @@ namespace FamilyCalender.Infrastructure.Repositories
 
         public async Task<Member> GetByIdAsync(int memberId)
         {
-            return await _context.Members.FirstOrDefaultAsync(m => m.Id == memberId);
+            return await _context.Members.FirstOrDefaultAsync(m => m.Id == memberId) ?? throw new FileNotFoundException();
         }
 
-        public Task RemoveAsync(int memberId)
+		public async Task<List<Member>> GetManyByIdAsync(List<int> memberIds)
+		{
+			return await _context.Members
+								 .Where(m => memberIds.Contains(m.Id))
+								 .ToListAsync();
+		}
+
+		public Task RemoveAsync(int memberId)
         {
             throw new NotImplementedException();
         }

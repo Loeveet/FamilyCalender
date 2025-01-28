@@ -1,6 +1,8 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models;
+using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,7 +18,9 @@ namespace FamilyCalender.Infrastructure.Services
         private readonly IEventRepository _eventRepository;
 		private readonly IMemberEventService _memberEventService;
 
-        public EventService(ICalendarRepository calendarRepository, IEventRepository eventRepository, IMemberEventService memberEventService)
+        public EventService(ICalendarRepository calendarRepository
+			, IEventRepository eventRepository
+			, IMemberEventService memberEventService)
         {
             _calendarRepository = calendarRepository;
             _eventRepository = eventRepository;
@@ -46,6 +50,23 @@ namespace FamilyCalender.Infrastructure.Services
 		{
 			var eventToDelete = await _eventRepository.GetByIdAsync(eventId) ?? throw new EntryPointNotFoundException();
 			await _eventRepository.RemoveAsync(eventToDelete);
+		}
+
+		public async Task DeleteEventDateAsync(int eventId, DateTime day)
+		{
+			var eventDateToRemove = await
+				_eventRepository.GetEventDateByEventIdAndDateAsync(eventId, day);
+
+			await _eventRepository.RemoveEventDateAsync(eventDateToRemove);
+		}
+
+		public async Task DeleteMemberEventAsync(int eventId, int memberId)
+		{
+
+			var memberEventToRemove = await 
+				_eventRepository.GetMemberEventByEventIdAndMemberIdAsync(eventId, memberId);
+
+			await _eventRepository.RemoveMemberEventAsync(memberEventToRemove);
 		}
 
 		public async Task<Event> GetEventByIdAsync(int eventId)

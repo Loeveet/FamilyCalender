@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Core.Models
 {
-    public class MemberEvent // junktiontable för att kunna ha flera medlemmar på olika events och tvärtom
+    public class MemberEvent
     {
         public int Id { get; set; }
         public int MemberId { get; set; }

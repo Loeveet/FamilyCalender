@@ -1,5 +1,10 @@
 ﻿@page
 @model FamilyCalender.Web.Pages.EventDetailsModel
+@{
+	var cultureInfo = new System.Globalization.CultureInfo("sv-SE");
+	var sortedDays = Model.SelectedDays.OrderBy(day => day).ToList();
+	var daysInSwedish = sortedDays.Select(day => cultureInfo.DateTimeFormat.GetDayName(day)).ToList();
+}
 
 <div>
 	<div>
@@ -20,13 +25,13 @@
 				}
 			</ul>
 		}
-		else if(Model.EventDetails.EventDates.Count > 1)
+		else if (Model.EventDetails.EventDates.Count > 1)
 		{
 			<strong>Intervall:</strong>
 			<ul>
 				<li><strong>Startdatum:</strong> @Model.EventDetails.EventDates.First().Date.ToString("yyyy-MM-dd")</li>
 				<li><strong>Slutdatum:</strong> @Model.EventDetails.EventDates.Last().Date.ToString("yyyy-MM-dd")</li>
-				<li><strong>Veckodagar:</strong> @string.Join(", ", Model.SelectedDays)</li>
+				<li><strong>Veckodagar:</strong> @string.Join(", ", daysInSwedish)</li>
 			</ul>
 		}
 		else
@@ -65,10 +70,7 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
 				</div>
 				<div class="modal-body">
-					@if (Model.Day.HasValue)
-					{
-						<p>Du försöker ta bort eventet för den specifika dagen: <strong>@Model.Day.Value.ToString("yyyy-MM-dd")</strong></p>
-					}
+
 					<!-- Enkelt event på en dag och en person -->
 					@if (Model.EventDetails.EventDates.Count == 1 && Model.EventDetails.MemberEvents.Count == 1)
 					{
@@ -102,15 +104,17 @@
 								   class="form-check-input"
 								   id="deleteSingleEvent"
 								   name="deleteOption"
-								   value="Single" checked />
-							<label class="form-check-label" for="deleteSingleEvent">Radera endast det här eventet</label>
+								   value="single" checked />
+							<label class="form-check-label" for="deleteSingleEvent">
+								Radera endast det här eventet: <strong>@Model.Day.ToString("yyyy-MM-dd")</strong>
+							</label>
 						</div>
 						<div class="form-check">
 							<input type="radio"
 								   class="form-check-input"
 								   id="deleteAllEvents"
 								   name="deleteOption"
-								   value="All" />
+								   value="all" />
 							<label class="form-check-label" for="deleteAllEvents">Radera alla event inom intervallet</label>
 						</div>
 					}
@@ -137,6 +141,7 @@
 					<input type="hidden" asp-for="EventId" value="@Model.EventDetails.Id" />
 					<input type="hidden" asp-for="CalendarId" value="@Model.EventDetails.CalendarId" />
 					<input type="hidden" asp-for="Day" value="@Model.Day" />
+					<input type="hidden" asp-for="Member" value="@Model.Member" />
 					<button type="submit" class="btn btn-danger">Radera</button>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
 				</div>
@@ -165,7 +170,7 @@
 
 					<div class="mb-3">
 						<label for="editEventDates" class="form-label">Ändra datum för valt event</label>
-						<input type="date" class="form-control" value="@Model.Day.Value.ToString("yyyy-MM-dd")" asp-for="NewDate" id="editEventDates" />
+						<input type="date" class="form-control" value="@Model.Day.ToString("yyyy-MM-dd")" asp-for="NewDate" id="editEventDates" />
 
 					</div>
 

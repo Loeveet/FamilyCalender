@@ -34,7 +34,12 @@ namespace FamilyCalender.Infrastructure.Services
             return await _memberRepository.GetByIdAsync(memberId);
         }
 
-        public async Task<List<Member>> GetMembersForCalendarAsync(int calendarId)
+		public async Task<List<Member>> GetMembersByIdAsync(List<int> memberIds)
+		{
+			return await _memberRepository.GetManyByIdAsync(memberIds);
+		}
+
+		public async Task<List<Member>> GetMembersForCalendarAsync(int calendarId)
         {
             return await _memberRepository.GetAllByCalendarAsync(calendarId);
         }

@@ -4,33 +4,35 @@ using FamilyCalender.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace FamilyCalender.Web.Pages
 {
-    public class EventDetailsModel(IEventService eventService, IMemberService memberService) : PageModel
-    {
+	public class EventDetailsModel(IEventService eventService, IMemberService memberService) : PageModel
+	{
 		private readonly IEventService _eventService = eventService;
 		private readonly IMemberService _memberService = memberService;
 
 		public Event? EventDetails { get; private set; }
-        public Member? Member { get; set; }
 		[BindProperty]
-		public DateTime? Day { get; set; }
+		public Member? Member { get; set; }
+		[BindProperty]
+		public DateTime Day { get; set; }
 		public List<Member> Members { get; set; } = [];
-        [BindProperty]
-        public string? NewTitle { get; set; }
+		[BindProperty]
+		public string? NewTitle { get; set; }
 		[BindProperty]
 		public List<DayOfWeek> SelectedDays { get; set; } = [];
-        [BindProperty]
-        public bool UpdateInterval { get; set; }
-        [BindProperty]
-        public DateTime StartDate { get; set; }
+		[BindProperty]
+		public bool UpdateInterval { get; set; }
+		[BindProperty]
+		public DateTime StartDate { get; set; }
 		[BindProperty]
 		public DateTime EndDate { get; set; }
 		[BindProperty]
 		public DateTime NewDate { get; set; }
-        [BindProperty]
-        public int EventId { get; set; }
+		[BindProperty]
+		public int EventId { get; set; }
 		[BindProperty]
 		public int CalendarId { get; set; }
 		[BindProperty]
@@ -64,11 +66,11 @@ namespace FamilyCalender.Web.Pages
 			SelectedDays = selectedDays;
 
 			return Page();
-        }
+		}
 
 		public async Task<IActionResult> OnPostUpdateEventAsync(List<int> selectedMemberIds)
 		{
-			if(!ModelState.IsValid)
+			if (!ModelState.IsValid)
 			{
 				return Page();
 			}
@@ -84,10 +86,10 @@ namespace FamilyCalender.Web.Pages
 			if (UpdateInterval)
 			{
 				var daysOfWeek = SelectedDays;
-				var newStartDate = StartDate; 
+				var newStartDate = StartDate;
 				var newEndDate = EndDate;
 
-				
+
 				eventToUpdate.EventDates.Clear();
 
 				for (var date = newStartDate; date <= newEndDate; date = date.AddDays(1))
@@ -119,17 +121,47 @@ namespace FamilyCalender.Web.Pages
 
 			return RedirectToPage("./EventDetails", new { eventId = eventToUpdate.Id });
 		}
-		public async Task<IActionResult> OnPostDeleteEventAsync(List<int> selectedMemberIds)
+		public async Task<IActionResult> OnPostDeleteEventAsync(List<int> selectedMemberIds, string? deleteOption)
 		{
-
-			//ta med eventId för radering. är det ett intervall och man vill ta bort endast för en dag, så raderar vi bara eventdate på den personen, eller de personerna. vill man bara radera eventet för en person, så radera bara memberevent
-			//det vi behöver ha med är eventId, en lista på medlemmar, ett datum om det är ett event i ett intervall vi vill ta bort. 
 			if (!ModelState.IsValid)
 			{
 				return Page();
 			}
-			await _eventService.DeleteEventAsync(EventId);
-			return RedirectToPage("./Index", new { year = Day.Value.Year, month = Day.Value.Month, calendarId = CalendarId });
+			if (selectedMemberIds.Count == 0)
+			{
+				if (deleteOption == "single")
+				{
+					await _eventService.DeleteEventDateAsync(EventId, Day);
+				}
+
+				else
+				{
+					await _eventService.DeleteEventAsync(EventId);
+				}
+				return RedirectToPage("./Index", new { year = Day.Year, month = Day.Month, calendarId = CalendarId });
+			}
+			else if (selectedMemberIds.Count > 0)
+			{
+				if (deleteOption == "all")
+				{
+					await _eventService.DeleteEventAsync(EventId);
+				}
+
+				else
+				{
+					var members = await _memberService.GetMembersByIdAsync(selectedMemberIds);
+					// Här tar vi bort eventet för de specifika medlemmarna
+					foreach (var member in members)
+					{
+						await _eventService.DeleteMemberEventAsync(EventId, member.Id);
+					}
+
+					// Om det är ett event inom ett intervall och vi vill ta bort för en dag (om det inte är "all")
+					await _eventService.DeleteEventDateAsync(EventId, Day);
+				}
+			}
+
+			return RedirectToPage("./Index", new { year = Day.Year, month = Day.Month, calendarId = CalendarId });
 
 
 		}
