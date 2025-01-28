@@ -2,18 +2,37 @@
 @model FamilyCalender.Web.Pages.EventDetailsModel
 
 <div>
-	<h3>@Model.EventDetails.Title</h3>
 	<div>
 		<strong>Kalender:</strong> @Model.EventDetails.Calendar.Name
 	</div>
 	<div>
-		<strong>Datum:</strong>
-		<ul>
-			@foreach (var date in Model.EventDetails.EventDates)
-			{
-				<li>@date.Date.ToString("yyyy-MM-dd")</li>
-			}
-		</ul>
+		<strong>Titel:</strong> @Model.EventDetails.Title
+	</div>
+
+	<div>
+		@if (Model.EventDetails.EventDates.Count == 1)
+		{
+			<strong>Datum:</strong>
+			<ul>
+				@foreach (var date in Model.EventDetails.EventDates)
+				{
+					<li>@date.Date.ToString("yyyy-MM-dd")</li>
+				}
+			</ul>
+		}
+		else if(Model.EventDetails.EventDates.Count > 1)
+		{
+			<strong>Intervall:</strong>
+			<ul>
+				<li><strong>Startdatum:</strong> @Model.EventDetails.EventDates.First().Date.ToString("yyyy-MM-dd")</li>
+				<li><strong>Slutdatum:</strong> @Model.EventDetails.EventDates.Last().Date.ToString("yyyy-MM-dd")</li>
+				<li><strong>Veckodagar:</strong> @string.Join(", ", Model.SelectedDays)</li>
+			</ul>
+		}
+		else
+		{
+			<div>Det finns inget datum på eventet</div>
+		}
 	</div>
 	<div>
 		<strong>Medlemmar:</strong>
@@ -24,10 +43,100 @@
 			}
 		</ul>
 	</div>
+	<div>
+		<div type="button" class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#editEventModal">
+			Redigera event
+		</div>
+	</div>
+	<div>
+		<div type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
+			Radera event
+		</div>
+	</div>
+</div>
 
-	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editEventModal">
-		Redigera Event
-	</button>
+<!-- Modal för att radera eventet-->
+<div class="modal fade" id="deleteEventModal" tabindex="-1" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form method="post" asp-page-handler="DeleteEvent">
+				<div class="modal-header">
+					<h5 class="modal-title" id="deleteEventModalLabel">Radera Event</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+				</div>
+				<div class="modal-body">
+					<!-- Enkelt event på en dag och en person -->
+					@if (Model.EventDetails.EventDates.Count == 1 && Model.EventDetails.MemberEvents.Count == 1)
+					{
+						<p>Det här är ett enkelt event som endast gäller för en person och en dag.</p>
+						<p>Vill du radera detta event?</p>
+					}
+					<!-- Enkelt event på flera personer -->
+					@if (Model.EventDetails.EventDates.Count == 1 && Model.EventDetails.MemberEvents.Count > 1)
+					{
+						<p>Det här eventet gäller flera personer. Välj vilka du vill ta bort eventet för:</p>
+						<div id="deleteMemberListSingle">
+							@foreach (var member in Model.EventDetails.MemberEvents.Select(e => e.Member))
+							{
+								<div class="form-check">
+									<input class="form-check-input"
+										   type="checkbox"
+										   id="deleteMember-@member.Id"
+										   value="@member.Id"
+										   name="selectedMemberIds" />
+									<label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
+								</div>
+							}
+						</div>
+					}
+					<!-- Event inom ett intervall -->
+					@if (Model.EventDetails.EventDates.Count > 1)
+					{
+						<p>Det här eventet är en del av ett intervall.</p>
+						<div class="form-check">
+							<input type="radio"
+								   class="form-check-input"
+								   id="deleteSingleEvent"
+								   name="deleteOption"
+								   value="Single" checked />
+							<label class="form-check-label" for="deleteSingleEvent">Radera endast det här eventet</label>
+						</div>
+						<div class="form-check">
+							<input type="radio"
+								   class="form-check-input"
+								   id="deleteAllEvents"
+								   name="deleteOption"
+								   value="All" />
+							<label class="form-check-label" for="deleteAllEvents">Radera alla event inom intervallet</label>
+						</div>
+					}
+					<!-- Event inom ett intervall med flera personer -->
+					@if (Model.EventDetails.EventDates.Count > 1 && Model.EventDetails.MemberEvents.Count > 1)
+					{
+						<p>Det här eventet gäller flera personer och är en del av ett intervall. Välj vilka personer du vill ta bort för hela intervallet:</p>
+						<div id="deleteMemberListInterval">
+							@foreach (var member in Model.EventDetails.MemberEvents.Select(e => e.Member))
+							{
+								<div class="form-check">
+									<input class="form-check-input"
+										   type="checkbox"
+										   id="deleteMember-@member.Id"
+										   value="@member.Id"
+										   name="selectedMemberIds" />
+									<label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
+								</div>
+							}
+						</div>
+					}
+				</div>
+				<div class="modal-footer">
+					<input type="hidden" asp-for="EventId" value="@Model.EventDetails.Id" />
+					<button type="submit" class="btn btn-danger">Radera</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 <!-- Modal för att redigera eventet -->
