@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NuGet.Packaging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FamilyCalender.Web.Pages
 {
@@ -16,6 +18,8 @@ namespace FamilyCalender.Web.Pages
 		public Event? EventDetails { get; private set; }
 		[BindProperty]
 		public Member? Member { get; set; }
+		[BindProperty]
+		public int MemberId { get; set; }
 		[BindProperty]
 		public DateTime Day { get; set; }
 		public List<Member> Members { get; set; } = [];
@@ -57,7 +61,7 @@ namespace FamilyCalender.Web.Pages
 			Day = day;
 			Members = await _memberService.GetMembersForCalendarAsync(calendarId);
 
-			var selectedDays = EventDetails.EventDates
+			var selectedDays = EventDetails.EventMemberDates
 				.Where(ed => ed.Date >= DateTime.Today)
 				.Select(ed => ed.Date.DayOfWeek)
 				.Distinct()
@@ -68,13 +72,12 @@ namespace FamilyCalender.Web.Pages
 			return Page();
 		}
 
-		public async Task<IActionResult> OnPostUpdateEventAsync(List<int> selectedMemberIds)
+		public async Task<IActionResult> OnPostUpdateEventAsync(List<int> selectedMemberIds, string? editOption)
 		{
 			if (!ModelState.IsValid)
 			{
 				return Page();
 			}
-
 			var eventToUpdate = await _eventService.GetEventByIdAsync(EventId);
 			if (eventToUpdate == null)
 			{
@@ -82,44 +85,51 @@ namespace FamilyCalender.Web.Pages
 			}
 
 			eventToUpdate.Title = NewTitle;
+			var events = eventToUpdate.EventMemberDates.ToList();
+			eventToUpdate.EventMemberDates.Clear();
+			
 
-			if (UpdateInterval)
+			if (editOption == "all")
 			{
+
 				var daysOfWeek = SelectedDays;
 				var newStartDate = StartDate;
 				var newEndDate = EndDate;
-
-
-				eventToUpdate.EventDates.Clear();
 
 				for (var date = newStartDate; date <= newEndDate; date = date.AddDays(1))
 				{
 					if (daysOfWeek.Contains(date.DayOfWeek))
 					{
-						eventToUpdate.EventDates.Add(new EventDate
+						foreach (var memberId in selectedMemberIds)
 						{
-							Date = date,
-							EventId = eventToUpdate.Id
-						});
+							eventToUpdate.EventMemberDates.Add(new EventMemberDate
+							{
+								Date = date,
+								MemberId = memberId,
+								EventId = eventToUpdate.Id
+							});
+						}
 					}
 				}
 			}
 			else
 			{
-				eventToUpdate.EventDates[0].Date = NewDate;
+				foreach (var memberId in selectedMemberIds)
+				{
+					eventToUpdate.EventMemberDates.Add(new EventMemberDate
+					{
+						Date = NewDate,
+						MemberId = memberId,
+						EventId = eventToUpdate.Id
+					});
+				}
 			}
-
-			var selectedMembers = selectedMemberIds.Select(id => new MemberEvent
-			{
-				MemberId = id,
-				EventId = eventToUpdate.Id
-			}).ToList();
-
-			eventToUpdate.MemberEvents = selectedMembers;
-
 			await _eventService.UpdateEventAsync(eventToUpdate);
-
-			return RedirectToPage("./EventDetails", new { eventId = eventToUpdate.Id });
+			if (!eventToUpdate.EventMemberDates.Any(e => e.Date == Day) && editOption == "all")
+			{
+				return RedirectToPage("./Index", new { year = Day.Year, month = Day.Month, calendarId = CalendarId });
+			}
+			return RedirectToPage("./EventDetails", new { eventId = eventToUpdate.Id, memberId = Member.Id, day = NewDate });
 		}
 		public async Task<IActionResult> OnPostDeleteEventAsync(List<int> selectedMemberIds, string? deleteOption)
 		{
@@ -131,33 +141,34 @@ namespace FamilyCalender.Web.Pages
 			{
 				if (deleteOption == "single")
 				{
-					await _eventService.DeleteEventDateAsync(EventId, Day);
+					await _eventService.DeleteEventMemberDateAsync(EventId, Member.Id, Day);
 				}
 
 				else
 				{
 					await _eventService.DeleteEventAsync(EventId);
 				}
-				return RedirectToPage("./Index", new { year = Day.Year, month = Day.Month, calendarId = CalendarId });
 			}
 			else if (selectedMemberIds.Count > 0)
 			{
+				var members = await _memberService.GetMembersByIdAsync(selectedMemberIds);
+
 				if (deleteOption == "all")
 				{
-					await _eventService.DeleteEventAsync(EventId);
-				}
-
-				else
-				{
-					var members = await _memberService.GetMembersByIdAsync(selectedMemberIds);
-					// Här tar vi bort eventet för de specifika medlemmarna
 					foreach (var member in members)
 					{
-						await _eventService.DeleteMemberEventAsync(EventId, member.Id);
+						await _eventService.DeleteAllEventMemberDatesAsync(EventId, member.Id);
 					}
-
-					// Om det är ett event inom ett intervall och vi vill ta bort för en dag (om det inte är "all")
-					await _eventService.DeleteEventDateAsync(EventId, Day);
+				}
+				else
+				{
+					foreach (var member in members)
+					{
+						if(member.EventMemberDates.Any(emd => emd.EventId == EventId && emd.Date == Day))
+						{
+							await _eventService.DeleteEventMemberDateAsync(EventId, member.Id, Day);
+						}
+					}
 				}
 			}
 

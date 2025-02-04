@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Core.Models
 {
-	public class EventDate
-	{
-		public int Id { get; set; }
-		public DateTime Date { get; set; }
+	//public class EventDate
+	//{
+	//	public int Id { get; set; }
+	//	public DateTime Date { get; set; }
 
-		public int EventId { get; set; }
-		public Event? Event { get; set; }
-	}
+	//	public int EventId { get; set; }
+	//	public Event? Event { get; set; }
+	//}
 }

@@ -44,6 +44,7 @@ namespace FamilyCalender.Infrastructure.Repositories
 		{
 			return await _context.Members
 								 .Where(m => memberIds.Contains(m.Id))
+                                 .Include(m => m.EventMemberDates)
 								 .ToListAsync();
 		}
 

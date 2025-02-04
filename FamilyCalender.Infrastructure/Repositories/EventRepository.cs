@@ -2,12 +2,6 @@
 using FamilyCalender.Core.Models;
 using FamilyCalender.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FamilyCalender.Infrastructure.Repositories
@@ -36,8 +30,7 @@ namespace FamilyCalender.Infrastructure.Repositories
 		{
 			return await _context.Events
 				.Where(e => e.CalendarId == calendarId)
-				.Include(e => e.EventDates)
-				.Include(e => e.MemberEvents)
+				.Include(e => e.EventMemberDates)
 				.ThenInclude(me => me.Member)
 				.ToListAsync();
 		}
@@ -46,23 +39,24 @@ namespace FamilyCalender.Infrastructure.Repositories
 		public async Task<Event?> GetByIdAsync(int eventId)
 		{
 			return await _context.Events
-				.Include(e => e.EventDates)
-				.Include(e => e.MemberEvents)
+				.Include(e => e.EventMemberDates)
 				.ThenInclude(me => me.Member)
 				.Include(e => e.Calendar)
 				.FirstOrDefaultAsync(e => e.Id == eventId);
 		}
-
-		public async Task<EventDate> GetEventDateByEventIdAndDateAsync(int eventId, DateTime date)
+		public async Task<EventMemberDate> GetMemberEventDateByEventIdAndMemberIdAsync(int eventId, int memberId, DateTime date)
 		{
-			return await _context.EventDates
-				.FirstOrDefaultAsync(ed => ed.EventId == eventId && ed.Date.Date == date.Date) ?? throw new Exception();
+			return await _context.EventMemberDates
+							.FirstOrDefaultAsync(emd => emd.EventId == eventId && emd.MemberId == memberId && emd.Date.Date == date.Date) ?? throw new Exception();
 		}
-
-		public async Task<MemberEvent> GetMemberEventByEventIdAndMemberIdAsync(int eventId, int memberId)
+		public async Task<List<EventMemberDate>> GetEventMemberDatesByEventIdAndMemberIdAsync(int eventId, int memberId)
 		{
-			return await _context.MemberEvents
-							.FirstOrDefaultAsync(me => me.EventId == eventId && me.MemberId == memberId) ?? throw new Exception();
+			var eventMemberDates = await _context.EventMemberDates
+				.Where(emd => emd.EventId == eventId && emd.MemberId == memberId)
+				.ToListAsync() ?? throw new Exception("No EventMemberDates found for the given event and member."); ;
+
+
+			return eventMemberDates;
 		}
 
 		public async Task RemoveAsync(Event e)
@@ -71,16 +65,9 @@ namespace FamilyCalender.Infrastructure.Repositories
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task RemoveEventDateAsync(EventDate ed)
+		public async Task RemoveEventMemberDateAsync(EventMemberDate emd)
 		{
-			_context.EventDates.Remove(ed);
-			await _context.SaveChangesAsync();
-
-		}
-
-		public async Task RemoveMemberEventAsync(MemberEvent me)
-		{
-			_context.MemberEvents.Remove(me);
+			_context.EventMemberDates.Remove(emd);
 			await _context.SaveChangesAsync();
 		}
 
@@ -103,5 +90,9 @@ namespace FamilyCalender.Infrastructure.Repositories
 			}
 		}
 
+		public async Task SaveChangesAsync()
+		{
+			await _context.SaveChangesAsync();
+		}
 	}
 }

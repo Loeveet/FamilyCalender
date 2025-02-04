@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyCalender.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250118142510_FirstInit")]
+    [Migration("20250129000434_FirstInit")]
     partial class FirstInit
     {
         /// <inheritdoc />
@@ -82,7 +82,7 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("FamilyCalender.Core.Models.EventDate", b =>
+            modelBuilder.Entity("FamilyCalender.Core.Models.EventMemberDate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,11 +94,16 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("MemberId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("EventDates");
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("EventMemberDates");
                 });
 
             modelBuilder.Entity("FamilyCalender.Core.Models.Member", b =>
@@ -139,27 +144,6 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.HasIndex("MemberId");
 
                     b.ToTable("MemberCalendars");
-                });
-
-            modelBuilder.Entity("FamilyCalender.Core.Models.MemberEvent", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MemberId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.HasIndex("MemberId");
-
-                    b.ToTable("MemberEvents");
                 });
 
             modelBuilder.Entity("FamilyCalender.Core.Models.User", b =>
@@ -391,15 +375,23 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.Navigation("Calendar");
                 });
 
-            modelBuilder.Entity("FamilyCalender.Core.Models.EventDate", b =>
+            modelBuilder.Entity("FamilyCalender.Core.Models.EventMemberDate", b =>
                 {
                     b.HasOne("FamilyCalender.Core.Models.Event", "Event")
-                        .WithMany("EventDates")
+                        .WithMany("EventMemberDates")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FamilyCalender.Core.Models.Member", "Member")
+                        .WithMany("EventMemberDates")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Event");
+
+                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("FamilyCalender.Core.Models.Member", b =>
@@ -426,25 +418,6 @@ namespace FamilyCalender.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Calendar");
-
-                    b.Navigation("Member");
-                });
-
-            modelBuilder.Entity("FamilyCalender.Core.Models.MemberEvent", b =>
-                {
-                    b.HasOne("FamilyCalender.Core.Models.Event", "Event")
-                        .WithMany("MemberEvents")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FamilyCalender.Core.Models.Member", "Member")
-                        .WithMany("MemberEvents")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
 
                     b.Navigation("Member");
                 });
@@ -511,16 +484,14 @@ namespace FamilyCalender.Infrastructure.Migrations
 
             modelBuilder.Entity("FamilyCalender.Core.Models.Event", b =>
                 {
-                    b.Navigation("EventDates");
-
-                    b.Navigation("MemberEvents");
+                    b.Navigation("EventMemberDates");
                 });
 
             modelBuilder.Entity("FamilyCalender.Core.Models.Member", b =>
                 {
-                    b.Navigation("MemberCalendars");
+                    b.Navigation("EventMemberDates");
 
-                    b.Navigation("MemberEvents");
+                    b.Navigation("MemberCalendars");
                 });
 
             modelBuilder.Entity("FamilyCalender.Core.Models.User", b =>

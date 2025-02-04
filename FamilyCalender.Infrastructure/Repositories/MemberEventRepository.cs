@@ -9,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Infrastructure.Repositories
 {
-	public class MemberEventRepository : IMemberEventRepository
-	{
-		private readonly ApplicationDbContext _context;
+	//public class MemberEventRepository : IMemberEventRepository
+	//{
+	//	private readonly ApplicationDbContext _context;
 
-		public MemberEventRepository(ApplicationDbContext context)
-		{
-			_context = context;
-		}
-		public async Task AddAsync(MemberEvent memberEvent)
-		{
-			try
-			{
-				await _context.AddAsync(memberEvent);
-				await _context.SaveChangesAsync();
-			}
-			catch (Exception ex) 
-			{
-				throw new Exception("Something went wrong", ex);
-			}
-		}
-	}
+	//	public MemberEventRepository(ApplicationDbContext context)
+	//	{
+	//		_context = context;
+	//	}
+	//	public async Task AddAsync(MemberEvent memberEvent)
+	//	{
+	//		try
+	//		{
+	//			await _context.AddAsync(memberEvent);
+	//			await _context.SaveChangesAsync();
+	//		}
+	//		catch (Exception ex) 
+	//		{
+	//			throw new Exception("Something went wrong", ex);
+	//		}
+	//	}
+	//}
 }

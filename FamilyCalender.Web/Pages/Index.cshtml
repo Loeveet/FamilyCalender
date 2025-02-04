@@ -99,24 +99,24 @@ else
 
 					@foreach (var member in members)
 					{
-						var bookings = Model.SelectedCalendar?.Events
-						.Where(e => e.MemberEvents.Any(me => me.Member?.Name == member.Name) &&
-						e.EventDates.Any(d => d.Date == day.Date))
+						var eventMemberDates = Model.SelectedCalendar?.Events
+						.SelectMany(e => e.EventMemberDates)
+						.Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
 						.ToList();
 						<td class="col-12 col-md-2">
 							<div class="d-flex flex-column">
 								<div class="d-flex justify-content-between align-items-start">
 									<span class="text-start">
-										@if (bookings.Count > 0)
+										@if (eventMemberDates?.Any() ?? false)
 										{
-											foreach (var eventItem in bookings)
+											foreach (var eventMemberDate in eventMemberDates)
 											{
 												<a asp-page="./EventDetails"
-												   asp-route-eventId="@eventItem.Id"
+												   asp-route-eventId="@eventMemberDate.EventId"
 												   asp-route-memberId="@member.Id"
 												   asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
 												   class="text-decoration-none text-dark">
-													@eventItem.Title
+													@eventMemberDate.Event.Title
 												</a>
 												<br />
 											}
@@ -145,7 +145,7 @@ else
 			</div>
 
 			<div class="modal-body">
-				<form method="post" asp-page-handler="AddEvent" onsubmit="return validateForm()">
+				<form method="post" asp-page-handler="AddEvent">  @* onsubmit="return validateForm()"*@
 
 					<div class="mb-3">
 						<label class="form-label">@Model.SelectedCalendar?.Name</label>

@@ -85,20 +85,20 @@ namespace FamilyCalender.Web.Pages
 				return Page();
 			}
 
-			var eventDates = ValidateAndGenerateEventDates(StartDate, EndDate, SelectedDays);
-			if (eventDates != null)
+			var eventMemberDates = ValidateAndGenerateEventMemberDates(StartDate, EndDate, SelectedDays);
+			if (eventMemberDates != null)
 			{
-				await CreateAndSaveEventAsync(EventTitle, eventDates, SelectedCalendarId, SelectedMemberIds!);
+				await CreateAndSaveEventAsync(EventTitle, eventMemberDates, SelectedCalendarId, SelectedMemberIds!);
 			}
 
 			else if (SelectedDate.HasValue)
 			{
-				eventDates = new List<EventDate>
-					{
-						new EventDate { Date = SelectedDate.Value }
-					};
+				eventMemberDates = new List<EventMemberDate>
+		{
+			new EventMemberDate { Date = SelectedDate.Value }
+		};
 
-				await CreateAndSaveEventAsync(EventTitle, eventDates, SelectedCalendarId, SelectedMemberIds);
+				await CreateAndSaveEventAsync(EventTitle, eventMemberDates, SelectedCalendarId, SelectedMemberIds);
 			}
 
 
@@ -115,9 +115,9 @@ namespace FamilyCalender.Web.Pages
 				calendarId = SelectedCalendarId
 			});
 		}
-		private static List<EventDate> GenerateEventDatesInRangeWithWeekdays(DateTime start, DateTime end, List<string> selectedDays)
+		private static List<EventMemberDate> GenerateEventMemberDatesInRangeWithWeekdays(DateTime start, DateTime end, List<string> selectedDays)
 		{
-			var dates = new List<EventDate>();
+			var dates = new List<EventMemberDate>();
 
 			for (var date = start; date <= end; date = date.AddDays(1))
 			{
@@ -127,7 +127,7 @@ namespace FamilyCalender.Web.Pages
 
 				if (selectedDays.Any(day => day.Equals(dayOfWeek, StringComparison.OrdinalIgnoreCase)))
 				{
-					dates.Add(new EventDate
+					dates.Add(new EventMemberDate
 					{
 						Date = date
 					});
@@ -137,12 +137,12 @@ namespace FamilyCalender.Web.Pages
 			return dates;
 		}
 
-		private List<EventDate>? ValidateAndGenerateEventDates(DateTime? startDate, DateTime? endDate, List<string>? selectedDays)
+		private List<EventMemberDate>? ValidateAndGenerateEventMemberDates(DateTime? startDate, DateTime? endDate, List<string>? selectedDays)
 		{
 			if (!IsValidIntervalInputs(startDate, endDate, selectedDays))
 				return null;
 
-			return GenerateEventDatesInRangeWithWeekdays(startDate!.Value, endDate!.Value, selectedDays!);
+			return GenerateEventMemberDatesInRangeWithWeekdays(startDate!.Value, endDate!.Value, selectedDays!);
 		}
 
 		private async Task LoadSelectedCalendarData(int? calendarId)
@@ -190,9 +190,9 @@ namespace FamilyCalender.Web.Pages
 		}
 
 
-		private async Task CreateAndSaveEventAsync(string eventTitle, List<EventDate> eventDates, int calendarId, List<int> memberIds)
+		private async Task CreateAndSaveEventAsync(string eventTitle, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
 		{
-			await _eventService.CreateEventAsync(eventTitle, eventDates, calendarId, memberIds);
+			await _eventService.CreateEventAsync(eventTitle, eventMemberDates, calendarId, memberIds);
 		}
 
 

@@ -267,45 +267,26 @@ namespace FamilyCalender.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventDates",
+                name: "EventMemberDates",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EventId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventDates", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EventDates_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MemberEvents",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    EventId = table.Column<int>(type: "INTEGER", nullable: false),
                     MemberId = table.Column<int>(type: "INTEGER", nullable: false),
-                    EventId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MemberEvents", x => x.Id);
+                    table.PrimaryKey("PK_EventMemberDates", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MemberEvents_Events_EventId",
+                        name: "FK_EventMemberDates_Events_EventId",
                         column: x => x.EventId,
                         principalTable: "Events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MemberEvents_Members_MemberId",
+                        name: "FK_EventMemberDates_Members_MemberId",
                         column: x => x.MemberId,
                         principalTable: "Members",
                         principalColumn: "Id",
@@ -365,9 +346,14 @@ namespace FamilyCalender.Infrastructure.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventDates_EventId",
-                table: "EventDates",
+                name: "IX_EventMemberDates_EventId",
+                table: "EventMemberDates",
                 column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventMemberDates_MemberId",
+                table: "EventMemberDates",
+                column: "MemberId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_CalendarId",
@@ -382,16 +368,6 @@ namespace FamilyCalender.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_MemberCalendars_MemberId",
                 table: "MemberCalendars",
-                column: "MemberId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MemberEvents_EventId",
-                table: "MemberEvents",
-                column: "EventId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MemberEvents_MemberId",
-                table: "MemberEvents",
                 column: "MemberId");
 
             migrationBuilder.CreateIndex(
@@ -422,13 +398,10 @@ namespace FamilyCalender.Infrastructure.Migrations
                 name: "CalendarAccesses");
 
             migrationBuilder.DropTable(
-                name: "EventDates");
+                name: "EventMemberDates");
 
             migrationBuilder.DropTable(
                 name: "MemberCalendars");
-
-            migrationBuilder.DropTable(
-                name: "MemberEvents");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

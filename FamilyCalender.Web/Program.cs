@@ -54,12 +54,10 @@ namespace FamilyCalender
             builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 			builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<ICalendarAccessRepository, CalendarAccessRepository>();
-			builder.Services.AddScoped<IMemberEventRepository, MemberEventRepository>();
 			builder.Services.AddScoped<ICalendarService, CalendarService>();
             builder.Services.AddScoped<IMemberService, MemberService>();
             builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<ICalendarAccessService, CalendarAccessService>();
-			builder.Services.AddScoped<IMemberEventService, MemberEventService>();
 			builder.Services.AddScoped<IMemberCalendarService, MemberCalendarService>();
 
 

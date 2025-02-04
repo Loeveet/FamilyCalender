@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Core.Interfaces.IRepositories
 {
-	public interface IMemberEventRepository
-	{
-		Task AddAsync(MemberEvent memberEvent);
-	}
+	//public interface IMemberEventRepository
+	//{
+	//	Task AddAsync(EventMemberDate emd);
+	//}
 }

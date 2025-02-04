@@ -1,14 +1,6 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models;
-using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FamilyCalender.Infrastructure.Services
 {
@@ -16,33 +8,40 @@ namespace FamilyCalender.Infrastructure.Services
     {
         private readonly ICalendarRepository _calendarRepository;
         private readonly IEventRepository _eventRepository;
-		private readonly IMemberEventService _memberEventService;
 
         public EventService(ICalendarRepository calendarRepository
-			, IEventRepository eventRepository
-			, IMemberEventService memberEventService)
+			, IEventRepository eventRepository)
         {
             _calendarRepository = calendarRepository;
             _eventRepository = eventRepository;
-			_memberEventService = memberEventService;
 		}
 
-		public async Task<Event> CreateEventAsync(string eventTitle, List<EventDate> eventDates, int calendarId, List<int> memberIds)
+		public async Task<Event> CreateEventAsync(string eventTitle, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
 		{
 			var newEvent = new Event
 			{
 				Title = eventTitle,
-				EventDates = eventDates,
-				CalendarId = calendarId
+				CalendarId = calendarId,
 			};
 
 			var addedEvent = await _eventRepository.AddAsync(newEvent);
 
 			foreach (var memberId in memberIds)
 			{
-				await _memberEventService.CreateMemberEventAsync(memberId, addedEvent);
+				foreach (var eventMemberDate in eventMemberDates)
+				{
+					var memberEventDate = new EventMemberDate
+					{
+						EventId = addedEvent.Id,
+						MemberId = memberId,
+						Date = eventMemberDate.Date
+					};
+
+					addedEvent.EventMemberDates.Add(memberEventDate);
+				}
 			}
 
+			await _eventRepository.SaveChangesAsync();
 			return addedEvent;
 		}
 
@@ -52,22 +51,27 @@ namespace FamilyCalender.Infrastructure.Services
 			await _eventRepository.RemoveAsync(eventToDelete);
 		}
 
-		public async Task DeleteEventDateAsync(int eventId, DateTime day)
+		public async Task DeleteEventMemberDateAsync(int eventId, int memberId, DateTime day)
 		{
 			var eventDateToRemove = await
-				_eventRepository.GetEventDateByEventIdAndDateAsync(eventId, day);
+				_eventRepository.GetMemberEventDateByEventIdAndMemberIdAsync(eventId, memberId, day);
 
-			await _eventRepository.RemoveEventDateAsync(eventDateToRemove);
+			await _eventRepository.RemoveEventMemberDateAsync(eventDateToRemove);
 		}
 
-		public async Task DeleteMemberEventAsync(int eventId, int memberId)
+		public async Task DeleteAllEventMemberDatesAsync(int eventId, int memberId)
 		{
-
-			var memberEventToRemove = await 
-				_eventRepository.GetMemberEventByEventIdAndMemberIdAsync(eventId, memberId);
-
-			await _eventRepository.RemoveMemberEventAsync(memberEventToRemove);
+			var eventMemberDates = await _eventRepository.GetEventMemberDatesByEventIdAndMemberIdAsync(eventId, memberId);
+			if (eventMemberDates == null || !eventMemberDates.Any())
+			{
+				throw new EntryPointNotFoundException("No EventMemberDates found for the given event and member.");
+			}
+			foreach (var eventMemberDate in eventMemberDates)
+			{
+				await _eventRepository.RemoveEventMemberDateAsync(eventMemberDate);
+			}
 		}
+
 
 		public async Task<Event> GetEventByIdAsync(int eventId)
 		{

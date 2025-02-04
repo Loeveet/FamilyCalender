@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Core.Models
 {
-    public class CalendarAccess // För att ge specifik användare tillgång till kalender och även indikera om man är ägare eller inte
+    public class CalendarAccess 
 	{
         public int Id { get; set; }
         public string? UserId { get; set; }

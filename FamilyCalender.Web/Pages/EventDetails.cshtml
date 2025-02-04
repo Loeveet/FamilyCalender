@@ -15,36 +15,29 @@
 	</div>
 
 	<div>
-		@if (Model.EventDetails.EventDates.Count == 1)
+		@if (Model.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() == 1)
 		{
 			<strong>Datum:</strong>
 			<ul>
-				@foreach (var date in Model.EventDetails.EventDates)
-				{
-					<li>@date.Date.ToString("yyyy-MM-dd")</li>
-				}
-			</ul>
-		}
-		else if (Model.EventDetails.EventDates.Count > 1)
-		{
-			<strong>Intervall:</strong>
-			<ul>
-				<li><strong>Startdatum:</strong> @Model.EventDetails.EventDates.First().Date.ToString("yyyy-MM-dd")</li>
-				<li><strong>Slutdatum:</strong> @Model.EventDetails.EventDates.Last().Date.ToString("yyyy-MM-dd")</li>
-				<li><strong>Veckodagar:</strong> @string.Join(", ", daysInSwedish)</li>
+				<li>@Model.EventDetails.EventMemberDates.First().Date.ToString("yyyy-MM-dd")</li>
 			</ul>
 		}
 		else
 		{
-			<div>Det finns inget datum på eventet</div>
+			<strong>Intervall:</strong>
+			<ul>
+				<li><strong>Startdatum:</strong> @Model.EventDetails.EventMemberDates.First().Date.ToString("yyyy-MM-dd")</li>
+				<li><strong>Slutdatum:</strong> @Model.EventDetails.EventMemberDates.Last().Date.ToString("yyyy-MM-dd")</li>
+				<li><strong>Veckodagar:</strong> @string.Join(", ", daysInSwedish)</li>
+			</ul>
 		}
 	</div>
 	<div>
 		<strong>Medlemmar:</strong>
 		<ul>
-			@foreach (var member in Model.EventDetails.MemberEvents)
+			@foreach (var member in Model.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().ToList())
 			{
-				<li>@member.Member.Name</li>
+				<li>@member.Name</li>
 			}
 		</ul>
 	</div>
@@ -72,31 +65,56 @@
 				<div class="modal-body">
 
 					<!-- Enkelt event på en dag och en person -->
-					@if (Model.EventDetails.EventDates.Count == 1 && Model.EventDetails.MemberEvents.Count == 1)
+					@if (Model.EventDetails.EventMemberDates.Count == 1 && Model.EventDetails.EventMemberDates.Select(x => x.Member).Count() == 1)
 					{
 						<p>Det här är ett enkelt event som endast gäller för en person och en dag.</p>
+						@foreach (var member in Model.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
+						{
+							var isOnlyMember = Model.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() == 1;
+
+							<div class="form-check">
+								<input class="form-check-input"
+									   type="checkbox"
+									   id="deleteMember-@member.Id"
+									   value="@member.Id"
+									   name="selectedMemberIds"
+								@(isOnlyMember ? "checked disabled" : "") />
+								<label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
+							</div>
+							<input type="hidden" name="selectedMemberIds" value="@Model.Member.Id" />
+
+						}
 						<p>Vill du radera detta event?</p>
 					}
 					<!-- Enkelt event på flera personer -->
-					@if (Model.EventDetails.EventDates.Count == 1 && Model.EventDetails.MemberEvents.Count > 1)
+					@if (Model.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() == 1 && Model.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() > 1)
 					{
 						<p>Det här eventet gäller flera personer. Välj vilka du vill ta bort eventet för:</p>
 						<div id="deleteMemberListSingle">
-							@foreach (var member in Model.EventDetails.MemberEvents.Select(e => e.Member))
+							@foreach (var member in Model.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
 							{
+								var isSelectedMember = member.Id == Model.Member.Id;
+
 								<div class="form-check">
-									<input class="form-check-input"
+									<input class="form-check-input member-checkbox"
 										   type="checkbox"
 										   id="deleteMember-@member.Id"
 										   value="@member.Id"
-										   name="selectedMemberIds" />
+										   name="selectedMemberIds"
+										   checked="@(isSelectedMember ? "checked" : null)"
+										   disabled="@(isSelectedMember ? "disabled" : null)" />
 									<label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
+
+									@if (isSelectedMember)
+									{
+										<input type="hidden" name="selectedMemberIds" value="@member.Id" />
+									}
 								</div>
 							}
 						</div>
 					}
 					<!-- Event inom ett intervall -->
-					@if (Model.EventDetails.EventDates.Count > 1)
+					@if (Model.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1)
 					{
 						<p>Det här eventet är en del av ett intervall.</p>
 						<div class="form-check">
@@ -119,19 +137,28 @@
 						</div>
 					}
 					<!-- Event inom ett intervall med flera personer -->
-					@if (Model.EventDetails.EventDates.Count > 1 && Model.EventDetails.MemberEvents.Count > 1)
+					@if (Model.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1 && Model.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() > 1)
 					{
 						<p>Det här eventet gäller flera personer och är en del av ett intervall. Välj vilka personer du vill ta bort för hela intervallet:</p>
 						<div id="deleteMemberListInterval">
-							@foreach (var member in Model.EventDetails.MemberEvents.Select(e => e.Member))
+							@foreach (var member in Model.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
 							{
+								var isSelectedMember = member.Id == Model.Member.Id;
+
 								<div class="form-check">
-									<input class="form-check-input"
+									<input class="form-check-input member-checkbox"
 										   type="checkbox"
 										   id="deleteMember-@member.Id"
 										   value="@member.Id"
-										   name="selectedMemberIds" />
+										   name="selectedMemberIds"
+										   checked="@(isSelectedMember ? "checked" : null)"
+										   disabled="@(isSelectedMember ? "disabled" : null)" />
 									<label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
+
+									@if (isSelectedMember)
+									{
+										<input type="hidden" name="selectedMemberIds" value="@member.Id" />
+									}
 								</div>
 							}
 						</div>
@@ -141,7 +168,7 @@
 					<input type="hidden" asp-for="EventId" value="@Model.EventDetails.Id" />
 					<input type="hidden" asp-for="CalendarId" value="@Model.EventDetails.CalendarId" />
 					<input type="hidden" asp-for="Day" value="@Model.Day" />
-					<input type="hidden" asp-for="Member" value="@Model.Member" />
+					<input type="hidden" asp-for="Member.Id" value="@Model.Member.Id" />
 					<button type="submit" class="btn btn-danger">Radera</button>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
 				</div>
@@ -168,93 +195,65 @@
 						<input type="text" class="form-control" value="@Model.EventDetails.Title" asp-for=NewTitle id="editEventTitle" />
 					</div>
 
-					<div class="mb-3">
-						<label for="editEventDates" class="form-label">Ändra datum för valt event</label>
-						<input type="date" class="form-control" value="@Model.Day.ToString("yyyy-MM-dd")" asp-for="NewDate" id="editEventDates" />
 
-					</div>
-
-					@if (Model.EventDetails.EventDates.Count > 1)
+					@if (Model.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1)
 					{
-						var minEventDate = Model.EventDetails.EventDates.Min(x => x.Date) < DateTime.Today ? DateTime.Today : Model.EventDetails.EventDates.Min(x => x.Date);
-						var maxEventDate = Model.EventDetails.EventDates.Max(x => x.Date);
+						var minEventDate = Model.EventDetails.EventMemberDates.Min(x => x.Date) < DateTime.Today ? DateTime.Today : Model.EventDetails.EventMemberDates.Min(x => x.Date);
+						var maxEventDate = Model.EventDetails.EventMemberDates.Max(x => x.Date);
 
-						<div class="accordion" id="eventOptionsAccordion">
-							<div class="accordion-item">
-								<h2 class="accordion-header" id="headingTwo">
-									<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-										Uppdatera intervall
-									</button>
-								</h2>
-								<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#eventOptionsAccordion">
-									<div class="accordion-body">
-										<div class="mb-3">
-											<label for="editStartDate" class="form-label">Välj nytt startdatum</label>
-											<input type="date" class="form-control" asp-for="StartDate" value="@minEventDate.ToString("yyyy-MM-dd")" id="editStartDate" />
-											<small id="error-start-date" class="text-danger d-none"></small>
+						<div class="mb-3">
+							<label for="editStartDate" class="form-label">Välj nytt startdatum</label>
+							<input type="date" class="form-control" asp-for="StartDate" value="@minEventDate.ToString("yyyy-MM-dd")" id="editStartDate" />
+							<small id="error-start-date" class="text-danger d-none"></small>
 
-
-										</div>
-
-										<div class="mb-3">
-											<label for="editEndDate" class="form-label">Välj nytt slutdatum</label>
-											<input type="date" class="form-control" asp-for="EndDate" value="@maxEventDate.ToString("yyyy-MM-dd")" id="editEndDate" />
-											<small id="error-end-date" class="text-danger d-none"></small>
-
-										</div>
-										<div class="mb-3">
-											<label class="form-label">Välj dagar</label>
-											<div>
-												<input type="checkbox" name="SelectedDays" value="Monday" @(Model.SelectedDays.Contains(DayOfWeek.Monday) ? "checked" : "") /> Måndag <br />
-												<input type="checkbox" name="SelectedDays" value="Tuesday" @(Model.SelectedDays.Contains(DayOfWeek.Tuesday) ? "checked" : "") /> Tisdag <br />
-												<input type="checkbox" name="SelectedDays" value="Wednesday" @(Model.SelectedDays.Contains(DayOfWeek.Wednesday) ? "checked" : "") /> Onsdag <br />
-												<input type="checkbox" name="SelectedDays" value="Thursday" @(Model.SelectedDays.Contains(DayOfWeek.Thursday) ? "checked" : "") /> Torsdag <br />
-												<input type="checkbox" name="SelectedDays" value="Friday" @(Model.SelectedDays.Contains(DayOfWeek.Friday) ? "checked" : "") /> Fredag <br />
-												<input type="checkbox" name="SelectedDays" value="Saturday" @(Model.SelectedDays.Contains(DayOfWeek.Saturday) ? "checked" : "") /> Lördag <br />
-												<input type="checkbox" name="SelectedDays" value="Sunday" @(Model.SelectedDays.Contains(DayOfWeek.Sunday) ? "checked" : "") /> Söndag
-											</div>
-										</div>
-
-										<small id="error-right-weekdays" class="text-danger d-none"></small>
-										<small id="error-interval-weekdays" class="text-danger d-none"></small>
-
-
-									</div>
-									<div class="mb-3 ms-3 form-check">
-										<input type="checkbox" class="form-check-input" id="updateInterval" name="UpdateInterval" asp-for="@Model.UpdateInterval" />
-										<label class="form-check-label fw-bold" for="updateInterval">Uppdatera hela intervallet</label>
-									</div>
-								</div>
-							</div>
 
 						</div>
+
+						<div class="mb-3">
+							<label for="editEndDate" class="form-label">Välj nytt slutdatum</label>
+							<input type="date" class="form-control" asp-for="EndDate" value="@maxEventDate.ToString("yyyy-MM-dd")" id="editEndDate" />
+							<small id="error-end-date" class="text-danger d-none"></small>
+
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Välj dagar</label>
+							<div>
+								<input type="checkbox" name="SelectedDays" value="Monday" @(Model.SelectedDays.Contains(DayOfWeek.Monday) ? "checked" : "") /> Måndag <br />
+								<input type="checkbox" name="SelectedDays" value="Tuesday" @(Model.SelectedDays.Contains(DayOfWeek.Tuesday) ? "checked" : "") /> Tisdag <br />
+								<input type="checkbox" name="SelectedDays" value="Wednesday" @(Model.SelectedDays.Contains(DayOfWeek.Wednesday) ? "checked" : "") /> Onsdag <br />
+								<input type="checkbox" name="SelectedDays" value="Thursday" @(Model.SelectedDays.Contains(DayOfWeek.Thursday) ? "checked" : "") /> Torsdag <br />
+								<input type="checkbox" name="SelectedDays" value="Friday" @(Model.SelectedDays.Contains(DayOfWeek.Friday) ? "checked" : "") /> Fredag <br />
+								<input type="checkbox" name="SelectedDays" value="Saturday" @(Model.SelectedDays.Contains(DayOfWeek.Saturday) ? "checked" : "") /> Lördag <br />
+								<input type="checkbox" name="SelectedDays" value="Sunday" @(Model.SelectedDays.Contains(DayOfWeek.Sunday) ? "checked" : "") /> Söndag
+							</div>
+						</div>
+						<input type="hidden" name="editOption" value="all" />
+
+						<small id="error-right-weekdays" class="text-danger d-none"></small>
+						<small id="error-interval-weekdays" class="text-danger d-none"></small>
+					}
+					else
+					{
+						<div class="mb-3">
+							<label for="editEventDates" class="form-label">Ändra datum för valt event</label>
+							<input type="date" class="form-control" value="@Model.Day.ToString("yyyy-MM-dd")" asp-for="NewDate" id="editEventDates" />
+						</div>
+						<input type="hidden" name="editOption" value="single" />
 					}
 
-					<div class="mb-3">
-						<label for="editMemberList" class="form-label">Välj vilka medlemmar det gäller</label>
-						<div id="editMemberList">
-							@foreach (var member in Model.Members)
-							{
-								var isChecked = Model.EventDetails.MemberEvents.Any(e => e.Member.Id == member.Id);
-
-								<div class="form-check">
-									<input class="form-check-input member-checkbox"
-										   type="checkbox"
-										   id="editMember-@member.Id"
-										   value="@member.Id"
-										   name="selectedMemberIds"
-									@(isChecked ? "checked" : "") />
-									<label class="form-check-label" for="editMember-@member.Id">@member.Name</label>
-								</div>
-							}
-						</div>
-						<small id="memberError" class="text-danger d-none">Du måste välja minst en medlem</small>
+					<div id="editMemberList">
+						@foreach (var member in Model.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
+						{
+							<input type="hidden" name="selectedMemberIds" value="@member.Id" />
+						}
 					</div>
-
-
+					<small id="memberError" class="text-danger d-none">Du måste välja minst en medlem</small>
 				</div>
 				<div class="modal-footer">
 					<input type="hidden" asp-for="EventId" value="@Model.EventDetails.Id" />
+					<input type="hidden" asp-for="Day" value="@Model.Day" />
+					<input type="hidden" asp-for="Member.Id" value="@Model.Member.Id" />
+					<input type="hidden" asp-for="CalendarId" value="@Model.EventDetails.CalendarId" />
 					<button type="submit" class="btn btn-primary">Spara ändringar</button>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
 				</div>
