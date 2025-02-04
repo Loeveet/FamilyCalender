@@ -59,6 +59,8 @@ namespace FamilyCalender
             builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<ICalendarAccessService, CalendarAccessService>();
 			builder.Services.AddScoped<IMemberCalendarService, MemberCalendarService>();
+			builder.Services.AddScoped<EventManagementService>();
+
 
 
 			var app = builder.Build();
