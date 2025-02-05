@@ -63,7 +63,7 @@ namespace FamilyCalender.Web.Pages
 				return RedirectToPage("./Index", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
 			}
 
-			return RedirectToPage("./EventDetails", new { eventId = eventToUpdate.Id, memberId = ViewModel.Member.Id, day = ViewModel.NewDate });
+			return RedirectToPage("./EventDetails", new { eventId = eventToUpdate.Id, memberId = ViewModel.MemberId, day = ViewModel.NewDate.Year != 1 ? ViewModel.NewDate : ViewModel.Day});
 		}
 
 		public async Task<IActionResult> OnPostDeleteEventAsync(List<int> selectedMemberIds, string? deleteOption)

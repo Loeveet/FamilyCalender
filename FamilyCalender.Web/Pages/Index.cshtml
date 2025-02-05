@@ -2,10 +2,10 @@
 @model FamilyCalender.Web.Pages.IndexModel
 @{
 	ViewData["Title"] = "Calendar";
-	var cultureInfo = Model.CultureInfo;
-	var daysInMonth = Model.DaysInMonth;
-	var members = Model.Members ?? new List<FamilyCalender.Core.Models.Member>(); 
-	var currentMonth = new DateTime(Model.CurrentYear, Model.CurrentMonth, 1);
+	var cultureInfo = Model.ViewModel.CultureInfo;
+	var daysInMonth = Model.ViewModel.DaysInMonth;
+	var members = Model.ViewModel.Members ?? new List<FamilyCalender.Core.Models.Member>();
+	var currentMonth = new DateTime(Model.ViewModel.CurrentYear, Model.ViewModel.CurrentMonth, 1);
 	var monthName = currentMonth.ToString("MMMM", new System.Globalization.CultureInfo("sv-SE"));
 	var capitalizedMonthName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(monthName);
 
@@ -14,39 +14,39 @@
 	var remainingColumnWidth = membersCount > 0 ? 100m / membersCount : 0;
 }
 <a class="btn btn-primary" asp-page="/CreateCalendar">Skapa kalender</a>
-@if (Model.SelectedCalendar.Id == 0)
+@if (Model.ViewModel.SelectedCalendar.Id == 0)
 {
 	<p>Ingen kalender hittades</p>
 }
 else
 {
 
-	<h2>@Model.SelectedCalendar.Name</h2>
+	<h2>@Model.ViewModel.SelectedCalendar.Name</h2>
 	<h3 class="d-flex justify-content-between align-items-center">
-		<a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 1 ? Model.CurrentYear - 1 : Model.CurrentYear)"
-		   asp-route-month="@(Model.CurrentMonth == 1 ? 12 : Model.CurrentMonth - 1)"
-		   asp-route-calendarId="@Model.SelectedCalendar?.Id"
+		<a asp-page="./Index" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
+		   asp-route-month="@(Model.ViewModel.CurrentMonth == 1 ? 12 : Model.ViewModel.CurrentMonth - 1)"
+		   asp-route-calendarId="@Model.ViewModel.SelectedCalendar?.Id"
 		   class="btn btn-secondary btn-block mb-2">Föregående månad</a>
-		<span>@capitalizedMonthName @Model.CurrentYear</span>
-		<a asp-page="./Index" asp-route-year="@(Model.CurrentMonth == 12 ? Model.CurrentYear + 1 : Model.CurrentYear)"
-		   asp-route-month="@(Model.CurrentMonth == 12 ? 1 : Model.CurrentMonth + 1)"
-		   asp-route-calendarId="@Model.SelectedCalendar?.Id"
+		<span>@capitalizedMonthName @Model.ViewModel.CurrentYear</span>
+		<a asp-page="./Index" asp-route-year="@(Model.ViewModel.CurrentMonth == 12 ? Model.ViewModel.CurrentYear + 1 : Model.ViewModel.CurrentYear)"
+		   asp-route-month="@(Model.ViewModel.CurrentMonth == 12 ? 1 : Model.ViewModel.CurrentMonth + 1)"
+		   asp-route-calendarId="@Model.ViewModel.SelectedCalendar?.Id"
 		   class="btn btn-secondary btn-block mb-2">Nästa månad</a>
 	</h3>
 
-	@if (Model.Calendars != null && Model.Calendars.Count > 1)
+	@if (Model.ViewModel.Calendars != null && Model.ViewModel.Calendars.Count > 1)
 	{
 		<form method="get">
 			<div class="calendar-buttons">
-				@foreach (var calendar in Model.Calendars)
+				@foreach (var calendar in Model.ViewModel.Calendars)
 				{
 					<button type="submit" name="calendarId" value="@calendar.Id"
-							class="btn @(calendar.Id == Model.SelectedCalendar?.Id ? "btn-primary" : "btn-outline-primary")">
+							class="btn @(calendar.Id == Model.ViewModel.SelectedCalendar?.Id ? "btn-primary" : "btn-outline-primary")">
 						@calendar.Name
 					</button>
 				}
-				<input type="hidden" name="year" value="@Model.CurrentYear" />
-				<input type="hidden" name="month" value="@Model.CurrentMonth" />
+				<input type="hidden" name="year" value="@Model.ViewModel.CurrentYear" />
+				<input type="hidden" name="month" value="@Model.ViewModel.CurrentMonth" />
 			</div>
 		</form>
 	}
@@ -77,7 +77,7 @@ else
 								<br />
 							}
 
-							var dayOfWeek = day.ToString("dddd", Model.CultureInfo);
+							var dayOfWeek = day.ToString("dddd", Model.ViewModel.CultureInfo);
 							var friendlyDayOfWeek = $"{dayOfWeek[0].ToString().ToUpper()}{dayOfWeek.Substring(1)}";
 						}
 
@@ -99,7 +99,7 @@ else
 
 					@foreach (var member in members)
 					{
-						var eventMemberDates = Model.SelectedCalendar?.Events
+						var eventMemberDates = Model.ViewModel.SelectedCalendar?.Events
 						.SelectMany(e => e.EventMemberDates)
 						.Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
 						.ToList();
@@ -148,13 +148,13 @@ else
 				<form method="post" asp-page-handler="AddEvent">  @* onsubmit="return validateForm()"*@
 
 					<div class="mb-3">
-						<label class="form-label">@Model.SelectedCalendar?.Name</label>
-						<input type="hidden" asp-for="SelectedCalendarId" value="@Model.SelectedCalendar?.Id" />
+						<label class="form-label">@Model.ViewModel.SelectedCalendar?.Name</label>
+						<input type="hidden" asp-for="ViewModel.SelectedCalendarId" value="@Model.ViewModel.SelectedCalendar?.Id" />
 					</div>
 
 					<div class="mb-3">
 						<label for="modalSelectedDate" class="form-label">Datum</label>
-						<input type="date" class="form-control" asp-for="SelectedDate" id="modalSelectedDate" />
+						<input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" />
 						<small id="error-selected-date" class="text-danger d-none"></small>
 					</div>
 
@@ -169,7 +169,7 @@ else
 								<div class="accordion-body">
 									<div class="mb-3">
 										<label for="startDate" class="form-label">Startdatum</label>
-										<input type="date" class="form-control" id="startDate" name="StartDate" />
+										<input type="date" class="form-control" id="modalStartDate" asp-for="ViewModel.StartDate" />
 										<small id="error-start-date" class="text-danger d-none"></small>
 
 
@@ -177,7 +177,7 @@ else
 
 									<div class="mb-3">
 										<label for="endDate" class="form-label">Slutdatum</label>
-										<input type="date" class="form-control" id="endDate" name="EndDate" />
+										<input type="date" class="form-control" id="modalEndDate" asp-for="ViewModel.EndDate" />
 										<small id="error-end-date" class="text-danger d-none"></small>
 
 									</div>
@@ -225,7 +225,7 @@ else
 					<div class="mb-3">
 						<label class="form-label">Välj medlemmar</label>
 						<div id="memberList">
-							@foreach (var member in Model.Members ?? [])
+							@foreach (var member in Model.ViewModel.Members ?? [])
 							{
 								<div class="form-check">
 									<input class="form-check-input member-checkbox" type="checkbox" id="member-@member.Id" value="@member.Id" name="SelectedMemberIds" />
@@ -239,13 +239,13 @@ else
 
 					<div class="mb-3">
 						<label for="eventTitle" class="form-label">Titel</label>
-						<input type="text" class="form-control" asp-for="EventTitle" id="eventTitle" />
+						<input type="text" class="form-control" asp-for="ViewModel.EventTitle" id="eventTitle" />
 						<small id="eventTitleError" class="text-danger d-none">Ange titel</small>
 					</div>
 
 
-					<input type="hidden" asp-for="CurrentYear" value="@Model.CurrentYear" />
-					<input type="hidden" asp-for="CurrentMonth" value="@Model.CurrentMonth" />
+					<input type="hidden" asp-for="ViewModel.CurrentYear" value="@Model.ViewModel.CurrentYear" />
+					<input type="hidden" asp-for="ViewModel.CurrentMonth" value="@Model.ViewModel.CurrentMonth" />
 
 					<button type="submit" class="btn btn-primary">Skapa Event</button>
 				</form>

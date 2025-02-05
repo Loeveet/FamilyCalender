@@ -5,8 +5,8 @@
 }
 
 $('#eventModal').on('hidden.bs.modal', function () {
-    document.getElementById("startDate").value = '';
-    document.getElementById("endDate").value = '';
+    document.getElementById("modalStartDate").value = '';
+    document.getElementById("modalEndDate").value = '';
     document.getElementById("eventTitle").value = '';
 
     document.querySelectorAll('.form-check-input').forEach(checkbox => checkbox.checked = false);

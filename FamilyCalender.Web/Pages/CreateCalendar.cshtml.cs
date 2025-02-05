@@ -15,7 +15,7 @@ namespace FamilyCalender.Web.Pages
         private readonly UserManager<User> _userManager = userManager;
 
         [BindProperty]
-        public Calendar? Calendar { get; set; }
+        public Calendar Calendar { get; set; } = new Calendar();
 
         [BindProperty]
         public List<Member> Members { get; set; } = [];
@@ -35,10 +35,9 @@ namespace FamilyCalender.Web.Pages
             {
                 throw new Exception("No logged in user", ex);
             }
-            var createdCalendar = new Calendar();
             try
             {
-                createdCalendar = await _calendarService.CreateCalendarAsync(Calendar, user);
+                var createdCalendar = await _calendarService.CreateCalendarAsync(Calendar, user);
                 if (Members.Count > 0)
                 {
                     var memberCalendars = new List<MemberCalendar>();

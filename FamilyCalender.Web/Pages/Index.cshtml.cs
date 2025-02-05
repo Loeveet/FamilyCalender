@@ -10,49 +10,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamilyCalender.Web.Pages
 {
-	public class IndexModel(UserManager<User> userManager,
-		ICalendarService calendarService,
-		IEventService eventService,
-		IMemberService memberService) : PageModel
+	public class IndexModel(
+		UserManager<User> userManager,
+		CalendarManagementService calendarManagementService) : PageModel
 	{
 		private readonly UserManager<User> _userManager = userManager;
-		private readonly ICalendarService _calendarService = calendarService;
-		private readonly IEventService _eventService = eventService;
-		private readonly IMemberService _memberService = memberService;
-
-
-		public List<Core.Models.Calendar> Calendars { get; set; } = [];
-		public Core.Models.Calendar SelectedCalendar { get; set; } = new Core.Models.Calendar();
-		public List<Event> Events { get; set; } = [];
-		public List<Member> Members { get; set; } = [];
-		public List<DateTime> DaysInMonth { get; private set; } = [];
-
-		public CultureInfo CultureInfo = new("sv-SE");
+		private readonly CalendarManagementService _calendarManagementService = calendarManagementService;
 
 		[BindProperty]
-		public DateTime? SelectedDate { get; set; }
-
-		[BindProperty]
-		public int CurrentYear { get; set; } = DateTime.Now.Year;
-
-		[BindProperty]
-		public int CurrentMonth { get; set; } = DateTime.Now.Month;
-
-		[BindProperty]
-		public string EventTitle { get; set; } = string.Empty;
-
-		[BindProperty]
-		public List<int> SelectedMemberIds { get; set; } = [];
-
-		[BindProperty]
-		public int SelectedCalendarId { get; set; }
-		[BindProperty]
-		public DateTime? StartDate { get; set; }
-
-		[BindProperty]
-		public DateTime? EndDate { get; set; }
-		[BindProperty]
-		public List<string>? SelectedDays { get; set; }
+		public IndexViewModel ViewModel { get; set; } = new IndexViewModel();
 
 		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
 		{
@@ -63,138 +29,91 @@ namespace FamilyCalender.Web.Pages
 			}
 
 			SetCurrentYearAndMonth(year, month);
+			ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth);
 
-			DaysInMonth = GenerateMonthDays(CurrentYear, CurrentMonth);
+			ViewModel.Calendars = await _calendarManagementService.GetCalendarsForUserAsync(user.Id);
 
-			Calendars = await _calendarService.GetCalendarsForUserAsync(user.Id);
-
-			if (Calendars != null || Calendars.Count > 0)
+			if (ViewModel.Calendars != null && ViewModel.Calendars.Count > 0)
 			{
 				await LoadSelectedCalendarData(calendarId);
-				Members = await _memberService.GetMembersForCalendarAsync(SelectedCalendar.Id);
 			}
 
 			return Page();
 		}
-		public async Task<IActionResult> OnPostAddEventAsync()
-		{
 
-			if (!ModelState.IsValid || !IsValidInput(EventTitle, SelectedDate, SelectedMemberIds, SelectedCalendarId))
+		public async Task<IActionResult> OnPostAddEventAsync(List<int> selectedMemberIds, List<string> selectedDays)
+		{
+			if (!ModelState.IsValid || !IsValidInput(selectedMemberIds))
 			{
 				ModelState.AddModelError(string.Empty, "Titel, datum, medlem och kalender är obligatoriskt.");
 				return Page();
 			}
 
-			var eventMemberDates = ValidateAndGenerateEventMemberDates(StartDate, EndDate, SelectedDays);
-			if (eventMemberDates != null)
-			{
-				await CreateAndSaveEventAsync(EventTitle, eventMemberDates, SelectedCalendarId, SelectedMemberIds!);
-			}
-
-			else if (SelectedDate.HasValue)
-			{
-				eventMemberDates = new List<EventMemberDate>
-		{
-			new EventMemberDate { Date = SelectedDate.Value }
-		};
-
-				await CreateAndSaveEventAsync(EventTitle, eventMemberDates, SelectedCalendarId, SelectedMemberIds);
-			}
-
-
-			else
+			var eventMemberDates = ValidateAndGenerateEventMemberDates(selectedDays);
+			if (eventMemberDates == null)
 			{
 				ModelState.AddModelError(string.Empty, "Ange ett giltigt datum eller intervall.");
 				return Page();
 			}
 
+			await _calendarManagementService.CreateEventAsync(
+				ViewModel.EventTitle,
+				eventMemberDates,
+				ViewModel.SelectedCalendarId,
+				selectedMemberIds);
+
 			return RedirectToPage("./Index", new
 			{
-				year = CurrentYear,
-				month = CurrentMonth,
-				calendarId = SelectedCalendarId
+				year = ViewModel.CurrentYear,
+				month = ViewModel.CurrentMonth,
+				calendarId = ViewModel.SelectedCalendarId
 			});
-		}
-		private static List<EventMemberDate> GenerateEventMemberDatesInRangeWithWeekdays(DateTime start, DateTime end, List<string> selectedDays)
-		{
-			var dates = new List<EventMemberDate>();
-
-			for (var date = start; date <= end; date = date.AddDays(1))
-			{
-				var culture = new CultureInfo("sv-SE");
-
-				var dayOfWeek = culture.DateTimeFormat.GetDayName(date.DayOfWeek);
-
-				if (selectedDays.Any(day => day.Equals(dayOfWeek, StringComparison.OrdinalIgnoreCase)))
-				{
-					dates.Add(new EventMemberDate
-					{
-						Date = date
-					});
-				}
-			}
-
-			return dates;
-		}
-
-		private List<EventMemberDate>? ValidateAndGenerateEventMemberDates(DateTime? startDate, DateTime? endDate, List<string>? selectedDays)
-		{
-			if (!IsValidIntervalInputs(startDate, endDate, selectedDays))
-				return null;
-
-			return GenerateEventMemberDatesInRangeWithWeekdays(startDate!.Value, endDate!.Value, selectedDays!);
 		}
 
 		private async Task LoadSelectedCalendarData(int? calendarId)
 		{
-			var calendar = Calendars.FirstOrDefault(c => c.Id == calendarId);
-			SelectedCalendar = calendar ?? Calendars.FirstOrDefault() ?? new Core.Models.Calendar();
+			var calendar = ViewModel.Calendars.FirstOrDefault(c => c.Id == calendarId);
+			ViewModel.SelectedCalendar = calendar ?? ViewModel.Calendars.FirstOrDefault() ?? new Core.Models.Calendar();
 
-			Events = await _eventService.GetEventForCalendarAsync(SelectedCalendar.Id);
-			Members = await _memberService.GetMembersForCalendarAsync(SelectedCalendar.Id);
+			ViewModel.Events = await _calendarManagementService.GetEventsForCalendarAsync(ViewModel.SelectedCalendar.Id);
+			ViewModel.Members = await _calendarManagementService.GetMembersForCalendarAsync(ViewModel.SelectedCalendar.Id);
 		}
-		private static List<DateTime> GenerateMonthDays(int year, int month)
-		{
-			var daysCount = DateTime.DaysInMonth(year, month);
-			var days = new List<DateTime>();
 
-			for (var day = 1; day <= daysCount; day++)
-			{
-				days.Add(new DateTime(year, month, day));
-			}
-
-			return days;
-		}
 		private void SetCurrentYearAndMonth(int? year, int? month)
 		{
-			CurrentYear = year ?? CurrentYear;
-			CurrentMonth = month ?? CurrentMonth;
+			ViewModel.CurrentYear = year ?? ViewModel.CurrentYear;
+			ViewModel.CurrentMonth = month ?? ViewModel.CurrentMonth;
 		}
-		private bool IsValidInput(string eventTitle, DateTime? selectedDate, List<int> memberIds, int calendarId)
+
+		private bool IsValidInput(List<int> selectedMemberIds)
 		{
-			return !string.IsNullOrEmpty(eventTitle) &&
-				   selectedDate.HasValue &&
-				   selectedDate.Value.Date >= DateTime.Now.Date &&
-				   memberIds != null &&
-				   memberIds.Count != 0 &&
-				   calendarId > 0;
+			return !string.IsNullOrEmpty(ViewModel.EventTitle) &&
+				   ViewModel.SelectedDate.HasValue &&
+				   ViewModel.SelectedDate.Value.Date >= DateTime.Now.Date &&
+				   selectedMemberIds != null &&
+				   selectedMemberIds.Count != 0 &&
+				   ViewModel.SelectedCalendarId > 0;
 		}
 
-		private bool IsValidIntervalInputs(DateTime? startDate, DateTime? endDate, List<string>? selectedDays)
+		private List<EventMemberDate>? ValidateAndGenerateEventMemberDates(List<string> selectedDays)
 		{
-			return startDate.HasValue &&
-				   endDate.HasValue &&
-				   startDate <= endDate &&
-				   selectedDays != null &&
-				   selectedDays.Count != 0;
+			if (ViewModel.StartDate.HasValue && ViewModel.EndDate.HasValue && selectedDays != null)
+			{
+				return CalendarManagementService.GenerateEventMemberDatesInRangeWithWeekdays(
+					ViewModel.StartDate.Value,
+					ViewModel.EndDate.Value,
+					selectedDays);
+			}
+
+			if (ViewModel.SelectedDate.HasValue)
+			{
+				return new List<EventMemberDate>
+				{
+					new EventMemberDate { Date = ViewModel.SelectedDate.Value }
+				};
+			}
+
+			return null;
 		}
-
-
-		private async Task CreateAndSaveEventAsync(string eventTitle, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
-		{
-			await _eventService.CreateEventAsync(eventTitle, eventMemberDates, calendarId, memberIds);
-		}
-
-
 	}
 }
