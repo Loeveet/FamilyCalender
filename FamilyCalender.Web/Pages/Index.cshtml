@@ -13,6 +13,7 @@
 	var fixedDayColumnWidth = 8;
 	var remainingColumnWidth = membersCount > 0 ? 100m / membersCount : 0;
 }
+
 <a class="btn btn-primary" asp-page="/CreateCalendar">Skapa kalender</a>
 @if (Model.ViewModel.SelectedCalendar.Id == 0)
 {
@@ -145,7 +146,7 @@ else
 			</div>
 
 			<div class="modal-body">
-				<form method="post" asp-page-handler="AddEvent">  @* onsubmit="return validateForm()"*@
+				<form method="post" asp-page-handler="AddEvent" onsubmit="return validateForm()">
 
 					<div class="mb-3">
 						<label class="form-label">@Model.ViewModel.SelectedCalendar?.Name</label>
@@ -185,31 +186,31 @@ else
 									<div class="mb-3">
 										<label class="form-label">Välj dagar</label>
 										<div class="form-check">
-											<input class="form-check-input" type="checkbox" id="monday" name="SelectedDays" value="Måndag" />
+											<input class="form-check-input day-checkbox" type="checkbox" id="monday" name="SelectedDays" value="Måndag" />
 											<label class="form-check-label" for="monday">Måndag</label>
 										</div>
 										<div class="form-check">
-											<input class="form-check-input" type="checkbox" id="tuesday" name="SelectedDays" value="Tisdag" />
+											<input class="form-check-input day-checkbox" type="checkbox" id="tuesday" name="SelectedDays" value="Tisdag" />
 											<label class="form-check-label" for="tuesday">Tisdag</label>
 										</div>
 										<div class="form-check">
-											<input class="form-check-input" type="checkbox" id="wednesday" name="SelectedDays" value="Onsdag" />
+											<input class="form-check-input day-checkbox" type="checkbox" id="wednesday" name="SelectedDays" value="Onsdag" />
 											<label class="form-check-label" for="wednesday">Onsdag</label>
 										</div>
 										<div class="form-check">
-											<input class="form-check-input" type="checkbox" id="thursday" name="SelectedDays" value="Torsdag" />
+											<input class="form-check-input day-checkbox" type="checkbox" id="thursday" name="SelectedDays" value="Torsdag" />
 											<label class="form-check-label" for="thursday">Torsdag</label>
 										</div>
 										<div class="form-check">
-											<input class="form-check-input" type="checkbox" id="friday" name="SelectedDays" value="Fredag" />
+											<input class="form-check-input day-checkbox" type="checkbox" id="friday" name="SelectedDays" value="Fredag" />
 											<label class="form-check-label" for="friday">Fredag</label>
 										</div>
 										<div class="form-check">
-											<input class="form-check-input" type="checkbox" id="saturday" name="SelectedDays" value="Lördag" />
+											<input class="form-check-input day-checkbox" type="checkbox" id="saturday" name="SelectedDays" value="Lördag" />
 											<label class="form-check-label" for="saturday">Lördag</label>
 										</div>
 										<div class="form-check">
-											<input class="form-check-input" type="checkbox" id="sunday" name="SelectedDays" value="Söndag" />
+											<input class="form-check-input day-checkbox" type="checkbox" id="sunday" name="SelectedDays" value="Söndag" />
 											<label class="form-check-label" for="sunday">Söndag</label>
 										</div>
 									</div>

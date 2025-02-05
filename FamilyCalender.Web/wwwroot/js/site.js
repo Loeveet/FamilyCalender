@@ -25,29 +25,50 @@ $('#eventModal').on('hidden.bs.modal', function () {
 // #region validations 
 
 function validateForm() {
-    const isInterval = isIntervalSelected();
-    const areDatesValid = validateDates(isInterval); 
-    const isIntervalValid = isInterval ? validateInterval() : true; 
-    const areWeekdaysValid = isInterval ? validateWeekdaysWithinInterval() : true;
+    resetValidation();
+
     const isTitleValid = validateEventTitle();
+
     const areMembersValid = validateMembers();
 
-    return isIntervalValid && areWeekdaysValid && isTitleValid && areMembersValid && areDatesValid;
+    const isInterval = isIntervalSelected();
+    const areDatesValid = validateDates(isInterval);
+    const isIntervalValid = isInterval ? validateInterval() : true;
+    const areWeekdaysValid = isInterval ? validateWeekdaysWithinInterval() : true;
+
+    return isTitleValid && areMembersValid && areDatesValid && isIntervalValid && areWeekdaysValid;
+}
+function resetValidation() {
+    document.querySelectorAll('.text-danger').forEach(error => {
+        error.classList.add('d-none');
+    });
+
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.classList.remove('is-invalid');
+    });
 }
 function isIntervalSelected() {
-    const startDateValue = document.getElementById("startDate").value;
-    const endDateValue = document.getElementById("endDate").value;
-    const selectedDays = Array.from(document.querySelectorAll(".form-check-input:checked")).map(checkbox => checkbox.value);
+    const startDateValue = document.getElementById("modalStartDate").value;
+    const endDateValue = document.getElementById("modalEndDate").value;
+    const selectedDays = Array.from(document.querySelectorAll(".day-checkbox:checked")).map(checkbox => checkbox.value);
+    console.log("Selected days:", selectedDays); // ovanför här
 
     return startDateValue || endDateValue || selectedDays.length > 0;
 }
 function validateDates(isInterval) {
-    const isSelectedDateValid = validateDateField("modalSelectedDate", "error-selected-date");
-    const isStartDateValid = validateDateField("startDate", "error-start-date");
-    const isEndDateValid = validateDateField("endDate", "error-end-date");
-    const isDateRangeValid = isInterval ? validateDateRange("startDate", "endDate", "error-end-date") : true;
+    let isValid = true;
 
-    return isSelectedDateValid && isStartDateValid && isEndDateValid && isDateRangeValid;
+    if (isInterval) {
+        const isStartDateValid = validateDateField('modalStartDate', 'error-start-date');
+        const isEndDateValid = validateDateField('modalEndDate', 'error-end-date');
+        const isDateRangeValid = validateDateRange('modalStartDate', 'modalEndDate', 'error-end-date');
+
+        isValid = isStartDateValid && isEndDateValid && isDateRangeValid;
+    } else {
+        isValid = validateDateField('modalSelectedDate', 'error-selected-date');
+    }
+
+    return isValid;
 }
 function validateDateField(dateFieldId, errorFieldId) {
     const dateValue = document.getElementById(dateFieldId).value;
@@ -61,6 +82,7 @@ function validateDateField(dateFieldId, errorFieldId) {
     }
 
     if (dateValue < today) {
+        dateError.textContent = "Datum kan inte vara bakåt i tiden.";
         dateError.classList.remove("d-none");
         document.getElementById(dateFieldId).classList.add("is-invalid");
         return false;
@@ -71,61 +93,43 @@ function validateDateField(dateFieldId, errorFieldId) {
     return true;
 }
 function validateInterval() {
-    const startDateValue = document.getElementById("startDate").value;
-    const endDateValue = document.getElementById("endDate").value;
-    const selectedDays = Array.from(document.querySelectorAll(".form-check-input:checked")).map(checkbox => checkbox.value);
+    const startDate = document.getElementById("modalStartDate");
+    const endDate = document.getElementById("modalEndDate");
+    const selectedDays = document.querySelectorAll('.form-check-input:checked');
+
+    const startDateValue = startDate.value;
+    const endDateValue = endDate.value;
+    const today = new Date().toISOString().split("T")[0];
 
     const startDateError = document.getElementById("error-start-date");
     const endDateError = document.getElementById("error-end-date");
-    const selectedDaysError = document.getElementById("error-interval-weekdays");
-
-
-    const startDate = document.getElementById("startDate");
-
-    console.log("StartDate:", startDate);
-
-
-    if (!startDateValue && !endDateValue && selectedDays.length < 2) {
-        return true;
-    }
-
-    startDateError.classList.add("d-none");
-    endDateError.classList.add("d-none");
-    selectedDaysError.classList.add("d-none");
+    const selectedDaysError = document.getElementById('error-interval-weekdays');
 
     let isValid = true;
 
+
     if (!startDateValue) {
-        startDateError.textContent = "Startdatum måste vara ifyllt.";
+        startDateError.textContent = "Startdatum krävs.";
         startDateError.classList.remove("d-none");
         isValid = false;
-    } else {
-        const today = new Date().toISOString().split("T")[0];
-        if (startDateValue < today) {
-            startDateError.textContent = "Startdatum kan inte vara tidigare än dagens datum.";
-            startDateError.classList.remove("d-none");
-            isValid = false;
-        }
+    } else if (startDateValue < today) {
+        startDateError.textContent = "Startdatum kan inte vara bakåt i tiden.";
+        startDateError.classList.remove("d-none");
+        isValid = false;
     }
 
     if (!endDateValue) {
-        endDateError.textContent = "Slutdatum måste vara ifyllt.";
+        endDateError.textContent = "Slutdatum krävs.";
         endDateError.classList.remove("d-none");
         isValid = false;
-    } else {
-        const today = new Date().toISOString().split("T")[0];
-        if (endDateValue < today) {
-            endDateError.textContent = "Slutdatum kan inte vara tidigare än dagens datum.";
-            endDateError.classList.remove("d-none");
-            isValid = false;
-        } else if (startDateValue && endDateValue < startDateValue) {
-            endDateError.textContent = "Slutdatum kan inte vara tidigare än startdatum.";
-            endDateError.classList.remove("d-none");
-            isValid = false;
-        }
+    } else if (endDateValue <= startDateValue) {
+        endDateError.textContent = "Slutdatum måste vara efter startdatum.";
+        endDateError.classList.remove("d-none");
+        isValid = false;
     }
-    if (selectedDays.length < 2) {
-        selectedDaysError.textContent = "Du måste välja minst en veckodag.";
+
+    if (selectedDays.length < 1) {
+        selectedDaysError.textContent = 'Välj minst en veckodag';
         selectedDaysError.classList.remove("d-none");
         isValid = false;
     }
@@ -133,8 +137,8 @@ function validateInterval() {
     return isValid;
 }
 function validateWeekdaysWithinInterval() {
-    const startDateValue = document.getElementById("startDate").value;
-    const endDateValue = document.getElementById("endDate").value;
+    const startDateValue = document.getElementById("modalStartDate").value;
+    const endDateValue = document.getElementById("modalEndDate").value;
     const selectedDaysError = document.getElementById("error-right-weekdays");
 
     if (!startDateValue || !endDateValue) {
@@ -173,17 +177,16 @@ function validateEventTitle() {
     const eventTitle = eventTitleInput.value.trim();
 
     if (eventTitle === "") {
+        eventTitleError.textContent = 'Ange titel';
         eventTitleError.classList.remove("d-none");
         eventTitleInput.classList.add("is-invalid");
         return false;
     }
 
-    eventTitleError.classList.add("d-none");
-    eventTitleInput.classList.remove("is-invalid");
     return true;
 }
 function validateMembers() {
-    const checkboxes = document.querySelectorAll(".member-checkbox");
+    const checkboxes = document.querySelectorAll(".member-checkbox"); //TTT
     const memberError = document.getElementById("memberError");
     let isAnyChecked = false;
 
@@ -194,11 +197,11 @@ function validateMembers() {
     });
 
     if (!isAnyChecked) {
+        memberError.textContent = 'Du måste välja minst en medlem';
         memberError.classList.remove("d-none");
         return false;
     }
 
-    memberError.classList.add("d-none");
     return true;
 }
 function validateDateRange(startDateId, endDateId, errorFieldId) {
@@ -270,7 +273,7 @@ function updateHiddenInputs() {
     members.forEach(function (member, index) {
         var input = document.createElement('input');
         input.type = 'hidden';
-        input.name = 'Members[' + index + '].Name'; 
+        input.name = 'Members[' + index + '].Name';
         input.value = member;
         hiddenMembersInputs.appendChild(input);
     });
