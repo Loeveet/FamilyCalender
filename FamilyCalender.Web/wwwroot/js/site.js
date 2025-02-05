@@ -95,7 +95,7 @@ function validateDateField(dateFieldId, errorFieldId) {
 function validateInterval() {
     const startDate = document.getElementById("modalStartDate");
     const endDate = document.getElementById("modalEndDate");
-    const selectedDays = document.querySelectorAll('.form-check-input:checked');
+    const selectedDays = document.querySelectorAll('.day-checkbox:checked');
 
     const startDateValue = startDate.value;
     const endDateValue = endDate.value;
@@ -147,7 +147,7 @@ function validateWeekdaysWithinInterval() {
     }
 
     const validWeekdaysSet = new Set(["MÅNDAG", "TISDAG", "ONSDAG", "TORSDAG", "FREDAG", "LÖRDAG", "SÖNDAG"]);
-    const selectedDays = Array.from(document.querySelectorAll(".form-check-input:checked"))
+    const selectedDays = Array.from(document.querySelectorAll(".day-checkbox:checked"))
         .map(checkbox => checkbox.value.toUpperCase())
         .filter(day => validWeekdaysSet.has(day));
 
@@ -186,7 +186,7 @@ function validateEventTitle() {
     return true;
 }
 function validateMembers() {
-    const checkboxes = document.querySelectorAll(".member-checkbox"); //TTT
+    const checkboxes = document.querySelectorAll(".member-checkbox:checked");
     const memberError = document.getElementById("memberError");
     let isAnyChecked = false;
 
