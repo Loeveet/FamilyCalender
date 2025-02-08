@@ -57,6 +57,7 @@ namespace FamilyCalender.Web.Pages
 			eventToUpdate.Title = ViewModel.NewTitle;
 
 			await _eventManagementService.UpdateEventAsync(eventToUpdate, selectedMemberIds, editOption, ViewModel.StartDate, ViewModel.EndDate, ViewModel.NewDate, selectedDays);
+			ViewModel.SelectedDays = selectedDays;
 
 			if (!eventToUpdate.EventMemberDates.Any(e => e.Date == ViewModel.Day) && editOption == "all")
 			{

@@ -2,8 +2,8 @@
 @model FamilyCalender.Web.Pages.EventDetailsModel
 @{
 	var cultureInfo = new System.Globalization.CultureInfo("sv-SE");
-	var sortedDays = Model.ViewModel.SelectedDays.OrderBy(day => day).ToList();
-	var daysInSwedish = sortedDays.Select(day => cultureInfo.DateTimeFormat.GetDayName(day)).ToList();
+	var daysInSwedish = Model.ViewModel.SelectedDays.Select(day => cultureInfo.DateTimeFormat.GetDayName(day)).ToList();
+	var sortedDaysInSwedish = daysInSwedish.OrderBy(day => day).ToList();
 }
 
 <div>
@@ -28,7 +28,7 @@
 			<ul>
 				<li><strong>Startdatum:</strong> @Model.ViewModel.EventDetails.EventMemberDates.First().Date.ToString("yyyy-MM-dd")</li>
 				<li><strong>Slutdatum:</strong> @Model.ViewModel.EventDetails.EventMemberDates.Last().Date.ToString("yyyy-MM-dd")</li>
-				<li><strong>Veckodagar:</strong> @string.Join(", ", daysInSwedish)</li>
+				<li><strong>Veckodagar:</strong> @string.Join(", ", sortedDaysInSwedish)</li>
 			</ul>
 		}
 	</div>
@@ -179,20 +179,21 @@
 
 <!-- Modal för att redigera eventet -->
 <div class="modal fade" id="editEventModal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-dialog-centered modal-sm">
 		<div class="modal-content">
-			<form method="post" asp-page-handler="UpdateEvent">
 
-				<div class="modal-header">
-					<h5 class="modal-title" id="editEventModalLabel">Redigera Event</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
-				</div>
+			<div class="modal-header">
+				<h5 class="modal-title" id="editEventModalLabel">Redigera Event</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+			</div>
 
-				<div class="modal-body">
+			<div class="modal-body">
+				<form method="post" asp-page-handler="UpdateEvent" onsubmit="return validateEditForm()">
 
 					<div class="mb-3">
 						<label for="editEventTitle" class="form-label">Ändra titel</label>
 						<input type="text" class="form-control" value="@Model.ViewModel.EventDetails.Title" asp-for=ViewModel.NewTitle id="editEventTitle" />
+						<small id="editEventTitleError" class="text-danger d-none">Titel måste finnas</small>
 					</div>
 
 
@@ -204,7 +205,7 @@
 						<div class="mb-3">
 							<label for="editStartDate" class="form-label">Välj nytt startdatum</label>
 							<input type="date" class="form-control" asp-for="ViewModel.StartDate" value="@minEventDate.ToString("yyyy-MM-dd")" id="editStartDate" />
-							<small id="error-start-date" class="text-danger d-none"></small>
+							<small id="edit-error-start-date" class="text-danger d-none"></small>
 
 
 						</div>
@@ -212,33 +213,38 @@
 						<div class="mb-3">
 							<label for="editEndDate" class="form-label">Välj nytt slutdatum</label>
 							<input type="date" class="form-control" asp-for="ViewModel.EndDate" value="@maxEventDate.ToString("yyyy-MM-dd")" id="editEndDate" />
-							<small id="error-end-date" class="text-danger d-none"></small>
+							<small id="edit-error-end-date" class="text-danger d-none"></small>
 
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Välj dagar</label>
 							<div>
-								<input type="checkbox" name="SelectedDays" value="Monday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Monday) ? "checked" : "") /> Måndag <br />
-								<input type="checkbox" name="SelectedDays" value="Tuesday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Tuesday) ? "checked" : "") /> Tisdag <br />
-								<input type="checkbox" name="SelectedDays" value="Wednesday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Wednesday) ? "checked" : "") /> Onsdag <br />
-								<input type="checkbox" name="SelectedDays" value="Thursday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Thursday) ? "checked" : "") /> Torsdag <br />
-								<input type="checkbox" name="SelectedDays" value="Friday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Friday) ? "checked" : "") /> Fredag <br />
-								<input type="checkbox" name="SelectedDays" value="Saturday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Saturday) ? "checked" : "") /> Lördag <br />
-								<input type="checkbox" name="SelectedDays" value="Sunday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Sunday) ? "checked" : "") /> Söndag
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Måndag" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Monday) ? "checked" : "") /> Måndag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Tisdag" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Tuesday) ? "checked" : "") /> Tisdag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Onsdag" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Wednesday) ? "checked" : "") /> Onsdag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Torsdag" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Thursday) ? "checked" : "") /> Torsdag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Fredag" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Friday) ? "checked" : "") /> Fredag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Saturday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Saturday) ? "checked" : "") /> Lördag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Sunday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Sunday) ? "checked" : "") /> Söndag
 							</div>
 						</div>
 						<input type="hidden" name="editOption" value="all" />
 
-						<small id="error-right-weekdays" class="text-danger d-none"></small>
-						<small id="error-interval-weekdays" class="text-danger d-none"></small>
+						<small id="edit-error-right-weekdays" class="text-danger d-none"></small>
+						<small id="edit-error-interval-weekdays" class="text-danger d-none"></small>
 					}
 					else
 					{
 						<div class="mb-3">
 							<label for="editEventDates" class="form-label">Ändra datum för valt event</label>
 							<input type="date" class="form-control" value="@Model.ViewModel.Day.ToString("yyyy-MM-dd")" asp-for="ViewModel.NewDate" id="editEventDates" />
+							<small id="edit-error-selected-date" class="text-danger d-none"></small>
 						</div>
+
 						<input type="hidden" name="editOption" value="single" />
+						<input type="hidden" name="ViewModel.StartDate" id="editStartDateHidden" value="" />
+						<input type="hidden" name="ViewModel.EndDate" id="editEndDateHidden" value="" />
+
 					}
 
 					<div id="editMemberList">
@@ -248,16 +254,19 @@
 						}
 					</div>
 					<small id="memberError" class="text-danger d-none">Du måste välja minst en medlem</small>
-				</div>
-				<div class="modal-footer">
-					<input type="hidden" asp-for="ViewModel.EventId" value="@Model.ViewModel.EventDetails.Id" />
-					<input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
-					<input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
-					<input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
-					<button type="submit" class="btn btn-primary">Spara ändringar</button>
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
-				</div>
-			</form>
+					<div class="modal-footer">
+						<input type="hidden" asp-for="ViewModel.EventId" value="@Model.ViewModel.EventDetails.Id" />
+						<input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
+						<input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
+						<input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
+
+						<button type="submit" class="btn btn-primary">Spara ändringar</button>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
+			</div>
 		</div>
 	</div>
 </div>
