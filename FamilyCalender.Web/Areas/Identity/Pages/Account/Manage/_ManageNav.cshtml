@@ -1,4 +1,5 @@
-﻿@inject SignInManager<User> SignInManager
+﻿@using FamilyCalender.Core.Models.Entities
+@inject SignInManager<User> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

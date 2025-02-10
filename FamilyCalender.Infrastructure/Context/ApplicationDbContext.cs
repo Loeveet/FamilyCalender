@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using FamilyCalender.Core.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using FamilyCalender.Core.Models.Entities;
 
 
 namespace FamilyCalender.Infrastructure.Context

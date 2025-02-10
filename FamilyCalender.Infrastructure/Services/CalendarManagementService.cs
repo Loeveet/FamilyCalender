@@ -1,5 +1,6 @@
 ﻿using FamilyCalender.Core.Interfaces.IServices;
-using FamilyCalender.Core.Models;
+using FamilyCalender.Core.Models.Entities;
+using FamilyCalender.Core.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Infrastructure.Services
 {
-	public class CalendarManagementService
+    public class CalendarManagementService
 	{
 		private readonly ICalendarService _calendarService;
 		private readonly IEventService _eventService;
@@ -25,7 +26,7 @@ namespace FamilyCalender.Infrastructure.Services
 			_memberService = memberService;
 		}
 
-		public async Task<List<Core.Models.Calendar>> GetCalendarsForUserAsync(string userId)
+		public async Task<List<Core.Models.Entities.Calendar>> GetCalendarsForUserAsync(string userId)
 		{
 			return await _calendarService.GetCalendarsForUserAsync(userId);
 		}
@@ -45,14 +46,25 @@ namespace FamilyCalender.Infrastructure.Services
 			await _eventService.CreateEventAsync(eventTitle, eventMemberDates, calendarId, memberIds);
 		}
 
-		public static List<DateTime> GenerateMonthDays(int year, int month)
+		public static List<DayViewModel> GenerateMonthDays(int year, int month, CultureInfo cultureInfo)
 		{
 			var daysCount = DateTime.DaysInMonth(year, month);
-			var days = new List<DateTime>();
+			var days = new List<DayViewModel>();
 
 			for (var day = 1; day <= daysCount; day++)
 			{
-				days.Add(new DateTime(year, month, day));
+				var date = new DateTime(year, month, day);
+				var weekOfYear = GetIso8601WeekOfYear(date);
+
+				days.Add(new DayViewModel
+				{
+					Date = date,
+					IsCurrentDay = date.Date == DateTime.Today,
+					IsPastDay = date.Date < DateTime.Today,
+					WeekOfYear = weekOfYear,
+					ShowWeekNumber = date.DayOfWeek == DayOfWeek.Monday || date.Day == 1,
+					FriendlyDayOfWeek = char.ToUpper(date.ToString("dddd", cultureInfo)[0]) + date.ToString("dddd", cultureInfo).Substring(1)
+				});
 			}
 
 			return days;
@@ -75,5 +87,28 @@ namespace FamilyCalender.Infrastructure.Services
 
 			return dates;
 		}
+
+		public static int GetIso8601WeekOfYear(DateTime date)
+		{
+			var day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(date);
+
+			if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+			{
+				date = date.AddDays(3);
+			}
+
+			int weekNumber = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+				date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday
+			);
+
+			if (weekNumber == 1 && date.Month == 12)
+			{
+				return 53;
+			}
+
+			return weekNumber;
+		}
+
+
 	}
 }

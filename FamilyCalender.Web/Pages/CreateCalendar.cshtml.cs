@@ -1,5 +1,5 @@
 using FamilyCalender.Core.Interfaces.IServices;
-using FamilyCalender.Core.Models;
+using FamilyCalender.Core.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

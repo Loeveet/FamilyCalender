@@ -1,12 +1,12 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
-using FamilyCalender.Core.Models;
+using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FamilyCalender.Infrastructure.Repositories
 {
-	public class EventRepository : IEventRepository
+    public class EventRepository : IEventRepository
 	{
 		private readonly ApplicationDbContext _context;
 

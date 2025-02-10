@@ -1,6 +1,6 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
-using FamilyCalender.Core.Models;
+using FamilyCalender.Core.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

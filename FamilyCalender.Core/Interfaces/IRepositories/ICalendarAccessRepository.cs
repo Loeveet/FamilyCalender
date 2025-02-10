@@ -1,4 +1,4 @@
-﻿using FamilyCalender.Core.Models;
+﻿using FamilyCalender.Core.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

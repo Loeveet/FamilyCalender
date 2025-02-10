@@ -1,16 +1,17 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using FamilyCalender.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using FamilyCalender.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Mvc;
 using FamilyCalender.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using FamilyCalender.Core.Models.ViewModels;
+using FamilyCalender.Core.Models.Entities;
 
 namespace FamilyCalender.Web.Pages
 {
-	public class IndexModel(
+    public class IndexModel(
 		UserManager<User> userManager,
 		CalendarManagementService calendarManagementService) : PageModel
 	{
@@ -29,9 +30,10 @@ namespace FamilyCalender.Web.Pages
 			}
 
 			SetCurrentYearAndMonth(year, month);
-			ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth);
+			ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo);
 
 			ViewModel.Calendars = await _calendarManagementService.GetCalendarsForUserAsync(user.Id);
+
 
 			if (ViewModel.Calendars != null && ViewModel.Calendars.Count > 0)
 			{
@@ -73,7 +75,7 @@ namespace FamilyCalender.Web.Pages
 		private async Task LoadSelectedCalendarData(int? calendarId)
 		{
 			var calendar = ViewModel.Calendars.FirstOrDefault(c => c.Id == calendarId);
-			ViewModel.SelectedCalendar = calendar ?? ViewModel.Calendars.FirstOrDefault() ?? new Core.Models.Calendar();
+			ViewModel.SelectedCalendar = calendar ?? ViewModel.Calendars.FirstOrDefault() ?? new Core.Models.Entities.Calendar();
 
 			ViewModel.Events = await _calendarManagementService.GetEventsForCalendarAsync(ViewModel.SelectedCalendar.Id);
 			ViewModel.Members = await _calendarManagementService.GetMembersForCalendarAsync(ViewModel.SelectedCalendar.Id);

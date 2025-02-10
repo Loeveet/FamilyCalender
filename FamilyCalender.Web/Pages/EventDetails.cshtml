@@ -1,21 +1,19 @@
 ﻿@page
 @model FamilyCalender.Web.Pages.EventDetailsModel
 @{
-	var cultureInfo = new System.Globalization.CultureInfo("sv-SE");
-	var daysInSwedish = Model.ViewModel.SelectedDays.Select(day => cultureInfo.DateTimeFormat.GetDayName(day)).ToList();
-	var sortedDaysInSwedish = daysInSwedish.OrderBy(day => day).ToList();
+
 }
 
 <div>
 	<div>
-		<strong>Kalender:</strong> @Model.ViewModel.EventDetails.Calendar.Name
+		<strong>Kalender:</strong> @Model.ViewModel.EventDetails?.Calendar?.Name
 	</div>
 	<div>
-		<strong>Titel:</strong> @Model.ViewModel.EventDetails.Title
+		<strong>Titel:</strong> @Model.ViewModel.EventDetails?.Title
 	</div>
 
 	<div>
-		@if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() == 1)
+		@if (Model.ViewModel.EventDetails?.EventMemberDates.Select(x => x.Date).Distinct().Count() == 1)
 		{
 			<strong>Datum:</strong>
 			<ul>
@@ -26,9 +24,9 @@
 		{
 			<strong>Intervall:</strong>
 			<ul>
-				<li><strong>Startdatum:</strong> @Model.ViewModel.EventDetails.EventMemberDates.First().Date.ToString("yyyy-MM-dd")</li>
-				<li><strong>Slutdatum:</strong> @Model.ViewModel.EventDetails.EventMemberDates.Last().Date.ToString("yyyy-MM-dd")</li>
-				<li><strong>Veckodagar:</strong> @string.Join(", ", sortedDaysInSwedish)</li>
+				<li><strong>Startdatum:</strong> @Model.ViewModel.EventDetails?.EventMemberDates.First().Date.ToString("yyyy-MM-dd")</li>
+				<li><strong>Slutdatum:</strong> @Model.ViewModel.EventDetails?.EventMemberDates.Last().Date.ToString("yyyy-MM-dd")</li>
+				<li><strong>Veckodagar:</strong> @string.Join(", ", Model.ViewModel.SortedDaysInSwedish)</li>
 			</ul>
 		}
 	</div>
@@ -37,7 +35,7 @@
 		<ul>
 			@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().ToList())
 			{
-				<li>@member.Name</li>
+				<li>@member?.Name</li>
 			}
 		</ul>
 	</div>
@@ -250,7 +248,7 @@
 					<div id="editMemberList">
 						@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
 						{
-							<input type="hidden" name="selectedMemberIds" value="@member.Id" />
+							<input type="hidden" name="selectedMemberIds" value="@member?.Id" />
 						}
 					</div>
 					<small id="memberError" class="text-danger d-none">Du måste välja minst en medlem</small>

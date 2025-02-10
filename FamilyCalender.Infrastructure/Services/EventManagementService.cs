@@ -1,5 +1,5 @@
 ﻿using FamilyCalender.Core.Interfaces.IServices;
-using FamilyCalender.Core.Models;
+using FamilyCalender.Core.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Infrastructure.Services
 {
-	public class EventManagementService
+    public class EventManagementService
 	{
 		private readonly IEventService _eventService;
 		private readonly IMemberService _memberService;

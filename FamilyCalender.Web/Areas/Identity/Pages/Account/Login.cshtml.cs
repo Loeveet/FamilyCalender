@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using FamilyCalender.Core.Models;
+using FamilyCalender.Core.Models.Entities;
 
 namespace FamilyCalender.Web.Areas.Identity.Pages.Account
 {

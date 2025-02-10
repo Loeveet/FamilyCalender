@@ -2,16 +2,8 @@
 @model FamilyCalender.Web.Pages.IndexModel
 @{
 	ViewData["Title"] = "Calendar";
-	var cultureInfo = Model.ViewModel.CultureInfo;
-	var daysInMonth = Model.ViewModel.DaysInMonth;
-	var members = Model.ViewModel.Members ?? new List<FamilyCalender.Core.Models.Member>();
-	var currentMonth = new DateTime(Model.ViewModel.CurrentYear, Model.ViewModel.CurrentMonth, 1);
-	var monthName = currentMonth.ToString("MMMM", new System.Globalization.CultureInfo("sv-SE"));
-	var capitalizedMonthName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(monthName);
-
-	var membersCount = members.Count;
 	var fixedDayColumnWidth = 8;
-	var remainingColumnWidth = membersCount > 0 ? 100m / membersCount : 0;
+	var remainingColumnWidth = Model.ViewModel.Members.Count > 0 ? 100m / Model.ViewModel.Members.Count : 0;
 }
 
 <a class="btn btn-primary" asp-page="/CreateCalendar">Skapa kalender</a>
@@ -28,7 +20,7 @@ else
 		   asp-route-month="@(Model.ViewModel.CurrentMonth == 1 ? 12 : Model.ViewModel.CurrentMonth - 1)"
 		   asp-route-calendarId="@Model.ViewModel.SelectedCalendar?.Id"
 		   class="btn btn-secondary btn-block mb-2">Föregående månad</a>
-		<span>@capitalizedMonthName @Model.ViewModel.CurrentYear</span>
+		<span>@Model.ViewModel.CapitalizedMonthName @Model.ViewModel.CurrentYear</span>
 		<a asp-page="./Index" asp-route-year="@(Model.ViewModel.CurrentMonth == 12 ? Model.ViewModel.CurrentYear + 1 : Model.ViewModel.CurrentYear)"
 		   asp-route-month="@(Model.ViewModel.CurrentMonth == 12 ? 1 : Model.ViewModel.CurrentMonth + 1)"
 		   asp-route-calendarId="@Model.ViewModel.SelectedCalendar?.Id"
@@ -55,37 +47,29 @@ else
 		<thead>
 			<tr>
 				<th class="col-12 col-md-2 text-center">Dag</th>
-				@foreach (var member in members)
+				@foreach (var member in Model.ViewModel.Members ?? new List<Core.Models.Entities.Member>())
 				{
 					<th class="col-12 col-md-2 text-center">@member.Name</th>
 				}
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var day in daysInMonth)
+			@foreach (var day in Model.ViewModel.DaysInMonth)
 			{
 				<tr>
 					<td class="col-12 col-md-2">
 						@{
-							var isCurrentDay = day.Date == DateTime.Today;
-							var isPastDay = day.Date < DateTime.Today;
-							var calendar = cultureInfo.Calendar;
-							var weekOfYear = calendar.GetWeekOfYear(day, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-
-							if (day.DayOfWeek == DayOfWeek.Monday || day.Day == 1)
+							if (day.ShowWeekNumber)
 							{
-								<b>@($"v. {weekOfYear}")</b>
+								<b>@($"v. {day.WeekOfYear}")</b>
 								<br />
 							}
-
-							var dayOfWeek = day.ToString("dddd", Model.ViewModel.CultureInfo);
-							var friendlyDayOfWeek = $"{dayOfWeek[0].ToString().ToUpper()}{dayOfWeek.Substring(1)}";
 						}
 
-						<span class="@((isCurrentDay ? "fw-bold" : "") + (isPastDay ? " text-muted" : ""))">
-							@($"{day.Day} {friendlyDayOfWeek}")
+						<span class="@((day.IsCurrentDay ? "fw-bold" : "") + (day.IsPastDay ? " text-muted" : ""))">
+							@($"{day.Date.Day} {day.FriendlyDayOfWeek}")
 						</span>
-						@if (!isPastDay)
+						@if (!day.IsPastDay)
 						{							
 							<a href="javascript:void(0)"
 							   class="text-decoration-none ms-2"
@@ -98,7 +82,7 @@ else
 						}
 					</td>
 
-					@foreach (var member in members)
+					@foreach (var member in Model.ViewModel.Members ?? new List<Core.Models.Entities.Member>())
 					{
 						var eventMemberDates = Model.ViewModel.SelectedCalendar?.Events
 						.SelectMany(e => e.EventMemberDates)
@@ -155,7 +139,7 @@ else
 
 					<div class="mb-3">
 						<label for="modalSelectedDate" class="form-label">Datum</label>
-						<input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" />
+						<input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" readonly/>
 						<small id="error-selected-date" class="text-danger d-none"></small>
 					</div>
 

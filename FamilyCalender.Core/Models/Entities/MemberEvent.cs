@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FamilyCalender.Core.Models
+namespace FamilyCalender.Core.Models.Entities
 {
     //public class MemberEvent
     //{

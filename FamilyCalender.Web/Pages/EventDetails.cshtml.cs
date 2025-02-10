@@ -1,5 +1,5 @@
 using FamilyCalender.Core.Interfaces.IServices;
-using FamilyCalender.Core.Models;
+using FamilyCalender.Core.Models.ViewModels;
 using FamilyCalender.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +10,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FamilyCalender.Web.Pages
 {
-	public class EventDetailsModel(EventManagementService eventManagementService) : PageModel
+    public class EventDetailsModel(EventManagementService eventManagementService) : PageModel
 	{
 		private readonly EventManagementService _eventManagementService = eventManagementService;
 
@@ -37,6 +37,7 @@ namespace FamilyCalender.Web.Pages
 				.ToList();
 
 			ViewModel.SelectedDays = selectedDays;
+
 
 			return Page();
 		}

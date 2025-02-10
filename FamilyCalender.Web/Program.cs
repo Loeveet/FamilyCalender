@@ -1,16 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using FamilyCalender.Infrastructure.Context;
 using Microsoft.AspNetCore.Identity;
-using FamilyCalender.Core.Models;
 using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Infrastructure.Repositories;
 using FamilyCalender.Infrastructure.Services;
+using FamilyCalender.Core.Models.Entities;
 
 
 namespace FamilyCalender
 {
-	public class Program
+    public class Program
 	{
 		public static void Main(string[] args)
 		{

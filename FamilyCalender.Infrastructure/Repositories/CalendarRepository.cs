@@ -1,5 +1,5 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
-using FamilyCalender.Core.Models;
+using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
