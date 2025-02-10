@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Core.Models.Entities
 {
-    public class MemberCalendar // junktiontable för att kunna ha flera medlemmar på olika kalendrar och tvärtom
+    public class MemberCalendar
     {
         public int Id { get; set; }
         public int MemberId { get; set; }
-        public Member? Member { get; set; }
+        public Member Member { get; set; } = new Member();
         public int CalendarId { get; set; }
-        public Calendar? Calendar { get; set; }
+        public Calendar Calendar { get; set; } = new Calendar();
     }
 }

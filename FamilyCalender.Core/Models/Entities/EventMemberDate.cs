@@ -10,15 +10,12 @@ namespace FamilyCalender.Core.Models.Entities
     {
         public int Id { get; set; }
 
-        // Relation till Event
         public int EventId { get; set; }
-        public Event? Event { get; set; }
+        public Event Event { get; set; } = new Event();
 
-        // Relation till Member
         public int MemberId { get; set; }
-        public Member? Member { get; set; }
+        public Member Member { get; set; } = new Member();
 
-        // Specifikt datum för eventet
         public DateTime Date { get; set; }
     }
 }

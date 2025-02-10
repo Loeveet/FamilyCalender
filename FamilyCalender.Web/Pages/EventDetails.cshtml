@@ -6,28 +6,23 @@
 
 <div>
 	<div>
-		<strong>Kalender:</strong> @Model.ViewModel.EventDetails?.Calendar?.Name
+		<strong>Kalender:</strong> @Model.ViewModel.EventDetails.Calendar.Name
 	</div>
 	<div>
-		<strong>Titel:</strong> @Model.ViewModel.EventDetails?.Title
+		<strong>Titel:</strong> @Model.ViewModel.EventDetails.Title
 	</div>
 
 	<div>
-		@if (Model.ViewModel.EventDetails?.EventMemberDates.Select(x => x.Date).Distinct().Count() == 1)
+		@if (Model.ViewModel.IsSingleEvent)
 		{
-			<strong>Datum:</strong>
-			<ul>
-				<li>@Model.ViewModel.EventDetails.EventMemberDates.First().Date.ToString("yyyy-MM-dd")</li>
-			</ul>
+
+			<strong>Datum:</strong> @Model.ViewModel.FormattedDate
 		}
 		else
 		{
-			<strong>Intervall:</strong>
-			<ul>
-				<li><strong>Startdatum:</strong> @Model.ViewModel.EventDetails?.EventMemberDates.First().Date.ToString("yyyy-MM-dd")</li>
-				<li><strong>Slutdatum:</strong> @Model.ViewModel.EventDetails?.EventMemberDates.Last().Date.ToString("yyyy-MM-dd")</li>
-				<li><strong>Veckodagar:</strong> @string.Join(", ", Model.ViewModel.SortedDaysInSwedish)</li>
-			</ul>
+			<strong>Intervall:</strong> @Model.ViewModel.FormattedInterval
+			<br />
+			<strong>Veckodagar:</strong> @string.Join(", ", Model.ViewModel.SortedDaysInSwedish)
 		}
 	</div>
 	<div>

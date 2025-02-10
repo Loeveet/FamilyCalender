@@ -10,12 +10,9 @@ namespace FamilyCalender.Core.Models.Entities
     public class Event
     {
         public int Id { get; set; }
-        public string? Title { get; set; }
-        //public List<EventDate> EventDates { get; set; } = [];
+        public string Title { get; set; } = string.Empty;
         public int CalendarId { get; set; }
-        public Calendar? Calendar { get; set; }
-        //public ICollection<MemberEvent> MemberEvents { get; set; } = [];
+        public Calendar Calendar { get; set; } = new Calendar();
         public ICollection<EventMemberDate> EventMemberDates { get; set; } = [];
-
     }
 }

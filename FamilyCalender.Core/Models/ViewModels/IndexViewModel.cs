@@ -11,21 +11,21 @@ namespace FamilyCalender.Core.Models.ViewModels
 {
     public class IndexViewModel
     {
-        public List<Calendar> Calendars { get; set; } = [];
+        public ICollection<Calendar> Calendars { get; set; } = [];
         public Calendar SelectedCalendar { get; set; } = new Entities.Calendar();
-        public List<Event> Events { get; set; } = [];
-        public List<Member> Members { get; set; } = [];
-        public List<DayViewModel> DaysInMonth { get; set; } = [];
+        public ICollection<Event> Events { get; set; } = [];
+        public ICollection<Member> Members { get; set; } = [];
+        public ICollection<DayViewModel> DaysInMonth { get; set; } = [];
         public CultureInfo CultureInfo { get; set; } = new CultureInfo("sv-SE");
         public DateTime? SelectedDate { get; set; }
         public int CurrentYear { get; set; } = DateTime.Now.Year;
         public int CurrentMonth { get; set; } = DateTime.Now.Month;
         public string EventTitle { get; set; } = string.Empty;
-        public List<int> SelectedMemberIds { get; set; } = [];
+        public ICollection<int> SelectedMemberIds { get; set; } = [];
         public int SelectedCalendarId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public List<string>? SelectedDays { get; set; }
+        public ICollection<string> SelectedDays { get; set; } = [];
 		public string CapitalizedMonthName
 		{
 			get

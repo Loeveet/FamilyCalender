@@ -15,7 +15,7 @@ namespace FamilyCalender.Core.Models.ViewModels
         public bool IsPastDay { get; set; }
         public int WeekOfYear { get; set; }
         public bool ShowWeekNumber { get; set; }
-        public List<EventMemberDate> Events { get; set; } = new();
+        public ICollection<EventMemberDate> Events { get; set; } = [];
     }
 
 }
