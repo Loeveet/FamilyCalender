@@ -26,16 +26,13 @@ namespace FamilyCalender.Web.Pages
             {
                 return Page();
             }
-            var user = new User();
-            try
-            {
-                user = await _userManager.GetUserAsync(User);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("No logged in user", ex);
-            }
-            try
+			var user = await _userManager.GetUserAsync(User);
+			if (user == null)
+			{
+				ModelState.AddModelError(string.Empty, "Ingen inloggad användare hittades.");
+				return Page();
+			}
+			try
             {
                 var createdCalendar = await _calendarService.CreateCalendarAsync(Calendar, user);
                 if (Members.Count > 0)

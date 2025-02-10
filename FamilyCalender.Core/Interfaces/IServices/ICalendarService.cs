@@ -12,7 +12,6 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task<Calendar> CreateCalendarAsync(Calendar calendar, User user);
         Task<List<Calendar>> GetCalendarsForUserAsync(string id);
         Task<Calendar?> UpdateCalendarAsync(Calendar calendar);
-        Task<Calendar?> GetCalendarByIdAsync(int calendarId);
         Task<List<Event>> GetEventsForCalendarAsync(int calendarId);
         Task<List<Member>> GetMembersForCalendarAsync(int calendarId);
 

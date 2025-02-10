@@ -21,17 +21,14 @@ namespace FamilyCalender.Infrastructure.Repositories
 			return e;
 		}
 
-		public async Task<IEnumerable<Event>> GetAllByMemberAsync(int memberId)
-		{
-			throw new NotImplementedException();
-		}
-
 		public async Task<List<Event>> GetByCalendar(int calendarId)
 		{
 			return await _context.Events
 				.Where(e => e.CalendarId == calendarId)
 				.Include(e => e.EventMemberDates)
 				.ThenInclude(me => me.Member)
+				.Include(e => e.EventMemberDates)
+				.ThenInclude(e => e.Event)
 				.ToListAsync();
 		}
 

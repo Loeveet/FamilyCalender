@@ -2,7 +2,6 @@
 @model FamilyCalender.Web.Pages.IndexModel
 @{
 	ViewData["Title"] = "Calendar";
-	var fixedDayColumnWidth = 8;
 	var remainingColumnWidth = Model.ViewModel.Members.Count > 0 ? 100m / Model.ViewModel.Members.Count : 0;
 }
 
@@ -101,7 +100,7 @@ else
 												   asp-route-memberId="@member.Id"
 												   asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
 												   class="text-decoration-none text-dark">
-													@eventMemberDate.Event.Title
+													@(eventMemberDate.Event?.Title ?? "")
 												</a>
 												<br />
 											}

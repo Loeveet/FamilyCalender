@@ -109,10 +109,10 @@ namespace FamilyCalender.Web.Pages
 
 			if (ViewModel.SelectedDate.HasValue)
 			{
-				return new List<EventMemberDate>
-				{
-					new EventMemberDate { Date = ViewModel.SelectedDate.Value }
-				};
+				return
+				[
+					new() { Date = ViewModel.SelectedDate.Value }
+				];
 			}
 
 			return null;

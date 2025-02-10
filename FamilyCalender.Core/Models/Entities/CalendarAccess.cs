@@ -10,9 +10,9 @@ namespace FamilyCalender.Core.Models.Entities
     {
         public int Id { get; set; }
         public string UserId { get; set; } = string.Empty;
-        public User User { get; set; } = new User();
+        public User? User { get; set; }
         public int CalendarId { get; set; }
-        public Calendar Calendar { get; set; } = new Calendar();
+        public Calendar? Calendar { get; set; }
         public bool IsOwner { get; set; } = false;
     }
 }

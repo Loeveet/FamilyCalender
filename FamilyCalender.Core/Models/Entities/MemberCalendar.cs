@@ -10,8 +10,8 @@ namespace FamilyCalender.Core.Models.Entities
     {
         public int Id { get; set; }
         public int MemberId { get; set; }
-        public Member Member { get; set; } = new Member();
+        public Member? Member { get; set; }
         public int CalendarId { get; set; }
-        public Calendar Calendar { get; set; } = new Calendar();
+        public Calendar? Calendar { get; set; }
     }
 }

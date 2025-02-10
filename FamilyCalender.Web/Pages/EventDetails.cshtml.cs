@@ -19,7 +19,7 @@ namespace FamilyCalender.Web.Pages
 
 		public async Task<IActionResult> OnGetAsync(int eventId, int memberId, DateTime day)
 		{
-			ViewModel.EventDetails = await _eventManagementService.GetEventDetailsAsync(eventId) ?? new Core.Models.Entities.Event();
+			ViewModel.EventDetails = await _eventManagementService.GetEventDetailsAsync(eventId);
 
 			if (ViewModel.EventDetails == null)
 			{
@@ -29,10 +29,12 @@ namespace FamilyCalender.Web.Pages
 			ViewModel.Member = await _eventManagementService.GetMemberAsync(memberId);
 			ViewModel.Day = day;
 			ViewModel.Members = await _eventManagementService.GetMembersForCalendarAsync(ViewModel.EventDetails.CalendarId);
+
 			ViewModel.ChosenMembers = ViewModel.EventDetails.EventMemberDates
 				.Select(x => x.Member)
+				.Where(m => m != null)
 				.Distinct()
-				.ToList();
+				.ToList()!;
 
 			ViewModel.SelectedDays = ViewModel.EventDetails.EventMemberDates
 				.Where(ed => ed.Date >= DateTime.Today)
@@ -52,10 +54,10 @@ namespace FamilyCalender.Web.Pages
 				.ToList();
 
 			ViewModel.FormattedDate = ViewModel.IsSingleEvent ?
-				orderedDates.First().ToString("yyyy-MM-dd") : null;
+				orderedDates.First().ToString("yyyy-MM-dd") : string.Empty;
 
 			ViewModel.FormattedInterval = !ViewModel.IsSingleEvent ?
-				$"{orderedDates.First():yyyy-MM-dd} - {orderedDates.Last():yyyy-MM-dd}" : null;
+				$"{orderedDates.First():yyyy-MM-dd} - {orderedDates.Last():yyyy-MM-dd}" : string.Empty;
 
 
 

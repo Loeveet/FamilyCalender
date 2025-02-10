@@ -53,11 +53,6 @@ namespace FamilyCalender.Infrastructure.Services
             }
         }
 
-        public Task<Calendar> GetCalendarByIdAsync(int calendarId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<Calendar>> GetCalendarsForUserAsync(string id)
         {
             return await _calendarRepository.GetAllByUserAsync(id);
@@ -76,8 +71,8 @@ namespace FamilyCalender.Infrastructure.Services
         public async Task<Calendar> UpdateCalendarAsync(Calendar calendar)
         {
             var updatedCalendar = await _calendarRepository.UpdateAsync(calendar);
-            return updatedCalendar;
-        }
+			return updatedCalendar ?? throw new InvalidDataException(); //Kolla igenom exceptions.
+		}
 
-    }
+	}
 }

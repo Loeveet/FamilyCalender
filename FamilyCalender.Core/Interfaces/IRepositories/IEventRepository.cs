@@ -12,7 +12,6 @@ namespace FamilyCalender.Core.Interfaces.IRepositories
     public interface IEventRepository
     {
         Task<Event?> GetByIdAsync(int eventId);
-        Task<IEnumerable<Event>> GetAllByMemberAsync(int memberId);
         Task<List<Event>> GetByCalendar(int calendarId);
         Task<EventMemberDate> GetMemberEventDateByEventIdAndMemberIdAsync(int eventId, int memberId, DateTime date);
         Task<List<EventMemberDate>> GetEventMemberDatesByEventIdAndMemberIdAsync(int eventId, int memberId);

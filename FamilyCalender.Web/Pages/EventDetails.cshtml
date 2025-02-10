@@ -212,11 +212,11 @@
 						<div class="mb-3">
 							<label class="form-label">Välj dagar</label>
 							<div>
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Måndag" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Monday) ? "checked" : "") /> Måndag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Tisdag" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Tuesday) ? "checked" : "") /> Tisdag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Onsdag" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Wednesday) ? "checked" : "") /> Onsdag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Torsdag" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Thursday) ? "checked" : "") /> Torsdag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Fredag" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Friday) ? "checked" : "") /> Fredag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Monday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Monday) ? "checked" : "") /> Måndag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Tuesday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Tuesday) ? "checked" : "") /> Tisdag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Wednesday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Wednesday) ? "checked" : "") /> Onsdag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Thursday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Thursday) ? "checked" : "") /> Torsdag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Friday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Friday) ? "checked" : "") /> Fredag <br />
 								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Saturday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Saturday) ? "checked" : "") /> Lördag <br />
 								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Sunday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Sunday) ? "checked" : "") /> Söndag
 							</div>
@@ -235,8 +235,6 @@
 						</div>
 
 						<input type="hidden" name="editOption" value="single" />
-						<input type="hidden" name="ViewModel.StartDate" id="editStartDateHidden" value="" />
-						<input type="hidden" name="ViewModel.EndDate" id="editEndDateHidden" value="" />
 
 					}
 

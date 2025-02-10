@@ -12,7 +12,7 @@ namespace FamilyCalender.Core.Models.ViewModels
     public class IndexViewModel
     {
         public ICollection<Calendar> Calendars { get; set; } = [];
-        public Calendar SelectedCalendar { get; set; } = new Entities.Calendar();
+        public Calendar SelectedCalendar { get; set; } = new Core.Models.Entities.Calendar();
         public ICollection<Event> Events { get; set; } = [];
         public ICollection<Member> Members { get; set; } = [];
         public ICollection<DayViewModel> DaysInMonth { get; set; } = [];
