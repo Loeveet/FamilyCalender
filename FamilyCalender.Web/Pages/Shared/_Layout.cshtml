@@ -22,19 +22,37 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav">
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Logout">Logga ut</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/CreateCalendar">Skapa kalender</a>
                             </li>
+
+                            @if (ViewData["ShowCalendarSelector"] as bool? == true && Model?.ViewModel?.Calendars?.Count > 1)
+                            {
+                                <li class="nav-item">
+                                    <form method="get" class="d-flex gap-2 flex-wrap">
+                                        @foreach (var calendar in Model.ViewModel.Calendars)
+                                        {
+                                            <button type="submit" name="calendarId" value="@calendar.Id"
+                                                    class="btn @(calendar.Id == Model.ViewModel.SelectedCalendar?.Id ? "btn-primary" : "btn-outline-primary")">
+                                                @calendar.Name
+                                            </button>
+                                        }
+                                        <input type="hidden" name="year" value="@Model.ViewModel.CurrentYear" />
+                                        <input type="hidden" name="month" value="@Model.ViewModel.CurrentMonth" />
+                                    </form>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <form method="post" asp-area="Identity" asp-page="/Account/Logout">
+                                <button type="submit" class="nav-link btn btn-link text-dark p-0">Logga ut</button>
+                            </form>
                         }
                         else
                         {
@@ -47,6 +65,7 @@
                         }
                     </ul>
                 </div>
+
             </div>
         </nav>
     </header>

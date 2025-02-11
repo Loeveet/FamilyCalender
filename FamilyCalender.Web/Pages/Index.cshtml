@@ -2,9 +2,10 @@
 @model FamilyCalender.Web.Pages.IndexModel
 @{
 	ViewData["Title"] = "Calendar";
+	ViewData["ShowCalendarSelector"] = true;
+
 }
 
-<a class="btn btn-primary" asp-page="/CreateCalendar">Skapa kalender</a>
 @if (Model.ViewModel.SelectedCalendar.Id == 0)
 {
 	<p>Ingen kalender hittades</p>
@@ -13,34 +14,26 @@ else
 {
 
 	<h2>@Model.ViewModel.SelectedCalendar.Name</h2>
-	<h3 class="d-flex justify-content-between align-items-center">
+	<h3 class="d-flex justify-content-center align-items-center">
 		<a asp-page="./Index" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
 		   asp-route-month="@(Model.ViewModel.CurrentMonth == 1 ? 12 : Model.ViewModel.CurrentMonth - 1)"
 		   asp-route-calendarId="@Model.ViewModel.SelectedCalendar?.Id"
-		   class="btn btn-secondary btn-block mb-2">Föregående månad</a>
-		<span>@Model.ViewModel.CapitalizedMonthName @Model.ViewModel.CurrentYear</span>
+		   class="btn btn-secondary btn-block mb-2">
+			<i class="bi bi-chevron-down"></i>
+		</a>
+
+		<span class="d-flex align-items-center justify-content-center text-center" style="min-width: 14rem;">
+			@Model.ViewModel.CapitalizedMonthName @Model.ViewModel.CurrentYear
+		</span>
+
 		<a asp-page="./Index" asp-route-year="@(Model.ViewModel.CurrentMonth == 12 ? Model.ViewModel.CurrentYear + 1 : Model.ViewModel.CurrentYear)"
 		   asp-route-month="@(Model.ViewModel.CurrentMonth == 12 ? 1 : Model.ViewModel.CurrentMonth + 1)"
 		   asp-route-calendarId="@Model.ViewModel.SelectedCalendar?.Id"
-		   class="btn btn-secondary btn-block mb-2">Nästa månad</a>
+		   class="btn btn-secondary btn-block mb-2">
+			<i class="bi bi-chevron-up"></i>
+		</a>
 	</h3>
 
-	@if (Model.ViewModel.Calendars != null && Model.ViewModel.Calendars.Count > 1)
-	{
-		<form method="get">
-			<div class="d-flex gap-2 flex-wrap">
-				@foreach (var calendar in Model.ViewModel.Calendars)
-				{
-					<button type="submit" name="calendarId" value="@calendar.Id"
-							class="btn @(calendar.Id == Model.ViewModel.SelectedCalendar?.Id ? "btn-primary" : "btn-outline-primary")">
-						@calendar.Name
-					</button>
-				}
-				<input type="hidden" name="year" value="@Model.ViewModel.CurrentYear" />
-				<input type="hidden" name="month" value="@Model.ViewModel.CurrentMonth" />
-			</div>
-		</form>
-	}
 	<table class="table table-bordered table-striped table-hover">
 		<thead>
 			<tr>
