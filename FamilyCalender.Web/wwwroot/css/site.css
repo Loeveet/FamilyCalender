@@ -19,17 +19,56 @@
     background-color: #004085;
     color: white;
 }
+.header-calendar-name {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.month-and-year {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    min-width: 14rem;
+}
 
 .expanding-column {
     flex-grow: 1;
-    overflow: auto;
+    overflow: hidden;
     word-break: break-word;
+    min-width: 0;
+    max-width: 3.75rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
+
+
 .fixed-day-column {
     width: 10%;
     white-space: nowrap;
     text-align: center;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
+.truncated-title {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: small;
+
+}
+.navbar .dropdown-toggle {
+    color: black !important; 
+}
+.navbar .nav-link,
+.navbar .dropdown-toggle,
+.navbar .btn-link {
+    transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover,
+.navbar .btn-link:hover {
+    color: rgba(0, 0, 0, 0.7) !important;
+    opacity: 0.8;
+}
+
 
 
 
