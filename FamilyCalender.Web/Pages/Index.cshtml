@@ -14,6 +14,15 @@ else
 {
 
 	<h2 class="header-calendar-name">@Model.ViewModel.SelectedCalendar.Name</h2>
+	<a href="javascript:void(0)"
+	   class="floating-button d-sm-none"
+	   data-bs-toggle="modal"
+	   data-bs-target="#eventModal"
+	   data-selected-date="@DateTime.Now.ToString("yyyy-MM-dd")"
+	   data-editable="true"
+	   onclick="setModalValues(this)">
+		<i class="bi bi-plus-circle" title="Lägg till event"></i>
+	</a>
 	<h3 class="d-flex justify-content-center align-items-center">
 		<a asp-page="./Index" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
 		   asp-route-month="@(Model.ViewModel.CurrentMonth == 1 ? 12 : Model.ViewModel.CurrentMonth - 1)"
@@ -69,6 +78,7 @@ else
 							   data-bs-toggle="modal"
 							   data-bs-target="#eventModal"
 							   data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
+							   data-editable="false"
 							   onclick="setModalValues(this)">
 								<i class="bi bi-plus-circle event-icon" title="Lägg till event"></i>
 							</a>
@@ -128,7 +138,7 @@ else
 
 					<div class="mb-3">
 						<label for="modalSelectedDate" class="form-label">Datum</label>
-						<input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" readonly />
+						<input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" readonly/>
 						<small id="error-selected-date" class="text-danger d-none"></small>
 					</div>
 

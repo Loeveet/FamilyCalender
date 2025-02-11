@@ -1,7 +1,17 @@
-﻿function setModalValues(element) {
-    const selectedDate = element.getAttribute("data-selected-date");
+﻿
+function setModalValues(button) {
+    var selectedDate = button.getAttribute("data-selected-date");
+    var isEditable = button.getAttribute("data-editable") === "true";
 
-    document.getElementById("modalSelectedDate").value = selectedDate;
+    var dateInput = document.getElementById("modalSelectedDate");
+
+    if (selectedDate) {
+        dateInput.value = selectedDate;
+    } else {
+        dateInput.value = "";
+    }
+
+    dateInput.readOnly = !isEditable;
 }
 
 $('#eventModal').on('hidden.bs.modal', function () {
