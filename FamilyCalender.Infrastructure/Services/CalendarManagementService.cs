@@ -55,6 +55,7 @@ namespace FamilyCalender.Infrastructure.Services
 			{
 				var date = new DateTime(year, month, day);
 				var weekOfYear = GetIso8601WeekOfYear(date);
+				string dayName = date.ToString("dddd", cultureInfo);
 
 				days.Add(new DayViewModel
 				{
@@ -63,7 +64,7 @@ namespace FamilyCalender.Infrastructure.Services
 					IsPastDay = date.Date < DateTime.Today,
 					WeekOfYear = weekOfYear,
 					ShowWeekNumber = date.DayOfWeek == DayOfWeek.Monday || date.Day == 1,
-					FriendlyDayOfWeek = char.ToUpper(date.ToString("dddd", cultureInfo)[0]) + date.ToString("dddd", cultureInfo).Substring(1)
+					CapitalizedDayName = char.ToUpper(dayName[0]) + dayName.Substring(1),
 				});
 			}
 

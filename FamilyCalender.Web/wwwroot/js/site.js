@@ -226,22 +226,7 @@ function validateDateRange(startDateId, endDateId, errorFieldId) {
 // #endregion
 
 // #region validation-edit-event
-//$('#editEventModal').on('hidden.bs.modal', function () {
-//    document.getElementById("editModalStartDate").value = '';
-//    document.getElementById("editModalEndDate").value = '';
-//    document.getElementById("editEventTitle").value = '';
 
-//    document.querySelectorAll('.form-check-input').forEach(checkbox => checkbox.checked = false);
-
-//    document.querySelectorAll('.text-danger').forEach(error => error.classList.add('d-none'));
-
-//    document.querySelectorAll('.form-control').forEach(input => input.classList.remove('is-invalid'));
-
-//    const collapseOne = $('#collapseOne');
-//    if (collapseOne.hasClass('show')) {
-//        collapseOne.collapse('hide');
-//    }
-//});
 function validateEditForm() {
     resetValidationEdit();
 
@@ -416,7 +401,6 @@ function validateEventTitleEdit() {
 
 // #endregion
 
-
 // #region handle-members-in-new-calendar
 
 var members = [];
@@ -471,3 +455,19 @@ function updateHiddenInputs() {
 }
 
 // #endregion
+
+function updateDayNames() {
+    let elements = document.querySelectorAll("span[data-full]");
+
+    elements.forEach(el => {
+        if (window.innerWidth < 576) {
+            el.textContent = el.getAttribute("data-short");
+        } else {
+            el.textContent = el.getAttribute("data-full");
+        }
+    });
+}
+
+updateDayNames();
+
+window.addEventListener("resize", updateDayNames);

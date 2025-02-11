@@ -27,8 +27,6 @@ namespace FamilyCalender.Infrastructure.Repositories
 				.Where(e => e.CalendarId == calendarId)
 				.Include(e => e.EventMemberDates)
 				.ThenInclude(me => me.Member)
-				.Include(e => e.EventMemberDates)
-				.ThenInclude(e => e.Event)
 				.ToListAsync();
 		}
 

@@ -10,7 +10,7 @@ namespace FamilyCalender.Core.Models.ViewModels
     public class DayViewModel
     {
         public DateTime Date { get; set; }
-        public string FriendlyDayOfWeek { get; set; } = string.Empty;
+        public string CapitalizedDayName { get; set; } = string.Empty;
         public bool IsCurrentDay { get; set; }
         public bool IsPastDay { get; set; }
         public int WeekOfYear { get; set; }

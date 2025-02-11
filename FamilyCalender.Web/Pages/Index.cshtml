@@ -2,7 +2,6 @@
 @model FamilyCalender.Web.Pages.IndexModel
 @{
 	ViewData["Title"] = "Calendar";
-	var remainingColumnWidth = Model.ViewModel.Members.Count > 0 ? 100m / Model.ViewModel.Members.Count : 0;
 }
 
 <a class="btn btn-primary" asp-page="/CreateCalendar">Skapa kalender</a>
@@ -29,7 +28,7 @@ else
 	@if (Model.ViewModel.Calendars != null && Model.ViewModel.Calendars.Count > 1)
 	{
 		<form method="get">
-			<div class="calendar-buttons">
+			<div class="d-flex gap-2 flex-wrap">
 				@foreach (var calendar in Model.ViewModel.Calendars)
 				{
 					<button type="submit" name="calendarId" value="@calendar.Id"
@@ -42,13 +41,13 @@ else
 			</div>
 		</form>
 	}
-	<table class="table table-bordered table-striped">
+	<table class="table table-bordered table-striped table-hover">
 		<thead>
 			<tr>
-				<th class="col-12 col-md-2 text-center">Dag</th>
+				<th class="fixed-day-column">Dag</th>
 				@foreach (var member in Model.ViewModel.Members ?? new List<Core.Models.Entities.Member>())
 				{
-					<th class="col-12 col-md-2 text-center">@member.Name</th>
+					<th class="expanding-column">@member.Name</th>
 				}
 			</tr>
 		</thead>
@@ -56,7 +55,7 @@ else
 			@foreach (var day in Model.ViewModel.DaysInMonth)
 			{
 				<tr>
-					<td class="col-12 col-md-2">
+					<td class="fixed-day-column">
 						@{
 							if (day.ShowWeekNumber)
 							{
@@ -64,12 +63,14 @@ else
 								<br />
 							}
 						}
-
-						<span class="@((day.IsCurrentDay ? "fw-bold" : "") + (day.IsPastDay ? " text-muted" : ""))">
-							@($"{day.Date.Day} {day.FriendlyDayOfWeek}")
+						<span class="@(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "")"
+							  data-full="@day.CapitalizedDayName"
+							  data-short="@day.CapitalizedDayName[..2]">
+							@day.CapitalizedDayName
 						</span>
+
 						@if (!day.IsPastDay)
-						{							
+						{
 							<a href="javascript:void(0)"
 							   class="text-decoration-none ms-2"
 							   data-bs-toggle="modal"
@@ -87,27 +88,23 @@ else
 						.SelectMany(e => e.EventMemberDates)
 						.Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
 						.ToList();
-						<td class="col-12 col-md-2">
-							<div class="d-flex flex-column">
-								<div class="d-flex justify-content-between align-items-start">
-									<span class="text-start">
-										@if (eventMemberDates?.Any() ?? false)
-										{
-											foreach (var eventMemberDate in eventMemberDates)
-											{
-												<a asp-page="./EventDetails"
-												   asp-route-eventId="@eventMemberDate.EventId"
-												   asp-route-memberId="@member.Id"
-												   asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
-												   class="text-decoration-none text-dark">
-													@(eventMemberDate.Event?.Title ?? "")
-												</a>
-												<br />
-											}
-										}
-									</span>
+						<td class="expanding-column">
+							<div class="d-flex flex-column justify-content-between gap-1">
+								@if (eventMemberDates?.Any() ?? false)
+								{
+									foreach (var eventMemberDate in eventMemberDates)
+									{
+										<a asp-page="./EventDetails"
+										   asp-route-eventId="@eventMemberDate.EventId"
+										   asp-route-memberId="@member.Id"
+										   asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
+										   class="text-decoration-none text-dark">
+											@(eventMemberDate.Event?.Title ?? "")
+										</a>
+										<br />
+									}
+								}
 
-								</div>
 							</div>
 						</td>
 					}
@@ -138,7 +135,7 @@ else
 
 					<div class="mb-3">
 						<label for="modalSelectedDate" class="form-label">Datum</label>
-						<input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" readonly/>
+						<input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" readonly />
 						<small id="error-selected-date" class="text-danger d-none"></small>
 					</div>
 
