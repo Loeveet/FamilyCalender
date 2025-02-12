@@ -89,6 +89,38 @@ body {
     opacity: 0.8;
 }
 
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s ease-in-out;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+.list-group-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 5px;
+    transition: background-color 0.3s ease;
+}
+
+    .list-group-item:hover {
+        background-color: #e9ecef;
+    }
+
+.btn-lg {
+    font-size: 18px;
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+    .btn-lg:hover {
+        opacity: 0.9;
+    }
+
 
 
 

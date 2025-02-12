@@ -47,6 +47,12 @@ namespace FamilyCalender.Web.Pages
 				.Distinct()
 				.Count() == 1;
 
+			ViewModel.IsSingleMember = ViewModel.EventDetails.EventMemberDates
+				.Select(x => x.Member)
+				.Distinct()
+				.ToList()
+				.Count() < 2;
+
 			var orderedDates = ViewModel.EventDetails.EventMemberDates
 				.Select(x => x.Date)
 				.Distinct()

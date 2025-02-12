@@ -4,7 +4,7 @@
 
 }
 
-<div>
+@* <div>
 	<div>
 		<strong>Kalender:</strong> @Model.ViewModel.EventDetails.Calendar.Name
 	</div>
@@ -43,6 +43,68 @@
 		<div type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
 			Radera event
 		</div>
+	</div>
+</div> *@
+
+	<div class="d-flex align-items-center">
+		<button class="btn btn-outline-dark btn-sm" onclick="window.history.back()">
+			<i class="bi bi-arrow-left"></i> Tillbaka
+		</button>
+	</div>
+<div class="container mt-4">
+	<div class="card shadow-sm p-3">
+		<h5 class="card-title text-center text-dark"><i class="bi bi-calendar-event"></i> Händelsedetaljer</h5>
+		<hr>
+
+		<div class="mb-2">
+			<strong><i class="bi bi-calendar-event"></i> Kalender:</strong> @Model.ViewModel.EventDetails.Calendar.Name
+		</div>
+		<div class="mb-2">
+			<strong><i class="bi bi-pencil"></i> Vad:</strong> @Model.ViewModel.EventDetails.Title
+		</div>
+
+		<div class="mb-2">
+			@if (Model.ViewModel.IsSingleEvent)
+			{
+				<strong><i class="bi bi-clock"></i> När:</strong> @Model.ViewModel.FormattedDate
+			}
+			else
+			{
+				<strong><i class="bi bi-calendar-range"></i> När:</strong> @Model.ViewModel.FormattedInterval
+				<br />
+				<strong><i class="bi bi-calendar-day"></i> Veckodagar:</strong> @string.Join(", ", Model.ViewModel.SortedDaysInSwedish)
+			}
+		</div>
+
+		<div class="mb-2">
+			@if (Model.ViewModel.IsSingleMember)
+			{
+				<strong><i class="bi bi-person-circle"></i> Gäller:</strong>
+			}
+			else
+			{
+				<strong><i class="bi bi-people-fill"></i> Gäller:</strong>
+
+			}
+			<ul class="list-group list-group-flush">
+				@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().ToList())
+				{
+					<li class="list-group-item">@member?.Name</li>
+				}
+			</ul>
+		</div>
+	</div>
+
+	<!-- Action Buttons -->
+	<div class="d-flex justify-content-between mt-3">
+		<button class="btn btn-secondary btn-lg flex-fill me-2" data-bs-toggle="modal" data-bs-target="#editEventModal">
+			<i class="bi bi-pencil-square"></i> 
+			Redigera
+		</button>
+		<button class="btn btn-danger btn-lg flex-fill ms-2" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
+			<i class="bi bi-trash"></i>
+			Radera
+		</button>
 	</div>
 </div>
 

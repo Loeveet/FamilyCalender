@@ -25,7 +25,8 @@ namespace FamilyCalender.Core.Models.ViewModels
         public int Year { get; set; }
         public int Month { get; set; }
         public bool IsSingleEvent { get; set; } = false;
-        public string FormattedDate { get; set; } = string.Empty;
+		public bool IsSingleMember { get; set; } = false;
+		public string FormattedDate { get; set; } = string.Empty;
         public string FormattedInterval { get; set; } = string.Empty;
         public ICollection<string> SwedishWeekdays { get; set; } = [];
         public ICollection<Member> ChosenMembers { get; set; } = [];
