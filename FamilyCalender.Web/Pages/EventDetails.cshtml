@@ -4,53 +4,11 @@
 
 }
 
-@* <div>
-	<div>
-		<strong>Kalender:</strong> @Model.ViewModel.EventDetails.Calendar.Name
-	</div>
-	<div>
-		<strong>Titel:</strong> @Model.ViewModel.EventDetails.Title
-	</div>
-
-	<div>
-		@if (Model.ViewModel.IsSingleEvent)
-		{
-
-			<strong>Datum:</strong> @Model.ViewModel.FormattedDate
-		}
-		else
-		{
-			<strong>Intervall:</strong> @Model.ViewModel.FormattedInterval
-			<br />
-			<strong>Veckodagar:</strong> @string.Join(", ", Model.ViewModel.SortedDaysInSwedish)
-		}
-	</div>
-	<div>
-		<strong>Medlemmar:</strong>
-		<ul>
-			@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().ToList())
-			{
-				<li>@member?.Name</li>
-			}
-		</ul>
-	</div>
-	<div>
-		<div type="button" class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#editEventModal">
-			Redigera event
-		</div>
-	</div>
-	<div>
-		<div type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
-			Radera event
-		</div>
-	</div>
-</div> *@
-
-	<div class="d-flex align-items-center">
-		<button class="btn btn-outline-dark btn-sm" onclick="window.history.back()">
-			<i class="bi bi-arrow-left"></i> Tillbaka
-		</button>
-	</div>
+<div class="d-flex align-items-center">
+	<button class="btn btn-outline-dark btn-sm" onclick="window.history.back()">
+		<i class="bi bi-arrow-left"></i> Tillbaka
+	</button>
+</div>
 <div class="container mt-4">
 	<div class="card shadow-sm p-3">
 		<h5 class="card-title text-center text-dark"><i class="bi bi-calendar-event"></i> Händelsedetaljer</h5>
@@ -98,7 +56,7 @@
 	<!-- Action Buttons -->
 	<div class="d-flex justify-content-between mt-3">
 		<button class="btn btn-secondary btn-lg flex-fill me-2" data-bs-toggle="modal" data-bs-target="#editEventModal">
-			<i class="bi bi-pencil-square"></i> 
+			<i class="bi bi-pencil-square"></i>
 			Redigera
 		</button>
 		<button class="btn btn-danger btn-lg flex-fill ms-2" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
@@ -114,7 +72,7 @@
 		<div class="modal-content">
 			<form method="post" asp-page-handler="DeleteEvent">
 				<div class="modal-header">
-					<h5 class="modal-title" id="deleteEventModalLabel">Radera Event</h5>
+					<h5 class="modal-title" id="deleteEventModalLabel">Radera händelse</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
 				</div>
 				<div class="modal-body">
@@ -139,12 +97,12 @@
 							<input type="hidden" name="selectedMemberIds" value="@Model.ViewModel.Member.Id" />
 
 						}
-						<p>Vill du radera detta event?</p>
+						<p>Vill du radera denna händelse?</p>
 					}
 					<!-- Enkelt event på flera personer -->
 					@if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() == 1 && Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() > 1)
 					{
-						<p>Det här eventet gäller flera personer. Välj vilka du vill ta bort eventet för:</p>
+						<p>Det här eventet gäller flera personer. Välj vilka du vill ta bort händelsen för:</p>
 						<div id="deleteMemberListSingle">
 							@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
 							{
@@ -171,7 +129,7 @@
 					<!-- Event inom ett intervall -->
 					@if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1)
 					{
-						<p>Det här eventet är en del av ett intervall.</p>
+						<p>Den här händelsen är en del av ett intervall.</p>
 						<div class="form-check">
 							<input type="radio"
 								   class="form-check-input"
@@ -179,7 +137,7 @@
 								   name="deleteOption"
 								   value="single" checked />
 							<label class="form-check-label" for="deleteSingleEvent">
-								Radera endast det här eventet: <strong>@Model.ViewModel.Day.ToString("yyyy-MM-dd")</strong>
+								Radera endast den här händelsen: <strong>@Model.ViewModel.Day.ToString("yyyy-MM-dd")</strong>
 							</label>
 						</div>
 						<div class="form-check">
@@ -188,7 +146,7 @@
 								   id="deleteAllEvents"
 								   name="deleteOption"
 								   value="all" />
-							<label class="form-check-label" for="deleteAllEvents">Radera alla event inom intervallet</label>
+							<label class="form-check-label" for="deleteAllEvents">Radera alla händelser inom intervallet</label>
 						</div>
 					}
 					<!-- Event inom ett intervall med flera personer -->
@@ -238,7 +196,7 @@
 		<div class="modal-content">
 
 			<div class="modal-header">
-				<h5 class="modal-title" id="editEventModalLabel">Redigera Event</h5>
+				<h5 class="modal-title" id="editEventModalLabel">Redigera händelse</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
 			</div>
 
@@ -291,7 +249,7 @@
 					else
 					{
 						<div class="mb-3">
-							<label for="editEventDates" class="form-label">Ändra datum för valt event</label>
+							<label for="editEventDates" class="form-label">Ändra datum för vald händelse</label>
 							<input type="date" class="form-control" value="@Model.ViewModel.Day.ToString("yyyy-MM-dd")" asp-for="ViewModel.NewDate" id="editEventDates" />
 							<small id="edit-error-selected-date" class="text-danger d-none"></small>
 						</div>

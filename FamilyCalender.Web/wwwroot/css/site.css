@@ -19,15 +19,42 @@ body {
         opacity: 0.5;
     }
 
-    .floating-button:hover {
-        background-color: #0056b3;
+        .floating-button:hover {
+            background-color: #0056b3;
+        }
+
+    .add-event-button {
+        display: none; /* Döljer knappen på små skärmar */
+    }
+
+    .day-info-medium, .day-info-large {
+        display: none; /* Döljer både dagförkortning och fullständigt namn */
     }
 }
 
+@media (min-width: 577px) and (max-width: 767px) {
+    .day-info-small {
+        display: none; /* Döljer bara datumet på mellanstora skärmar */
+    }
+
+    .day-info-large {
+        display: none; /* Döljer fullt namn på dag */
+    }
+}
+
+@media (min-width: 768px) {
+    .day-info-small {
+        display: none; /* Döljer bara datumet på stora skärmar */
+    }
+
+    .day-info-medium {
+        display: none; /* Döljer förkortat namn på dag på stora skärmar */
+    }
+}
 
 .accordion-button.collapsed {
     border: 1px solid #007bff;
-    transition: background-color 0.3s ease, color 0.3s ease; 
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .accordion-button.collapsed:hover {
@@ -56,26 +83,33 @@ body {
     word-break: break-word;
     min-width: 0;
     max-width: 3.75rem;
+    font-size: clamp(10px, 2vw, 20px);
+    white-space: nowrap;
 }
+
 
 
 .fixed-day-column {
     width: 10%;
     white-space: nowrap;
     text-align: center;
+    font-size: 0.7rem;
+
 }
+
 .truncated-title {
     display: block;
     max-width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    font-size: small;
+    font-size: clamp(10px, 1.2vw, 14px);
+}
 
-}
 .navbar .dropdown-toggle {
-    color: black !important; 
+    color: black !important;
 }
+
 .navbar .nav-link,
 .navbar .dropdown-toggle,
 .navbar .btn-link {
@@ -94,9 +128,9 @@ body {
     transition: transform 0.2s ease-in-out;
 }
 
-    .card:hover {
-        transform: translateY(-5px);
-    }
+.card:hover {
+    transform: translateY(-5px);
+}
 
 .list-group-item {
     background-color: #f8f9fa;
@@ -117,11 +151,14 @@ body {
     border-radius: 10px;
 }
 
-    .btn-lg:hover {
-        opacity: 0.9;
-    }
-
-
-
-
+.btn-lg:hover {
+    opacity: 0.9;
+}
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
 

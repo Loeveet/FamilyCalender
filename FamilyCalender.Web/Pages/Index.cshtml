@@ -21,7 +21,7 @@ else
 	   data-selected-date="@DateTime.Now.ToString("yyyy-MM-dd")"
 	   data-editable="true"
 	   onclick="setModalValues(this)">
-		<i class="bi bi-plus-circle" title="Lägg till event"></i>
+		<i class="bi bi-plus-circle" title="Lägg till händelse"></i>
 	</a>
 	<h3 class="d-flex justify-content-center align-items-center">
 		<a asp-page="./Index" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
@@ -46,7 +46,7 @@ else
 	<table class="table table-bordered table-striped table-hover">
 		<thead>
 			<tr>
-				<th class="fixed-day-column">Dag</th>
+				<th class="fixed-day-column"></th>
 				@foreach (var member in Model.ViewModel.Members ?? new List<Core.Models.Entities.Member>())
 				{
 					<th class="expanding-column">@member.Name</th>
@@ -65,22 +65,29 @@ else
 								<br />
 							}
 						}
-						<span class="@(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "")"
-							  data-full="@day.CapitalizedDayName"
-							  data-short="@day.CapitalizedDayName[..2]">
+						<span class="day-info day-info-small @(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "")">
+							@day.Date.Day
+						</span>
+
+						<span class="day-info day-info-medium @(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "")">
+							@day.CapitalizedDayName[..2]
+						</span>
+
+						<span class="day-info day-info-large @(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "")">
 							@day.CapitalizedDayName
 						</span>
+
 
 						@if (!day.IsPastDay)
 						{
 							<a href="javascript:void(0)"
-							   class="text-decoration-none ms-2"
+							   class="text-decoration-none ms-2 add-event-button"
 							   data-bs-toggle="modal"
 							   data-bs-target="#eventModal"
 							   data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
 							   data-editable="false"
 							   onclick="setModalValues(this)">
-								<i class="bi bi-plus-circle event-icon" title="Lägg till event"></i>
+								<i class="bi bi-plus-circle event-icon" title="Lägg till händelse"></i>
 							</a>
 						}
 					</td>
@@ -123,7 +130,7 @@ else
 		<div class="modal-content">
 
 			<div class="modal-header">
-				<h5 class="modal-title">Lägg till event</h5>
+				<h5 class="modal-title">Lägg till händelse</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 
@@ -230,7 +237,7 @@ else
 					<input type="hidden" asp-for="ViewModel.CurrentYear" value="@Model.ViewModel.CurrentYear" />
 					<input type="hidden" asp-for="ViewModel.CurrentMonth" value="@Model.ViewModel.CurrentMonth" />
 
-					<button type="submit" class="btn btn-primary">Skapa Event</button>
+					<button type="submit" class="btn btn-primary">Skapa händelse</button>
 				</form>
 			</div>
 
