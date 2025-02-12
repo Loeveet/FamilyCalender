@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NuGet.Packaging;
+using System.Globalization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FamilyCalender.Web.Pages
 {
-    public class EventDetailsModel(EventManagementService eventManagementService) : PageModel
+	public class EventDetailsModel(EventManagementService eventManagementService) : PageModel
 	{
 		private readonly EventManagementService _eventManagementService = eventManagementService;
 
@@ -25,6 +26,7 @@ namespace FamilyCalender.Web.Pages
 			{
 				return NotFound();
 			}
+			var culture = new CultureInfo("sv-SE");
 
 			ViewModel.Member = await _eventManagementService.GetMemberAsync(memberId);
 			ViewModel.Day = day;
@@ -38,7 +40,7 @@ namespace FamilyCalender.Web.Pages
 
 			ViewModel.SelectedDays = ViewModel.EventDetails.EventMemberDates
 				.Where(ed => ed.Date >= DateTime.Today)
-				.Select(ed => ed.Date.DayOfWeek)
+				.Select(ed => culture.DateTimeFormat.GetDayName(ed.Date.DayOfWeek)) // Konvertera till svenska
 				.Distinct()
 				.ToList();
 
@@ -70,7 +72,7 @@ namespace FamilyCalender.Web.Pages
 			return Page();
 		}
 
-		public async Task<IActionResult> OnPostUpdateEventAsync(List<int> selectedMemberIds, string? editOption, List<DayOfWeek> selectedDays)
+		public async Task<IActionResult> OnPostUpdateEventAsync(List<int> selectedMemberIds, string? editOption, List<string> selectedDays)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -88,12 +90,13 @@ namespace FamilyCalender.Web.Pages
 			await _eventManagementService.UpdateEventAsync(eventToUpdate, selectedMemberIds, editOption, ViewModel.StartDate, ViewModel.EndDate, ViewModel.NewDate, selectedDays);
 			ViewModel.SelectedDays = selectedDays;
 
+
 			if (!eventToUpdate.EventMemberDates.Any(e => e.Date == ViewModel.Day) && editOption == "all")
 			{
 				return RedirectToPage("./Index", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
 			}
 
-			return RedirectToPage("./EventDetails", new { eventId = eventToUpdate.Id, memberId = ViewModel.MemberId, day = ViewModel.NewDate.Year != 1 ? ViewModel.NewDate : ViewModel.Day});
+			return RedirectToPage("./EventDetails", new { eventId = eventToUpdate.Id, memberId = ViewModel.MemberId, day = ViewModel.NewDate.Year != 1 ? ViewModel.NewDate : ViewModel.Day });
 		}
 
 		public async Task<IActionResult> OnPostDeleteEventAsync(List<int> selectedMemberIds, string? deleteOption)
@@ -107,6 +110,11 @@ namespace FamilyCalender.Web.Pages
 
 			return RedirectToPage("./Index", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
 		}
+		public async Task<IActionResult> OnPostRouteToIndexAsync()
+		{
+			return RedirectToPage("./Index", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
+		}
+
 
 	}
 }

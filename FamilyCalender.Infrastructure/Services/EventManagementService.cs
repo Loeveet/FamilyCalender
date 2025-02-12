@@ -2,13 +2,14 @@
 using FamilyCalender.Core.Models.Entities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace FamilyCalender.Infrastructure.Services
 {
-    public class EventManagementService
+	public class EventManagementService
 	{
 		private readonly IEventService _eventService;
 		private readonly IMemberService _memberService;
@@ -34,15 +35,20 @@ namespace FamilyCalender.Infrastructure.Services
 			return await _memberService.GetMembersForCalendarAsync(calendarId);
 		}
 
-		public async Task UpdateEventAsync(Event eventToUpdate, List<int> selectedMemberIds, string? editOption, DateTime startDate, DateTime endDate, DateTime newDate, List<DayOfWeek> selectedDays)
+		public async Task UpdateEventAsync(Event eventToUpdate, List<int> selectedMemberIds, string? editOption, DateTime startDate, DateTime endDate, DateTime newDate, List<string> selectedDays)
 		{
 			eventToUpdate.EventMemberDates.Clear();
 
 			if (editOption == "all")
 			{
+				var selectedDaysLower = selectedDays
+					.Select(d => d.ToLower())
+					.ToHashSet();
 				for (var date = startDate; date <= endDate; date = date.AddDays(1))
 				{
-					if (selectedDays.Contains(date.DayOfWeek))
+					var dayName = new CultureInfo("sv-SE").DateTimeFormat.GetDayName(date.DayOfWeek).ToLower();
+
+					if (selectedDaysLower.Contains(dayName))
 					{
 						foreach (var memberId in selectedMemberIds)
 						{

@@ -1,14 +1,21 @@
 ﻿@page
 @model FamilyCalender.Web.Pages.EventDetailsModel
 @{
+	var culture = new System.Globalization.CultureInfo("sv-SE");
 
 }
 
 <div class="d-flex align-items-center">
-	<button class="btn btn-outline-dark btn-sm" onclick="window.history.back()">
-		<i class="bi bi-arrow-left"></i> Tillbaka
-	</button>
+	<form method="post" asp-page-handler="RouteToIndex">
+		<button type="submit" class="btn btn-outline-dark btn-sm">
+			<i class="bi bi-arrow-left"></i> Tillbaka
+		</button>
+		<input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
+		<input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
+
+	</form>
 </div>
+
 <div class="container mt-4">
 	<div class="card shadow-sm p-3">
 		<h5 class="card-title text-center text-dark"><i class="bi bi-calendar-event"></i> Händelsedetaljer</h5>
@@ -232,13 +239,13 @@
 						<div class="mb-3">
 							<label class="form-label">Välj dagar</label>
 							<div>
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Monday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Monday) ? "checked" : "") /> Måndag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Tuesday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Tuesday) ? "checked" : "") /> Tisdag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Wednesday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Wednesday) ? "checked" : "") /> Onsdag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Thursday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Thursday) ? "checked" : "") /> Torsdag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Friday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Friday) ? "checked" : "") /> Fredag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Saturday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Saturday) ? "checked" : "") /> Lördag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Sunday" @(Model.ViewModel.SelectedDays.Contains(DayOfWeek.Sunday) ? "checked" : "") /> Söndag
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Måndag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Monday)) ? "checked" : "") /> Måndag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Tisdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Tuesday)) ? "checked" : "") /> Tisdag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Onsdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Wednesday)) ? "checked" : "") /> Onsdag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Torsdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Thursday)) ? "checked" : "") /> Torsdag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Fredag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Friday)) ? "checked" : "") /> Fredag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Lördag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Saturday)) ? "checked" : "") /> Lördag <br />
+								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Söndag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Sunday)) ? "checked" : "") /> Söndag
 							</div>
 						</div>
 						<input type="hidden" name="editOption" value="all" />

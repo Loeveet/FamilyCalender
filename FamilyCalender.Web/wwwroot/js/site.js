@@ -309,8 +309,6 @@ function validateDateFieldEdit(dateFieldId, errorFieldId) {
         return false;
     }
 
-    //dateError.classList.add("d-none");
-    //document.getElementById(dateFieldId).classList.remove("is-invalid");
     return true;
 }
 
@@ -366,6 +364,8 @@ function validateWeekdaysWithinIntervalEdit() {
         selectedDaysError.classList.add("d-none");
         return true;
     }
+    const selectedCheckboxes = document.querySelectorAll(".edit-day-checkbox:checked");
+    console.log("Valda checkboxar:", selectedCheckboxes);
 
     const validWeekdaysSet = new Set(["MÅNDAG", "TISDAG", "ONSDAG", "TORSDAG", "FREDAG", "LÖRDAG", "SÖNDAG"]);
     const selectedDays = Array.from(document.querySelectorAll(".edit-day-checkbox:checked"))

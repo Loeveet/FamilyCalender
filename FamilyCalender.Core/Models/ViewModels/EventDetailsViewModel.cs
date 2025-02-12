@@ -15,7 +15,7 @@ namespace FamilyCalender.Core.Models.ViewModels
         public DateTime Day { get; set; }
         public ICollection<Member> Members { get; set; } = [];
         public string NewTitle { get; set; } = string.Empty;
-        public ICollection<DayOfWeek> SelectedDays { get; set; } = [];
+        public ICollection<string> SelectedDays { get; set; } = [];
         public bool UpdateInterval { get; set; }
         public DateTime StartDate { get; set; } = DateTime.Now;
         public DateTime EndDate { get; set; } = DateTime.Now;
@@ -37,11 +37,11 @@ namespace FamilyCalender.Core.Models.ViewModels
                 var cultureInfo = new System.Globalization.CultureInfo("sv-SE");
                 var weekOrder = new List<string> { "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag", "söndag" };
 
-                return SelectedDays
-                    .Select(day => cultureInfo.DateTimeFormat.GetDayName(day).ToLower())
-                    .OrderBy(day => weekOrder.IndexOf(day))
-                    .ToList();
-            }
+				return SelectedDays
+					.Select(day => day.ToLower()) 
+					.OrderBy(day => weekOrder.IndexOf(day))
+					.ToList();
+			}
         }
 
 	}
