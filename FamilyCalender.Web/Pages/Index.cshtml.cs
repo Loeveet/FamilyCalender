@@ -21,6 +21,27 @@ namespace FamilyCalender.Web.Pages
 		[BindProperty]
 		public IndexViewModel ViewModel { get; set; } = new IndexViewModel();
 
+		//public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
+		//{
+		//	var user = await _userManager.GetUserAsync(User);
+		//	if (user == null)
+		//	{
+		//		return RedirectToPage("/Account/Login");
+		//	}
+
+		//	SetCurrentYearAndMonth(year, month);
+		//	ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo);
+
+		//	ViewModel.Calendars = await _calendarManagementService.GetCalendarsForUserAsync(user.Id);
+
+
+		//	if (ViewModel.Calendars != null && ViewModel.Calendars.Count > 0)
+		//	{
+		//		await LoadSelectedCalendarData(calendarId);
+		//	}
+
+		//	return Page();
+		//}
 		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
 		{
 			var user = await _userManager.GetUserAsync(User);
@@ -32,12 +53,19 @@ namespace FamilyCalender.Web.Pages
 			SetCurrentYearAndMonth(year, month);
 			ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo);
 
-			ViewModel.Calendars = await _calendarManagementService.GetCalendarsForUserAsync(user.Id);
+			var calendarIds = await _calendarManagementService.GetCalendarIdsForUserAsync(user.Id);
 
 
-			if (ViewModel.Calendars != null && ViewModel.Calendars.Count > 0)
+			if (calendarIds != null && calendarIds.Count > 0)
 			{
-				await LoadSelectedCalendarData(calendarId);
+				await LoadSelectedCalendarData(calendarId, calendarIds);
+			}
+			else
+			{
+				// Om användaren inte har några kalendrar, sätt en tom standardvärde
+				ViewModel.SelectedCalendar = new Core.Models.Entities.Calendar();
+				ViewModel.Events = new List<Event>();
+				ViewModel.Members = new List<Member>();
 			}
 
 			return Page();
@@ -72,13 +100,21 @@ namespace FamilyCalender.Web.Pages
 			});
 		}
 
-		private async Task LoadSelectedCalendarData(int? calendarId)
+		private async Task LoadSelectedCalendarData(int? calendarId, List<int> calendarIds)
 		{
-			var calendar = ViewModel.Calendars.FirstOrDefault(c => c.Id == calendarId);
-			ViewModel.SelectedCalendar = calendar ?? ViewModel.Calendars.FirstOrDefault() ?? new Core.Models.Entities.Calendar();
+			var chosenCalendarId = calendarId.HasValue && calendarIds.Contains(calendarId.Value)
+				? calendarId.Value
+				: calendarIds.FirstOrDefault();
 
-			ViewModel.Events = await _calendarManagementService.GetEventsForCalendarAsync(ViewModel.SelectedCalendar.Id);
-			ViewModel.Members = await _calendarManagementService.GetMembersForCalendarAsync(ViewModel.SelectedCalendar.Id);
+			if (chosenCalendarId == 0)
+			{
+				return;
+			}
+
+			ViewModel.SelectedCalendar = await _calendarManagementService.GetCalendarByCalendarIdAsync(chosenCalendarId);
+
+			ViewModel.Events = await _calendarManagementService.GetEventsForCalendarAsync(chosenCalendarId, ViewModel.CurrentYear, ViewModel.CurrentMonth);
+			ViewModel.Members = await _calendarManagementService.GetMembersForCalendarAsync(chosenCalendarId);
 		}
 
 		private void SetCurrentYearAndMonth(int? year, int? month)

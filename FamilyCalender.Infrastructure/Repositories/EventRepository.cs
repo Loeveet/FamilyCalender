@@ -21,14 +21,16 @@ namespace FamilyCalender.Infrastructure.Repositories
 			return e;
 		}
 
-		public async Task<List<Event>> GetByCalendar(int calendarId)
+		public async Task<List<Event>> GetByCalendar(int calendarId, int year, int month)
 		{
 			return await _context.Events
-				.Where(e => e.CalendarId == calendarId)
-				.Include(e => e.EventMemberDates)
-				.ThenInclude(me => me.Member)
+				.Where(e => e.CalendarId == calendarId &&
+							e.EventMemberDates.Any(em => em.Date.Year == year && em.Date.Month == month))
+				.Include(e => e.EventMemberDates.Where(em => em.Date.Year == year && em.Date.Month == month)) // Filtrera datum
+				.ThenInclude(em => em.Member)
 				.ToListAsync();
 		}
+
 
 
 		public async Task<Event?> GetByIdAsync(int eventId)

@@ -78,9 +78,9 @@ namespace FamilyCalender.Infrastructure.Services
 			return await _eventRepository.GetByIdAsync(eventId);
 		}
 
-		public async Task<List<Event>> GetEventForCalendarAsync(int calendarId)
+		public async Task<List<Event>> GetEventForCalendarAsync(int calendarId, int year, int month)
         {
-            return await _eventRepository.GetByCalendar(calendarId);
+            return await _eventRepository.GetByCalendar(calendarId, year, month);
         }
 
 		public async Task UpdateEventAsync(Event e)

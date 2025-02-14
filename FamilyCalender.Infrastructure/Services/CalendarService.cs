@@ -53,9 +53,9 @@ namespace FamilyCalender.Infrastructure.Services
             }
         }
 
-        public async Task<List<Calendar>> GetCalendarsForUserAsync(string id)
+        public async Task<List<int>> GetCalendarIdsForUserAsync(string userId)
         {
-            return await _calendarRepository.GetAllByUserAsync(id);
+            return await _calendarRepository.GetAllIdsByUserAsync(userId);
         }
 
         public Task<List<Event>> GetEventsForCalendarAsync(int calendarId)
@@ -68,7 +68,12 @@ namespace FamilyCalender.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Calendar> UpdateCalendarAsync(Calendar calendar)
+		public async Task<Calendar> GetOneCalendarAsync(int calendarId)
+		{
+            return await _calendarRepository.GetByIdAsync(calendarId) ?? throw new FileNotFoundException();
+		}
+
+		public async Task<Calendar> UpdateCalendarAsync(Calendar calendar)
         {
             var updatedCalendar = await _calendarRepository.UpdateAsync(calendar);
 			return updatedCalendar ?? throw new InvalidDataException(); //Kolla igenom exceptions.

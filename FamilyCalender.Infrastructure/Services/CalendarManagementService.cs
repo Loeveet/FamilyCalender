@@ -25,17 +25,19 @@ namespace FamilyCalender.Infrastructure.Services
 			_eventService = eventService;
 			_memberService = memberService;
 		}
-
-		public async Task<List<Core.Models.Entities.Calendar>> GetCalendarsForUserAsync(string userId)
+		public async Task<List<int>> GetCalendarIdsForUserAsync(string userId)
 		{
-			return await _calendarService.GetCalendarsForUserAsync(userId);
+			return await _calendarService.GetCalendarIdsForUserAsync(userId);
 		}
 
-		public async Task<List<Event>> GetEventsForCalendarAsync(int calendarId)
+		public async Task<List<Event>> GetEventsForCalendarAsync(int calendarId, int year, int month)
 		{
-			return await _eventService.GetEventForCalendarAsync(calendarId);
+			return await _eventService.GetEventForCalendarAsync(calendarId, year, month);
 		}
-
+		public async Task<Core.Models.Entities.Calendar> GetCalendarByCalendarIdAsync(int calendarId)
+		{
+			return await _calendarService.GetOneCalendarAsync(calendarId);
+		}
 		public async Task<List<Member>> GetMembersForCalendarAsync(int calendarId)
 		{
 			return await _memberService.GetMembersForCalendarAsync(calendarId);

@@ -26,7 +26,7 @@ namespace FamilyCalender.Infrastructure.Repositories
             return calendar;
         }
 
-        public async Task<List<Calendar>> GetAllByUserAsync(string userId)
+        public async Task<List<int>> GetAllIdsByUserAsync(string userId)
         {
             var calendarAccesses = await _context.CalendarAccesses
                 .Where(ca => ca.UserId == userId)
@@ -35,7 +35,7 @@ namespace FamilyCalender.Infrastructure.Repositories
                 .ToListAsync();
 
             var calendars = calendarAccesses
-                .Select(ca => ca.Calendar)
+                .Select(ca => ca.Calendar.Id)
                 .Distinct()
                 .ToList();
 
@@ -48,7 +48,7 @@ namespace FamilyCalender.Infrastructure.Repositories
             return await _context.Calendars.FirstOrDefaultAsync(c => c.Id == calendarId);
         }
 
-        public async Task RemoveAsync(int calendarId)
+		public async Task RemoveAsync(int calendarId)
         {
             throw new NotImplementedException();
         }
