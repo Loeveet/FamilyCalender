@@ -111,7 +111,15 @@ namespace FamilyCalender.Web.Pages
 				return;
 			}
 
-			ViewModel.SelectedCalendar = await _calendarManagementService.GetCalendarByCalendarIdAsync(chosenCalendarId);
+			//ViewModel.SelectedCalendar = await _calendarManagementService.GetCalendarByCalendarIdAsync(chosenCalendarId);
+
+			var calendarDto = await _calendarManagementService.GetCalendarDtoByIdAsync(chosenCalendarId);
+			if (calendarDto != null)
+			{
+				ViewModel.SelectedCalendarId = calendarDto.Id;
+				ViewModel.SelectedCalendarName = calendarDto.Name;
+			}
+
 
 			ViewModel.Events = await _calendarManagementService.GetEventsForCalendarAsync(chosenCalendarId, ViewModel.CurrentYear, ViewModel.CurrentMonth);
 			ViewModel.Members = await _calendarManagementService.GetMembersForCalendarAsync(chosenCalendarId);

@@ -23,7 +23,8 @@ namespace FamilyCalender.Core.Models.ViewModels
         public string EventTitle { get; set; } = string.Empty;
         public ICollection<int> SelectedMemberIds { get; set; } = [];
         public int SelectedCalendarId { get; set; }
-        public DateTime? StartDate { get; set; }
+		public string SelectedCalendarName { get; set; } = string.Empty;
+		public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public ICollection<string> SelectedDays { get; set; } = [];
 		public string CapitalizedMonthName

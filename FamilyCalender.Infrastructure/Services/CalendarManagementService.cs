@@ -1,4 +1,5 @@
 ﻿using FamilyCalender.Core.Interfaces.IServices;
+using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Models.ViewModels;
 using System;
@@ -37,6 +38,11 @@ namespace FamilyCalender.Infrastructure.Services
 		public async Task<Core.Models.Entities.Calendar> GetCalendarByCalendarIdAsync(int calendarId)
 		{
 			return await _calendarService.GetOneCalendarAsync(calendarId);
+		}
+		public async Task<CalendarDto> GetCalendarDtoByIdAsync(int calendarId)
+		{
+			return await _calendarService.GetCalendarDtoAsync(calendarId);
+
 		}
 		public async Task<List<Member>> GetMembersForCalendarAsync(int calendarId)
 		{

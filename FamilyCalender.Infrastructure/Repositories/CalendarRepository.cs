@@ -1,4 +1,5 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
+using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,18 @@ namespace FamilyCalender.Infrastructure.Repositories
         {
             return await _context.Calendars.FirstOrDefaultAsync(c => c.Id == calendarId);
         }
+
+		public async Task<CalendarDto> GetCalendarDtoAsync(int calendarId)
+		{
+			return await _context.Calendars
+				.Where(c => c.Id == calendarId)
+				.Select(c => new CalendarDto
+				{
+					Id = c.Id,
+					Name = c.Name
+				})
+				.FirstOrDefaultAsync() ?? throw new FileNotFoundException();
+		}
 
 		public async Task RemoveAsync(int calendarId)
         {

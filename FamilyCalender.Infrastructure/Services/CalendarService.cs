@@ -1,5 +1,6 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
+using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -78,6 +79,11 @@ namespace FamilyCalender.Infrastructure.Services
             var updatedCalendar = await _calendarRepository.UpdateAsync(calendar);
 			return updatedCalendar ?? throw new InvalidDataException(); //Kolla igenom exceptions.
 		}
+		public async Task<CalendarDto> GetCalendarDtoAsync(int calendarId)
+        {
+            return await _calendarRepository.GetCalendarDtoAsync(calendarId);
+        }
+
 
 	}
 }

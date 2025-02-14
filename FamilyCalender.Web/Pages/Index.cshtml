@@ -6,14 +6,14 @@
 
 }
 
-@if (Model.ViewModel.SelectedCalendar.Id == 0)
+@if (Model.ViewModel.SelectedCalendarId == 0)
 {
 	<p>Ingen kalender hittades</p>
 }
 else
 {
 
-	<h2>@Model.ViewModel.SelectedCalendar.Name</h2>
+	<h2>@Model.ViewModel.SelectedCalendarName</h2>
 	<a href="javascript:void(0)"
 	   class="floating-button d-sm-none"
 	   data-bs-toggle="modal"
@@ -94,7 +94,7 @@ else
 
 					@foreach (var member in Model.ViewModel.Members ?? new List<Core.Models.Entities.Member>())
 					{
-						var eventMemberDates = Model.ViewModel.SelectedCalendar?.Events
+						var eventMemberDates = Model.ViewModel.Events
 						.SelectMany(e => e.EventMemberDates)
 						.Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
 						.ToList();
@@ -138,8 +138,8 @@ else
 				<form method="post" asp-page-handler="AddEvent" onsubmit="return validateForm()">
 
 					<div class="mb-3">
-						<label class="form-label">@Model.ViewModel.SelectedCalendar?.Name</label>
-						<input type="hidden" asp-for="ViewModel.SelectedCalendarId" value="@Model.ViewModel.SelectedCalendar?.Id" />
+						<label class="form-label">@Model.ViewModel.SelectedCalendarName</label>
+						<input type="hidden" asp-for="ViewModel.SelectedCalendarId" value="@Model.ViewModel.SelectedCalendarId" />
 					</div>
 
 					<div class="mb-3">
