@@ -162,3 +162,6 @@ body {
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.corner-icon {
+    width: 4rem; /* Anpassa storleken */
+}
