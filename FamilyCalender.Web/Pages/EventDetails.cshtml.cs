@@ -39,8 +39,7 @@ namespace FamilyCalender.Web.Pages
 				.ToList()!;
 
 			ViewModel.SelectedDays = ViewModel.EventDetails.EventMemberDates
-				.Where(ed => ed.Date >= DateTime.Today)
-				.Select(ed => culture.DateTimeFormat.GetDayName(ed.Date.DayOfWeek)) // Konvertera till svenska
+				.Select(ed => culture.DateTimeFormat.GetDayName(ed.Date.DayOfWeek))
 				.Distinct()
 				.ToList();
 
@@ -66,7 +65,6 @@ namespace FamilyCalender.Web.Pages
 
 			ViewModel.FormattedInterval = !ViewModel.IsSingleEvent ?
 				$"{orderedDates.First():yyyy-MM-dd} - {orderedDates.Last():yyyy-MM-dd}" : string.Empty;
-
 
 
 			return Page();

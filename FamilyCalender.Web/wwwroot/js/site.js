@@ -121,11 +121,11 @@ function validateInterval() {
         startDateError.textContent = "Startdatum krävs.";
         startDateError.classList.remove("d-none");
         isValid = false;
-    } else if (startDateValue < today) {
-        startDateError.textContent = "Startdatum kan inte vara bakåt i tiden.";
-        startDateError.classList.remove("d-none");
-        isValid = false;
-    }
+    }// else if (startDateValue < today) {
+    //    startDateError.textContent = "Startdatum kan inte vara bakåt i tiden.";
+    //    startDateError.classList.remove("d-none");
+    //    isValid = false;
+    //}
 
     if (!endDateValue) {
         endDateError.textContent = "Slutdatum krävs.";
@@ -302,12 +302,12 @@ function validateDateFieldEdit(dateFieldId, errorFieldId) {
         return false;
     }
 
-    if (dateValue < today) {
-        dateError.textContent = "Datum kan inte vara bakåt i tiden.";
-        dateError.classList.remove("d-none");
-        document.getElementById(dateFieldId).classList.add("is-invalid");
-        return false;
-    }
+    //if (dateValue < today) {
+    //    dateError.textContent = "Datum kan inte vara bakåt i tiden.";
+    //    dateError.classList.remove("d-none");
+    //    document.getElementById(dateFieldId).classList.add("is-invalid");
+    //    return false;
+    //}
 
     return true;
 }
@@ -331,11 +331,12 @@ function validateIntervalEdit() {
         startDateError.textContent = "Startdatum krävs.";
         startDateError.classList.remove("d-none");
         isValid = false;
-    } else if (startDateValue < today) {
-        startDateError.textContent = "Startdatum kan inte vara bakåt i tiden.";
-        startDateError.classList.remove("d-none");
-        isValid = false;
     }
+    //else if (startDateValue < today) {
+    //    startDateError.textContent = "Startdatum kan inte vara bakåt i tiden.";
+    //    startDateError.classList.remove("d-none");
+    //    isValid = false;
+    //}
 
     if (!endDateValue) {
         endDateError.textContent = "Slutdatum krävs.";

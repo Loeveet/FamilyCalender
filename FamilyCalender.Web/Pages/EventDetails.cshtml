@@ -219,8 +219,9 @@
 
 					@if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1)
 					{
-						var minEventDate = Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date) < DateTime.Today ? DateTime.Today : Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date);
-						var maxEventDate = Model.ViewModel.EventDetails.EventMemberDates.Max(x => x.Date);
+						var minEventDate = Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date); 
+						//< DateTime.Today ? DateTime.Today : Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date);
+							var maxEventDate = Model.ViewModel.EventDetails.EventMemberDates.Max(x => x.Date);
 
 						<div class="mb-3">
 							<label for="editStartDate" class="form-label">Välj nytt startdatum</label>
