@@ -87,7 +87,7 @@
 					<!-- Enkelt event på en dag och en person -->
 					@if (Model.ViewModel.EventDetails.EventMemberDates.Count == 1 && Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Count() == 1)
 					{
-						<p>Det här är ett enkelt event som endast gäller för en person och en dag.</p>
+						<p>Det här är en händelse som endast gäller för en person och en dag.</p>
 						@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
 						{
 							var isOnlyMember = Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() == 1;
@@ -109,7 +109,7 @@
 					<!-- Enkelt event på flera personer -->
 					@if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() == 1 && Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() > 1)
 					{
-						<p>Det här eventet gäller flera personer. Välj vilka du vill ta bort händelsen för:</p>
+						<p>Den här händelsen gäller flera personer. Välj vilka du vill ta bort händelsen för:</p>
 						<div id="deleteMemberListSingle">
 							@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
 							{
@@ -159,7 +159,7 @@
 					<!-- Event inom ett intervall med flera personer -->
 					@if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1 && Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() > 1)
 					{
-						<p>Det här eventet gäller flera personer och är en del av ett intervall. Välj vilka personer du vill ta bort för hela intervallet:</p>
+						<p>Den här händelsen gäller flera personer och är en del av ett intervall. Välj vilka personer du vill ta bort för hela intervallet:</p>
 						<div id="deleteMemberListInterval">
 							@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
 							{
