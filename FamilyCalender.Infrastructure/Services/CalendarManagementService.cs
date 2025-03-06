@@ -30,8 +30,12 @@ namespace FamilyCalender.Infrastructure.Services
 		{
 			return await _calendarService.GetCalendarIdsForUserAsync(userId);
 		}
+        public async Task<List<CalendarDto>> GetCalendarDtosForUserAsync(string userId)
+        {
+            return await _calendarService.GetCalendarDtosForUserAsync(userId);
+        }
 
-		public async Task<List<Event>> GetEventsForCalendarAsync(int calendarId, int year, int month)
+        public async Task<List<Event>> GetEventsForCalendarAsync(int calendarId, int year, int month)
 		{
 			return await _eventService.GetEventForCalendarAsync(calendarId, year, month);
 		}

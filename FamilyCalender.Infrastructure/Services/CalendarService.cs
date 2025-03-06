@@ -83,7 +83,11 @@ namespace FamilyCalender.Infrastructure.Services
         {
             return await _calendarRepository.GetCalendarDtoAsync(calendarId);
         }
+        public async Task<List<CalendarDto>> GetCalendarDtosForUserAsync(string userId)
+        {
+            return await _calendarRepository.GetCalendarDtosAsync(userId);
+        }
 
 
-	}
+    }
 }

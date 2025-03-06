@@ -18,8 +18,11 @@ namespace FamilyCalender.Core.Interfaces.IRepositories
         Task<Calendar> UpdateAsync(Calendar calendar);
         Task RemoveAsync(int calendarId);
         Task <CalendarDto> GetCalendarDtoAsync(int calendarId);
+        Task<List<CalendarDto>> GetCalendarDtosAsync(string userId);
 
 
 
-	}
+
+
+    }
 }

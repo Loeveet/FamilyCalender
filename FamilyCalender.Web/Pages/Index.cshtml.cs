@@ -21,27 +21,6 @@ namespace FamilyCalender.Web.Pages
 		[BindProperty]
 		public IndexViewModel ViewModel { get; set; } = new IndexViewModel();
 
-		//public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
-		//{
-		//	var user = await _userManager.GetUserAsync(User);
-		//	if (user == null)
-		//	{
-		//		return RedirectToPage("/Account/Login");
-		//	}
-
-		//	SetCurrentYearAndMonth(year, month);
-		//	ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo);
-
-		//	ViewModel.Calendars = await _calendarManagementService.GetCalendarsForUserAsync(user.Id);
-
-
-		//	if (ViewModel.Calendars != null && ViewModel.Calendars.Count > 0)
-		//	{
-		//		await LoadSelectedCalendarData(calendarId);
-		//	}
-
-		//	return Page();
-		//}
 		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
 		{
 			var user = await _userManager.GetUserAsync(User);
@@ -53,16 +32,17 @@ namespace FamilyCalender.Web.Pages
 			SetCurrentYearAndMonth(year, month);
 			ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo);
 
-			var calendarIds = await _calendarManagementService.GetCalendarIdsForUserAsync(user.Id);
+            var calendarDtos = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
+			ViewModel.CalendarDtos = calendarDtos;
+            var calendarIds = calendarDtos.Select(c => c.Id).ToList();
 
 
-			if (calendarIds != null && calendarIds.Count > 0)
+            if (calendarIds != null && calendarIds.Count > 0)
 			{
 				await LoadSelectedCalendarData(calendarId, calendarIds);
 			}
 			else
 			{
-				// Om användaren inte har några kalendrar, sätt en tom standardvärde
 				ViewModel.SelectedCalendar = new Core.Models.Entities.Calendar();
 				ViewModel.Events = new List<Event>();
 				ViewModel.Members = new List<Member>();
@@ -111,7 +91,6 @@ namespace FamilyCalender.Web.Pages
 				return;
 			}
 
-			//ViewModel.SelectedCalendar = await _calendarManagementService.GetCalendarByCalendarIdAsync(chosenCalendarId);
 
 			var calendarDto = await _calendarManagementService.GetCalendarDtoByIdAsync(chosenCalendarId);
 			if (calendarDto != null)

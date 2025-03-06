@@ -60,8 +60,19 @@ namespace FamilyCalender.Infrastructure.Repositories
 				})
 				.FirstOrDefaultAsync() ?? throw new FileNotFoundException();
 		}
+        public async Task<List<CalendarDto>> GetCalendarDtosAsync(string userId)
+        {
+            return await _context.Calendars
+                .Where(c => c.OwnerId == userId) 
+                .Select(c => new CalendarDto
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                })
+                .ToListAsync();
+        }
 
-		public async Task RemoveAsync(int calendarId)
+        public async Task RemoveAsync(int calendarId)
         {
             throw new NotImplementedException();
         }

@@ -30,19 +30,19 @@
                                 <a class="nav-link text-dark" asp-area="" asp-page="/CreateCalendar">Skapa kalender</a>
                             </li>
 
-                            @if (ViewData["ShowCalendarSelector"] as bool? == true && Model?.ViewModel?.Calendars?.Count > 1)
+                            @if (ViewData["ShowCalendarSelector"] as bool? == true && Model?.ViewModel?.CalendarDtos?.Count > 0)
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="calendarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Byt kalender
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="calendarDropdown">
-                                        @foreach (var calendar in Model.ViewModel.Calendars)
+                                        @foreach (var calendarDto in Model.ViewModel.CalendarDtos)
                                         {
                                             <li>
                                                 <a class="dropdown-item"
-                                                   href="@Url.Page("./Index", new { year = Model.ViewModel.CurrentYear, month = Model.ViewModel.CurrentMonth, calendarId = calendar.Id })">
-                                                    @calendar.Name
+                                                   href="@Url.Page("./Index", new { year = Model.ViewModel.CurrentYear, month = Model.ViewModel.CurrentMonth, calendarId = calendarDto.Id })">
+                                                    @calendarDto.Name
                                                 </a>
                                             </li>
                                         }

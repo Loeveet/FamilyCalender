@@ -19,7 +19,10 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task<List<Member>> GetMembersForCalendarAsync(int calendarId);
         Task <Calendar> GetOneCalendarAsync(int calendarId);
         Task <CalendarDto> GetCalendarDtoAsync(int calendarId);
+        Task<List<CalendarDto>> GetCalendarDtosForUserAsync(string userId);
 
 
-	}
+
+
+    }
 }
