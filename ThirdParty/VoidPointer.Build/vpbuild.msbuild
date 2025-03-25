@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Project DefaultTargets="GenerateConfig" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\$(RelativePathToVoidPointerBuild)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+		<ExtensionTasksPath>$(MSBuildProjectDirectory)\$(RelativePathToVoidPointerBuild)\MSBuildExtensionPack\</ExtensionTasksPath>
+	</PropertyGroup>
+	
+	<UsingTask TaskName="GetProjectProperties" AssemblyFile="Microsoft.Web.Publishing.Tasks.dll"/>
+	<UsingTask TaskName="TransformXml" AssemblyFile="Microsoft.Web.Publishing.Tasks.dll"/>
+	<UsingTask TaskName="ParameterizeTransformXml" AssemblyFile="Microsoft.Web.Publishing.Tasks.dll"/>
+  
+	<UsingTask TaskName="VoidPointerTemplateFile" AssemblyFile="VoidPointer.Build.Tasks.dll"/>
+	<UsingTask TaskName="MD5" AssemblyFile="VoidPointer.Build.Tasks.dll"/>
+	<UsingTask TaskName="GitVersion" AssemblyFile="VoidPointer.Build.Tasks.dll"/>
+  
+	<PropertyGroup>
+		<Env Condition=" '$(Env)' == '' ">Prod</Env>
+	</PropertyGroup>
+	
+	<Import Project="$(MSBuildProjectDirectory)\$(RelativePathToVoidPointerBuild)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+	<Import Project="$(MSBuildProjectDirectory)\$(RelativePathToVoidPointerBuild)\MSBuildExtensionPack\MSBuild.ExtensionPack.tasks" />
+		
+	<Import Project="$(MSBuildStartupDirectory)\Environments\common.target" Condition="Exists('$(MSBuildStartupDirectory)\Environments\common.target')" />
+	<Import Project="$(MSBuildStartupDirectory)\Environments\$(Env).target" Condition="Exists('$(MSBuildStartupDirectory)\Environments\$(Env).target')" />
+	
+	<Target Name="GenerateConfig">
+
+		<Message Text="Env: $(Env)" />
+	
+		<ItemGroup>
+			<AppConfigExcludedFiles Include="$(MSBuildStartupDirectory)\dist\**\app.base.config; $(MSBuildStartupDirectory)\**\bin\**\app.base.config" />
+			<WebConfigExcludedFiles Include="$(MSBuildStartupDirectory)\dist\**\web.base.config; $(MSBuildStartupDirectory)\**\bin\**\web.base.config" />
+			<Log4NetConfigExcludedFiles Include="$(MSBuildStartupDirectory)\dist\**\log4net.base.config; $(MSBuildStartupDirectory)\**\bin\**\log4net.base.config" />
+			<AzureDeployExcludedFiles Include="$(MSBuildStartupDirectory)\dist\**\run_azure_deploy.base.bat; $(MSBuildStartupDirectory)\**\bin\**\run_azure_deploy.base.bat" />
+			<JsonLocalSettingsFiles Include="$(MSBuildStartupDirectory)\dist\**\local.settings.base.json; $(MSBuildStartupDirectory)\**\bin\**\local.settings.base.json" />
+			<JsonAppSettingsFiles Include="$(MSBuildStartupDirectory)\dist\**\appsettings.base.json; $(MSBuildStartupDirectory)\**\bin\**\appsettings.base.json" />
+			<JsonSettingsFiles Include="$(MSBuildStartupDirectory)\dist\**\settings.base.json; $(MSBuildStartupDirectory)\**\bin\**\settings.base.json" />
+		</ItemGroup>
+
+		<ItemGroup>
+			<ConfigFiles Include="$(MSBuildStartupDirectory)\**\app.base.config" Exclude="@(AppConfigExcludedFiles)">
+				<EnvConfigFileName>app.$(Env).config</EnvConfigFileName>
+				<TransformedConfigFileName>app.transformed.config</TransformedConfigFileName>
+				<FinalDestinationFileName>app.config</FinalDestinationFileName>
+			</ConfigFiles>
+			<ConfigFiles Include="$(MSBuildStartupDirectory)\**\web.base.config" Exclude="@(WebConfigExcludedFiles)">
+				<EnvConfigFileName>web.$(Env).config</EnvConfigFileName>
+				<TransformedConfigFileName>web.transformed.config</TransformedConfigFileName>
+				<FinalDestinationFileName>web.config</FinalDestinationFileName>
+			</ConfigFiles>
+			<ConfigFiles Include="$(MSBuildStartupDirectory)\**\log4net.base.config" Exclude="@(Log4NetConfigExcludedFiles)">
+				<EnvConfigFileName>log4net.$(Env).config</EnvConfigFileName>
+				<TransformedConfigFileName>log4net.transformed.config</TransformedConfigFileName>
+				<FinalDestinationFileName>log4net.config</FinalDestinationFileName>
+			</ConfigFiles>
+			<ConfigFiles Include="$(MSBuildStartupDirectory)\**\run_azure_deploy.base.bat" Exclude="@(AzureDeployExcludedFiles)">
+				<TransformedConfigFileName>run_azure_deploy.base.transformed.bat</TransformedConfigFileName>
+				<EnvConfigFileName>run_azure_deploy.$(Env).bat</EnvConfigFileName>
+				<FinalDestinationFileName>run_azure_deploy.bat</FinalDestinationFileName>
+			</ConfigFiles>
+			<ConfigFiles Include="$(MSBuildStartupDirectory)\**\local.settings.base.json" Exclude="@(JsonLocalSettingsFiles)">
+				<TransformedConfigFileName>local.settings.base.transformed.json</TransformedConfigFileName>
+				<EnvConfigFileName>local.settings.$(Env).json</EnvConfigFileName>
+				<FinalDestinationFileName>local.settings.json</FinalDestinationFileName>
+			</ConfigFiles>
+			<ConfigFiles Include="$(MSBuildStartupDirectory)\**\appsettings.base.json" Exclude="@(JsonAppSettingsFiles)">
+				<TransformedConfigFileName>appsettings.base.transformed.json</TransformedConfigFileName>
+				<EnvConfigFileName>appsettings.$(Env).json</EnvConfigFileName>
+				<FinalDestinationFileName>appsettings.json</FinalDestinationFileName>
+			</ConfigFiles>
+			<ConfigFiles Include="$(MSBuildStartupDirectory)\**\settings.base.json" Exclude="@(JsonSettingsFiles)">
+				<TransformedConfigFileName>settings.base.transformed.json</TransformedConfigFileName>
+				<EnvConfigFileName>settings.$(Env).json</EnvConfigFileName>
+				<FinalDestinationFileName>settings.json</FinalDestinationFileName>
+			</ConfigFiles>
+	
+		</ItemGroup>
+			
+		<TransformXml Source="%(ConfigFiles.RootDir)%(ConfigFiles.Directory)%(ConfigFiles.Filename)%(ConfigFiles.Extension)"
+			Transform="%(ConfigFiles.RootDir)%(ConfigFiles.Directory)%(EnvConfigFileName)"
+			Destination="%(ConfigFiles.RootDir)%(ConfigFiles.Directory)%(TransformedConfigFileName)"
+			Condition="Exists('%(ConfigFiles.RootDir)%(ConfigFiles.Directory)%(EnvConfigFileName)')" />
+			
+		<Copy SourceFiles="%(ConfigFiles.RootDir)%(ConfigFiles.Directory)%(ConfigFiles.Filename)%(ConfigFiles.Extension)"
+			DestinationFiles="%(ConfigFiles.RootDir)%(ConfigFiles.Directory)%(TransformedConfigFileName)"
+			Condition="!Exists('%(ConfigFiles.RootDir)%(ConfigFiles.Directory)%(EnvConfigFileName)')" />
+					
+		<VoidPointerTemplateFile Template="%(ConfigFiles.RootDir)%(ConfigFiles.Directory)%(TransformedConfigFileName)"
+			OutputFileName="%(ConfigFiles.RootDir)%(ConfigFiles.Directory)%(FinalDestinationFileName)" Env="$(Env)" Version="$(VersionString)"
+			Condition="Exists('%(ConfigFiles.RootDir)%(ConfigFiles.Directory)%(TransformedConfigFileName)')" />			
+	</Target>
+	
+</Project>

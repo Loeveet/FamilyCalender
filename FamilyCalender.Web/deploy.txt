@@ -1,4 +1,4 @@
-1. Kopiera applicationsettings_prod.json till appsettings.json (tillfällig lösning)
+1. dubbelklicka på generate_prod_configs.bat i repots root
 2. Högerklick på projektet och välj publish
 
 2.1 Web Server (IIS)
