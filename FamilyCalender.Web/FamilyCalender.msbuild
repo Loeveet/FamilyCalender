@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- Import the Void Pointer Build Tasks -->	
+	<PropertyGroup>
+	  <RelativePathToVoidPointerBuild>..\ThirdParty\VoidPointer.Build</RelativePathToVoidPointerBuild>
+	</PropertyGroup>
+	<Import Project="$(RelativePathToVoidPointerBuild)\vpbuild.msbuild" />
+	
+	<PropertyGroup>
+		<Major>1</Major>
+		<Minor>0</Minor>
+		<Build>0</Build>
+		<Revision>0</Revision>
+	</PropertyGroup>
+ 
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+	</PropertyGroup>
+	
+	<Target Name="CleanSolution" DependsOnTargets="Version">
+		<MSBuild 
+			Projects="$(MSBuildStartupDirectory)\..\FamilyCalender.sln" 
+			Targets="Clean" 
+			Properties="Configuration=$(Configuration)" />
+	</Target>
+	
+	
+	<Target Name="FamilyCalander" DependsOnTargets="GenerateConfig;CleanSolution">
+		<RemoveDir Directories="..\dist\FamilyCalendarWeb" ContinueOnError="true" />
+		<CallTarget Targets="BuildFamilyCalander" />
+	</Target>
+	
+	<Target Name="BuildFamilyCalander" DependsOnTargets="CleanSolution">
+		<Message Text="Configuration: $(Configuration)"/>
+		<Message Text="MSBuildStartupDirectory: $(MSBuildProjectDirectory)" Importance="high"/>
+				
+		<PropertyGroup>
+			<DeploymentDirectory>$(MSBuildStartupDirectory)\..\dist\FamilyCalendarWeb\$(VersionString)</DeploymentDirectory>
+			<OutputDirectory>$(DeploymentDirectory)\output</OutputDirectory>
+			<ProjectFile>FamilyCalender.Web.csproj</ProjectFile>
+		</PropertyGroup>
+					
+		<MSBuild 
+			Projects="$(ProjectFile)" 
+			StopOnFirstFailure="true" 
+			Targets="Rebuild;ResolveReferences;Publish" 
+			Properties="WarningLevel=0;DefineConstants=TRACE;Configuration=$(Configuration);Platform=AnyCPU;Optimize=true;DebugSymbols=false;OverwriteReadOnlyFiles=true;OutputPath=$(OutputDirectory)\;DocumentationFile=;"/>
+								
+		<!-- Zip contents in output folder -->
+		<ZipDirectory
+            SourceDirectory="$(OutputDirectory)"
+            DestinationFile="$(DeploymentDirectory)\FamilyCalander.zip" />
+			
+		<!-- Copy the deployment script to dist folder -->
+		<!--<Copy 
+			SourceFiles="$(OutputDirectory)\run_azure_deploy.bat" 
+			DestinationFiles="$(DeploymentDirectory)\run_azure_deploy.bat"/>-->
+			
+	</Target>
+	
+	<Target Name="Version">
+
+        <GitVersion LocalPath="$(MSBuildProjectDirectory)">
+			<Output TaskParameter="LastCommit" PropertyName="LastCommit" />
+		</GitVersion>
+        
+		<!-- Get the current branch name -->		
+        <Exec Command="git rev-parse --abbrev-ref HEAD" EchoOff="true" ConsoleToMsBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="BranchName" />
+		</Exec>
+
+		<Version BuildType="Automatic" RevisionType="Automatic" Major="$(Major)" Minor="$(Minor)" StartDate="2013-03-24">
+			<Output TaskParameter="Build" PropertyName="Build" />
+			<Output TaskParameter="Revision" PropertyName="Revision" />
+        </Version>
+		
+		<PropertyGroup>
+			<VersionString>$(Major).$(Minor).$(Build).$(Revision).$(LastCommit).$(BranchName).$(Env)</VersionString>
+		</PropertyGroup>
+		
+		<PropertyGroup>
+			<AssemblyVersionString>$(Major).$(Minor).$(Build).$(Revision)</AssemblyVersionString>
+		</PropertyGroup>
+
+        <Message Text="Version: $(VersionString)"/>
+		
+		<!--<AssemblyInfo CodeLanguage="CS"  
+					OutputFile="$(MSBuildProjectDirectory)\GlobalAssemblyInfo.cs" 
+					AssemblyConfiguration=""
+					AssemblyCompany="Golden EDI AB"
+					AssemblyProduct="Golden EDI"
+					AssemblyCopyright="Copyright (c) Golden EDI AB 2015"
+					AssemblyTrademark=""
+					ComVisible="false"
+					CLSCompliant="true"
+					AssemblyVersion="$(AssemblyVersionString)" 
+					AssemblyFileVersion="$(AssemblyVersionString)"
+					AssemblyInformationalVersion="$(AssemblyVersionString)"	/>-->
+		
+	</Target>
+	
+</Project>
