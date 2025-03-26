@@ -56,7 +56,7 @@ else
 		<tbody>
 			@foreach (var day in Model.ViewModel.DaysInMonth)
 			{
-				<tr>
+				<tr id="@(day.IsCurrentDay ? "today": "")" class="@(day.IsCurrentDay ? "today": "")">
 					<td class="fixed-day-column">
 						@{
 							if (day.ShowWeekNumber)
@@ -101,7 +101,7 @@ else
 						.SelectMany(e => e.EventMemberDates)
 						.Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
 						.ToList();
-						<td class="expanding-column">
+						<td class="expanding-column @(day.IsCurrentDay ? "active-day": "")">
 							<div class="d-flex flex-column justify-content-between gap-1">
 								@if (eventMemberDates?.Any() ?? false)
 								{
@@ -252,3 +252,7 @@ else
 	</div>
 </div>
 
+<script>
+
+	document.getElementById('today').scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+</script>
