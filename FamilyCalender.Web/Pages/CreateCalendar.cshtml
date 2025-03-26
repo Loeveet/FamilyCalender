@@ -7,21 +7,29 @@
     <h2>Skapa Kalender</h2>
     <form method="post" class="mt-4">
         <div class="mb-3">
-            <label for="Calendar.Name" class="form-label">Kalendernamn:</label>
-            <input asp-for="Calendar.Name" class="form-control" />
+           
+        </div>
+
+        <div class="form-floating mb-2">
+            <input asp-for="Calendar.Name" class="form-control" name="Calendar.Name" type="text" />
             <span asp-validation-for="Calendar.Name" class="text-danger"></span>
+            <label for="Calendar.Name" class="form-label">Kalendernamn</label>
         </div>
-
-        <h4>Lägg till medlemmar</h4>
-        <div class="mb-3">
-            <input type="text" id="memberName" class="form-control" placeholder="Skriv namn här" />
-            <button type="button" class="btn btn-primary mt-2" onclick="addMember()">Lägg till</button>
+        
+        <h4>Skapa medlem</h4>
+        <div class="input-group mb-2">
+            <div class="form-floating">
+                <input type="text" id="memberName" class="form-control" />
+                <label class="form-label" for="memberName">Namn</label>
+            </div>
+            <button type="button" class="input-group-text btn btn-secondary pt-3" onclick="addMember()">Lägg till</button>
         </div>
-
-        <ul id="memberList" class="list-group mb-3"></ul>
+        
+        <ul id="memberList" class="list-group mb-3">
+        </ul>
 
         <div id="hiddenMembersInputs"></div>
 
-        <button type="submit" class="btn btn-success">Skapa kalender</button>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-save fa-1x"></i> Skapa kalender</button>
     </form>
 </div>
