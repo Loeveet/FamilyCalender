@@ -56,17 +56,17 @@
                     <ul class="navbar-nav ms-auto">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <form method="post" asp-area="Identity" asp-page="/Account/Logout">
+                            <form method="post" asp-page="/Logout">
                                 <button type="submit" class="nav-link btn btn-link text-dark p-0">Logga ut</button>
                             </form>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Logga in</a>
+                                <a class="nav-link text-dark" asp-page="/Login">Logga in</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Skapa konto</a>
+                                <a class="nav-link text-dark" asp-page="/Register">Skapa konto</a>
                             </li>
                         }
                     </ul>

@@ -27,7 +27,7 @@ namespace FamilyCalender.Infrastructure.Repositories
             return calendar;
         }
 
-        public async Task<List<int>> GetAllIdsByUserAsync(string userId)
+        public async Task<List<int>> GetAllIdsByUserAsync(int userId)
         {
             var calendarAccesses = await _context.CalendarAccesses
                 .Where(ca => ca.UserId == userId)
@@ -60,7 +60,7 @@ namespace FamilyCalender.Infrastructure.Repositories
 				})
 				.FirstOrDefaultAsync() ?? throw new FileNotFoundException();
 		}
-        public async Task<List<CalendarDto>> GetCalendarDtosAsync(string userId)
+        public async Task<List<CalendarDto>> GetCalendarDtosAsync(int userId)
         {
             return await _context.Calendars
                 .Where(c => c.OwnerId == userId) 

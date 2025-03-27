@@ -8,14 +8,15 @@ using FamilyCalender.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using FamilyCalender.Core.Models.ViewModels;
 using FamilyCalender.Core.Models.Entities;
+using System.Security.Claims;
+using FamilyCalender.Core.Interfaces;
 
 namespace FamilyCalender.Web.Pages
 {
     public class IndexModel(
-		UserManager<User> userManager,
-		CalendarManagementService calendarManagementService) : PageModel
+			CalendarManagementService calendarManagementService,
+			IAuthService authService) : BasePageModel(authService)
 	{
-		private readonly UserManager<User> _userManager = userManager;
 		private readonly CalendarManagementService _calendarManagementService = calendarManagementService;
 
 		[BindProperty]
@@ -23,12 +24,11 @@ namespace FamilyCalender.Web.Pages
 
 		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
 		{
-			var user = await _userManager.GetUserAsync(User);
+			var user = await GetCurrentUserAsync();
 			if (user == null)
 			{
-				return RedirectToPage("/Account/Login");
+				return RedirectToPage("/Login");
 			}
-
 			SetCurrentYearAndMonth(year, month);
 			ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo);
 
@@ -37,7 +37,7 @@ namespace FamilyCalender.Web.Pages
             var calendarIds = calendarDtos.Select(c => c.Id).ToList();
 
 
-            if (calendarIds != null && calendarIds.Count > 0)
+            if (calendarIds != null)
 			{
 				await LoadSelectedCalendarData(calendarId, calendarIds);
 			}

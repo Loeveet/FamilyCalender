@@ -5,7 +5,7 @@ using FamilyCalender.Core.Models.Entities;
 
 namespace FamilyCalender.Infrastructure.Context
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -19,7 +19,7 @@ namespace FamilyCalender.Infrastructure.Context
                 optionsBuilder.UseSqlite("Data Source=../FamilyCalender.Infrastructure/FamilyCalender.db");
             }
         }
-
+        public DbSet<User> Users { get; set; }
         public DbSet<Calendar> Calendars { get; set; }
         public DbSet<CalendarAccess> CalendarAccesses { get; set; }
         public DbSet<Event> Events { get; set; }

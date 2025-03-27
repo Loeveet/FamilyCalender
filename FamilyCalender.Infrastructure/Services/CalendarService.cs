@@ -54,7 +54,7 @@ namespace FamilyCalender.Infrastructure.Services
             }
         }
 
-        public async Task<List<int>> GetCalendarIdsForUserAsync(string userId)
+        public async Task<List<int>> GetCalendarIdsForUserAsync(int userId)
         {
             return await _calendarRepository.GetAllIdsByUserAsync(userId);
         }
@@ -83,7 +83,7 @@ namespace FamilyCalender.Infrastructure.Services
         {
             return await _calendarRepository.GetCalendarDtoAsync(calendarId);
         }
-        public async Task<List<CalendarDto>> GetCalendarDtosForUserAsync(string userId)
+        public async Task<List<CalendarDto>> GetCalendarDtosForUserAsync(int userId)
         {
             return await _calendarRepository.GetCalendarDtosAsync(userId);
         }

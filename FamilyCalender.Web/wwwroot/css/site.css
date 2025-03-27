@@ -2,6 +2,25 @@ body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1; /* Gör så att huvudsektionen (main) växer för att fylla upp utrymmet */
+}
+
+footer {
+    margin-top: auto; /* Pushar footern till botten */
+}
+
+
 @media (max-width: 576px) {
     .floating-button {
         position: fixed;
