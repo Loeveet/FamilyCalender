@@ -1,3 +1,4 @@
+using FamilyCalender.Core.Interfaces;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -8,13 +9,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace FamilyCalender.Web.Pages
 {
     [Authorize]
-    public class CreateCalendarModel(ICalendarService calendarService, IMemberService memberService, UserManager<User> userManager) : PageModel
+    public class CreateCalendarModel(ICalendarService calendarService, IMemberService memberService,
+				IAuthService authService) : BasePageModel(authService)
     {
         private readonly ICalendarService _calendarService = calendarService;
         private readonly IMemberService _memberService = memberService;
-        private readonly UserManager<User> _userManager = userManager;
 
-        [BindProperty]
+		[BindProperty]
         public Calendar Calendar { get; set; } = new Calendar();
 
         [BindProperty]
@@ -26,7 +27,7 @@ namespace FamilyCalender.Web.Pages
             {
                 return Page();
             }
-			var user = await _userManager.GetUserAsync(User);
+			var user = await GetCurrentUserAsync();
 			if (user == null)
 			{
 				ModelState.AddModelError(string.Empty, "Ingen inloggad användare hittades.");

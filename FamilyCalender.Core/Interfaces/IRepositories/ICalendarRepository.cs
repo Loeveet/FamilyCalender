@@ -13,12 +13,12 @@ namespace FamilyCalender.Core.Interfaces.IRepositories
     public interface ICalendarRepository
     {
         Task<Calendar> GetByIdAsync(int calendarId);
-        Task<List<int>> GetAllIdsByUserAsync(string userId);
+        Task<List<int>> GetAllIdsByUserAsync(int userId);
         Task<Calendar> AddAsync(Calendar calendar);
         Task<Calendar> UpdateAsync(Calendar calendar);
         Task RemoveAsync(int calendarId);
         Task <CalendarDto> GetCalendarDtoAsync(int calendarId);
-        Task<List<CalendarDto>> GetCalendarDtosAsync(string userId);
+        Task<List<CalendarDto>> GetCalendarDtosAsync(int userId);
 
 
 

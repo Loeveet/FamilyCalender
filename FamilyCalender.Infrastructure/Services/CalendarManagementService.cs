@@ -26,11 +26,11 @@ namespace FamilyCalender.Infrastructure.Services
 			_eventService = eventService;
 			_memberService = memberService;
 		}
-		public async Task<List<int>> GetCalendarIdsForUserAsync(string userId)
+		public async Task<List<int>> GetCalendarIdsForUserAsync(int userId)
 		{
 			return await _calendarService.GetCalendarIdsForUserAsync(userId);
 		}
-        public async Task<List<CalendarDto>> GetCalendarDtosForUserAsync(string userId)
+        public async Task<List<CalendarDto>> GetCalendarDtosForUserAsync(int userId)
         {
             return await _calendarService.GetCalendarDtosForUserAsync(userId);
         }
