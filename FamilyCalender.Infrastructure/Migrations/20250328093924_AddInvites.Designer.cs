@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyCalender.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250327100852_RemoveIdentityAndCreateUser")]
-    partial class RemoveIdentityAndCreateUser
+    [Migration("20250328093924_AddInvites")]
+    partial class AddInvites
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -106,6 +106,29 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.HasIndex("MemberId");
 
                     b.ToTable("EventMemberDates");
+                });
+
+            modelBuilder.Entity("FamilyCalender.Core.Models.Entities.Invite", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CalendarId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpireUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Used")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Invites");
                 });
 
             modelBuilder.Entity("FamilyCalender.Core.Models.Entities.Member", b =>

@@ -23,7 +23,7 @@ namespace FamilyCalender.Web.Pages
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
-		public string ErrorMessage { get; set; }  // För att lagra felmeddelandet
+		public string ErrorMessage { get; set; }
 
 
 		public class InputModel
@@ -35,7 +35,8 @@ namespace FamilyCalender.Web.Pages
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "Lösenordet måste vara minst {2} och max {1} tecken långt.", MinimumLength = 12)]
+            //Sätt krav på 10-12 tecken samt specialtecken när det är dags att köra skarpt sen
+            //[StringLength(50, ErrorMessage = "Lösenordet måste vara minst {2} och max {1} tecken långt.", MinimumLength = 12)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
