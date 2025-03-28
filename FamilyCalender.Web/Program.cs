@@ -76,18 +76,10 @@ namespace FamilyCalender
 
 			app.UseSession();
 
-			//app.Use(async (context, next) =>
-			//{
-			//	if (context.Request.Path.StartsWithSegments("/Login"))
-			//	{
-			//		context.Response.Redirect("/Login");
-			//		return;
-			//	}
-
-			//	await next();
-			//});
-
-
+			//https://stackoverflow.com/questions/47598844/enabling-migrations-in-ef-core
+			using var serviceScope = app.Services.CreateScope();
+			using var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+			context.Database.Migrate();
 
 
 			// Configure the HTTP request pipeline.
