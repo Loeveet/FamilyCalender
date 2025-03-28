@@ -68,6 +68,7 @@ namespace FamilyCalender
 			builder.Services.AddScoped<IAuthService, AuthService>();
 			builder.Services.AddScoped<EventManagementService>();
 			builder.Services.AddScoped<CalendarManagementService>();
+			builder.Services.AddScoped<InviteService>();
 
 
 

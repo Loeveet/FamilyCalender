@@ -1,0 +1,25 @@
+﻿@page
+@model FamilyCalender.Web.Pages.InviteModel
+@{
+    ViewData["Title"] = "Invite";
+}
+
+<h2>Kalenderinbjudan</h2>
+
+@if (Model.ViewModel?.Calendar == null)
+{
+    <p>Tyvärr kan du inte längre gå med i kalendern. Vänligen kontakta den som bjöd in dig och be denna göra en ny inbjudan. Detta kan beror på att länken är för gammal, redan använd eller så finns inte kalendern längre</p>
+}
+else
+{
+
+    <form method="post" asp-page-handler="JoinEvent">
+        <p>Du har blivit inbjuden att gå med i kalendern <b>@Model.ViewModel.Calendar.Name</b></p>
+        <button type="submit" class="btn btn-primary">Gå med</button>
+        
+        @Html.HiddenFor(m => Model.ViewModel.InviteId, new {@id = "inviteId"})
+
+    </form>
+
+    
+}
