@@ -6,11 +6,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FamilyCalender.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RemoveIdentityAndCreateUser : Migration
+    public partial class AddInvites : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Invites",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CalendarId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ExpireUtc = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Used = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invites", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -222,6 +237,9 @@ namespace FamilyCalender.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "EventMemberDates");
+
+            migrationBuilder.DropTable(
+                name: "Invites");
 
             migrationBuilder.DropTable(
                 name: "MemberCalendars");

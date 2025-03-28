@@ -105,6 +105,29 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.ToTable("EventMemberDates");
                 });
 
+            modelBuilder.Entity("FamilyCalender.Core.Models.Entities.Invite", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CalendarId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpireUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Used")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Invites");
+                });
+
             modelBuilder.Entity("FamilyCalender.Core.Models.Entities.Member", b =>
                 {
                     b.Property<int>("Id")

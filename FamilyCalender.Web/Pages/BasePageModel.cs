@@ -14,7 +14,6 @@ namespace FamilyCalender.Web.Pages
 			_authService = authService;
 		}
 
-		// Kolla om användaren är inloggad
 		protected async Task<User> GetCurrentUserAsync()
 		{
 			var userEmail = HttpContext.User?.FindFirst(ClaimTypes.Name)?.Value;

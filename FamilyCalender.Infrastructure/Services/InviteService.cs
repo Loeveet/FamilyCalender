@@ -63,7 +63,7 @@ namespace FamilyCalender.Infrastructure.Services
 			return await Task.Run(() => invite.Id);
 		}
 
-        public async void Join(Guid InviteId, string userId)
+        public async void Join(Guid InviteId, int userId)
         {
             var invite = Invites.FirstOrDefault(x => x.Id == InviteId);
             var calendar = _database.Calendars.FirstOrDefault(x => x.Id == invite.CalendarId);
