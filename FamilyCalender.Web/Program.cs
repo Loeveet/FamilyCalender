@@ -6,6 +6,7 @@ using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Infrastructure.Repositories;
 using FamilyCalender.Infrastructure.Services;
 using FamilyCalender.Core.Models.Entities;
+using Microsoft.Extensions.DependencyInjection;
 
 
 namespace FamilyCalender
@@ -74,10 +75,13 @@ namespace FamilyCalender
                     context.Response.Redirect("/Identity/Account/Login");
                     return;
                 }
-
                 await next();
             });
 
+            //https://stackoverflow.com/questions/47598844/enabling-migrations-in-ef-core
+            using var serviceScope = app.Services.CreateScope();
+            using var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            context.Database.Migrate();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
