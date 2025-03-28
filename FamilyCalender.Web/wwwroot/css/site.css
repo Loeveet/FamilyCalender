@@ -13,11 +13,11 @@ body {
 }
 
 main {
-    flex: 1; /* Gör så att huvudsektionen (main) växer för att fylla upp utrymmet */
+    flex: 1; 
 }
 
 footer {
-    margin-top: auto; /* Pushar footern till botten */
+    margin-top: auto; 
 }
 
 
@@ -180,14 +180,24 @@ table.table.table-striped tr.today td {
 .btn-lg:hover {
     opacity: 0.9;
 }
-.table thead th {
+.table thead th{
     position: sticky;
-    top: 0;
+    top: 4rem;
     background-color: white;
     z-index: 10;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 20;
+    padding: 10px 0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); 
+}
+
+
 .corner-icon {
-    width: 4rem; /* Anpassa storleken */
+    width: 4rem;
 }
