@@ -13,6 +13,10 @@
 /dist
 dist
 
+FamilyCalender.Infrastructure/FamilyCalender.db
+FamilyCalender.Infrastructure/FamilyCalender.db-shm
+FamilyCalender.Infrastructure/FamilyCalender.db-wal
+ 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -364,3 +368,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/FamilyCalender.Infrastructure/FamilyCalender.db

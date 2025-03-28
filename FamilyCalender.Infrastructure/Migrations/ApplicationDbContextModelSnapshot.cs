@@ -23,6 +23,9 @@ namespace FamilyCalender.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid>("InviteId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -103,29 +106,6 @@ namespace FamilyCalender.Infrastructure.Migrations
                     b.HasIndex("MemberId");
 
                     b.ToTable("EventMemberDates");
-                });
-
-            modelBuilder.Entity("FamilyCalender.Core.Models.Entities.Invite", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CalendarId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ExpireUtc")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("Used")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Invites");
                 });
 
             modelBuilder.Entity("FamilyCalender.Core.Models.Entities.Member", b =>

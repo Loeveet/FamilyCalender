@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamilyCalender.Core.Models.Entities
+﻿namespace FamilyCalender.Core.Models.Entities
 {
     public class Calendar
     {
@@ -15,6 +9,7 @@ namespace FamilyCalender.Core.Models.Entities
         public ICollection<MemberCalendar> MemberCalendars { get; set; } = [];
         public ICollection<CalendarAccess> Accesses { get; set; } = [];
         public ICollection<Event> Events { get; set; } = [];
+        public Guid InviteId { get; set; } = Guid.NewGuid();
 
     }
 }
