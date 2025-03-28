@@ -52,10 +52,10 @@ namespace FamilyCalender.Infrastructure.Services
             var userExists = await _context.Users.AnyAsync(u => u.Email == email);
             if (userExists)
             {
-                return (false, "User with this email already exists.");
-            }
+				return (false, "E-postadressen används redan.");
+			}
 
-            try
+			try
             {
                 var user = new User
                 {
@@ -71,9 +71,9 @@ namespace FamilyCalender.Infrastructure.Services
             catch (Exception ex)
             {
 
-                return (false, "An error occurred while registering the user. Please try again later.");
-            }
-        }
+				return (false, "Ett fel uppstod under registrering. Vänligen försök igen senare.");
+			}
+		}
 
 
 
@@ -87,6 +87,7 @@ namespace FamilyCalender.Infrastructure.Services
 
 		public async Task<User> GetUserByEmailAsync(string email)
 		{
+			//Gör en try catch eller returna ett fel om användaren inte hittas
 			return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 		}
 	}

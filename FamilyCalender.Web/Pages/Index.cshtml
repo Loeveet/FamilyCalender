@@ -12,28 +12,30 @@
 }
 else
 {
+	<h2 class="d-flex justify-content-between align-items-center">
+		<span>@Model.ViewModel.SelectedCalendarName</span>
 
+		@if (!string.IsNullOrWhiteSpace(Model.ViewModel.ShareLink))
+		{
+			<button type="button" onclick="ToggleShowShareLink()" class="btn btn-primary">
+				<i class="bi bi-share"></i> Dela
+			</button>
+		}
+	</h2>
 
-    <h2>@Model.ViewModel.SelectedCalendarName</h2>
-   
-   
 	@if (!string.IsNullOrWhiteSpace(Model.ViewModel.ShareLink))
-    {
-		<button type="button" style="float:right" onclick="ToggleShowShareLink()" class="btn btn-primary"><i class="bi bi-share"></i> Dela</button>
-        <div id="ShareLinkContainer" class="visually-hidden" style="margin-top: 20px;">
-            <b>Dela</b>
-            Dela följande länk med någon du vill ska vara med i din kalender
-            <div class="input-group mb-3">
-				<input type="text" class="form-control" value="@Model.ViewModel.ShareLink" id="ShareLinkInput">
-                <div class="input-group-append">
-                    <a id="CopyShareLinkButton" onclick="CopyShareLink()" aria-readonly="true" class="btn btn-primary input-group-text" id="basic-addon2">Kopiera</a>
-                </div>
-            </div>
-
-
-        </div>
-     
-    }
+	{
+		<div id="ShareLinkContainer" class="visually-hidden" style="margin-top: 20px;">
+			<b>Dela</b>
+			Dela följande länk med någon du vill ska vara med i din kalender:
+			<div class="input-group mb-3">
+				<input type="text" class="form-control" value="@Model.ViewModel.ShareLink" id="ShareLinkInput" readonly>
+				<div class="input-group-append">
+					<a id="CopyShareLinkButton" onclick="CopyShareLink()" class="btn btn-primary input-group-text">Kopiera</a>
+				</div>
+			</div>
+		</div>
+	}
     
 
 	<a href="javascript:void(0)"
@@ -45,7 +47,7 @@ else
 	   onclick="setModalValues(this)">
 		<i class="bi bi-plus-circle" title="Lägg till händelse"></i>
 	</a>
-	<h3 class="d-flex justify-content-center align-items-center">
+	<h3 class="d-flex justify-content-center align-items-center sticky-header">
 		<a asp-page="./Index" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
 		   asp-route-month="@(Model.ViewModel.CurrentMonth == 1 ? 12 : Model.ViewModel.CurrentMonth - 1)"
 		   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
