@@ -97,6 +97,11 @@ namespace FamilyCalender.Web.Pages
 			{
 				ViewModel.SelectedCalendarId = calendarDto.Id;
 				ViewModel.SelectedCalendarName = calendarDto.Name;
+
+				if (calendarDto.InviteId != null)
+				{
+					ViewModel.ShareLink = $"{Request.Scheme}://{Request.Host}/Invite?inviteId={calendarDto.InviteId}";
+				}
 			}
 
 

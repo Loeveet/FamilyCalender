@@ -56,7 +56,8 @@ namespace FamilyCalender.Infrastructure.Repositories
 				.Select(c => new CalendarDto
 				{
 					Id = c.Id,
-					Name = c.Name
+					Name = c.Name,
+                    InviteId = c.InviteId
 				})
 				.FirstOrDefaultAsync() ?? throw new FileNotFoundException();
 		}
@@ -67,8 +68,9 @@ namespace FamilyCalender.Infrastructure.Repositories
                 .Select(c => new CalendarDto
                 {
                     Id = c.Id,
-                    Name = c.Name
-                })
+                    Name = c.Name,
+                    InviteId = c.InviteId
+				})
                 .ToListAsync();
 
             var accessCalendars = await _context.CalendarAccesses
@@ -76,8 +78,8 @@ namespace FamilyCalender.Infrastructure.Repositories
                 .Select(c => new CalendarDto()
                 {
                     Id = c.CalendarId,
-                    Name = c.Calendar.Name
-                }).ToListAsync();
+                    Name = c.Calendar.Name,
+				}).ToListAsync();
 
             ownCalendars.AddRange(accessCalendars);
 
