@@ -30,14 +30,13 @@ namespace FamilyCalender
 
 			builder.Services.AddAuthentication(options =>
 			{
-				options.DefaultScheme = "Cookie"; // Definiera standardautentisering
+				options.DefaultScheme = "Cookie";
 			})
 				.AddCookie("Cookie", options =>
 				{
-					options.LoginPath = "/Login"; // Ange vart användare ska skickas vid behov
-					options.LogoutPath = "/Login"; // Anger var användare ska skickas vid utloggning
-												   //options.AccessDeniedPath = "/Account/AccessDenied"; // Anger path vid nekad åtkomst
-					options.SlidingExpiration = true; // Gör så att sessionen hålls aktiv längre om användaren är aktiv
+					options.LoginPath = "/Login"; 
+					options.LogoutPath = "/Login";
+					options.SlidingExpiration = true;
 
 				});
 
