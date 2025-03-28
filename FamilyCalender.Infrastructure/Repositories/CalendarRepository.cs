@@ -62,7 +62,7 @@ namespace FamilyCalender.Infrastructure.Repositories
 		}
         public async Task<List<CalendarDto>> GetCalendarDtosAsync(string userId)
         {
-            return await _context.Calendars
+            var ownCalendars = await _context.Calendars
                 .Where(c => c.OwnerId == userId) 
                 .Select(c => new CalendarDto
                 {
@@ -70,6 +70,18 @@ namespace FamilyCalender.Infrastructure.Repositories
                     Name = c.Name
                 })
                 .ToListAsync();
+
+            var accessCalendars = await _context.CalendarAccesses
+                .Where(x => x.UserId == userId)
+                .Select(c => new CalendarDto()
+                {
+                    Id = c.CalendarId,
+                    Name = c.Calendar.Name
+                }).ToListAsync();
+
+            ownCalendars.AddRange(accessCalendars);
+
+            return ownCalendars.DistinctBy(x => x.Id).ToList();
         }
 
         public async Task RemoveAsync(int calendarId)
