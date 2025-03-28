@@ -1,4 +1,5 @@
 using System.CodeDom;
+using FamilyCalender.Core.Interfaces;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Models.ViewModels;
 using FamilyCalender.Infrastructure.Services;
@@ -9,10 +10,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FamilyCalender.Web.Pages
 {
-    public class InviteModel(InviteService inviteService, UserManager<User> userManager) : PageModel
-    {
+    public class InviteModel(InviteService inviteService, IAuthService authService) : BasePageModel(authService)
+	{
 	    private readonly InviteService _inviteService = inviteService;
-	    private readonly UserManager<User> _userManager = userManager;
 
 		[BindProperty]
 		public InviteViewModel ViewModel { get; set; } = new InviteViewModel();
@@ -29,9 +29,9 @@ namespace FamilyCalender.Web.Pages
         [HttpPost]
         public async Task<IActionResult> OnPostJoinEventAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+			var user = await GetCurrentUserAsync();
 
-            _inviteService.Join(ViewModel.InviteId, user.Id);
+			_inviteService.Join(ViewModel.InviteId, user.Id);
 
             return RedirectToPage("./Index");
         }

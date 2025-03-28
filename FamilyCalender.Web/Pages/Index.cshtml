@@ -13,7 +13,29 @@
 else
 {
 
-	<h2>@Model.ViewModel.SelectedCalendarName</h2>
+
+    <h2>@Model.ViewModel.SelectedCalendarName</h2>
+   
+   
+	@if (!string.IsNullOrWhiteSpace(Model.ViewModel.ShareLink))
+    {
+		<button type="button" style="float:right" onclick="ToggleShowShareLink()" class="btn btn-primary"><i class="bi bi-share"></i> Dela</button>
+        <div id="ShareLinkContainer" class="visually-hidden" style="margin-top: 20px;">
+            <b>Dela</b>
+            Dela följande länk med någon du vill ska vara med i din kalender
+            <div class="input-group mb-3">
+				<input type="text" class="form-control" value="@Model.ViewModel.ShareLink" id="ShareLinkInput">
+                <div class="input-group-append">
+                    <a id="CopyShareLinkButton" onclick="CopyShareLink()" aria-readonly="true" class="btn btn-primary input-group-text" id="basic-addon2">Kopiera</a>
+                </div>
+            </div>
+
+
+        </div>
+     
+    }
+    
+
 	<a href="javascript:void(0)"
 	   class="floating-button d-sm-none"
 	   data-bs-toggle="modal"
@@ -61,8 +83,8 @@ else
 						@{
 							if (day.ShowWeekNumber)
 							{
-									<b>@($"v. {day.WeekOfYear}")</b>
-									<br />
+											<b>@($"v. {day.WeekOfYear}")</b>
+											<br />
 							}
 						}
 
@@ -259,4 +281,31 @@ else
 			today.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
 	}
 	
+	
+	function CopyShareLink() {
+		// Get the text field
+		var copyText = document.getElementById("ShareLinkInput");
+
+		// Select the text field
+		copyText.select();
+		copyText.setSelectionRange(0, 99999); // For mobile devices
+
+		// Copy the text inside the text field
+		navigator.clipboard.writeText(copyText.value);
+
+		ToggleShowShareLink();
+		
+	}
+
+	function ToggleShowShareLink() {
+
+		if ($("#ShareLinkContainer").hasClass('visually-hidden')) {
+			$("#ShareLinkContainer").removeClass('visually-hidden');
+		}
+		else {
+			$("#ShareLinkContainer").addClass('visually-hidden');
+		}
+		
+	}
+
 </script>

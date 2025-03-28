@@ -38,5 +38,7 @@ namespace FamilyCalender.Core.Models.ViewModels
 				return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(monthName);
 			}
 		}
-	}
+
+		public string ShareLink { get; set; }
+    }
 }

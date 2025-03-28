@@ -93,5 +93,11 @@
 
 
     @await RenderSectionAsync("Scripts", required: false)
-</body>
+    
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
+    </script>
+    </body>
 </html>
