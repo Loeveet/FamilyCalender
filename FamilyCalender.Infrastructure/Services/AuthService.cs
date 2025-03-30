@@ -27,7 +27,6 @@ namespace FamilyCalender.Infrastructure.Services
 			if (user == null)
 				return false;
 
-			// Sätt användarens login status, till exempel genom att använda sessions
 			var isValidPassword = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
 			if (!isValidPassword)
 				return false;
@@ -39,9 +38,15 @@ namespace FamilyCalender.Infrastructure.Services
 			var identity = new ClaimsIdentity(claims, "Cookie");
 			var principal = new ClaimsPrincipal(identity);
 
+			var authProperties = new AuthenticationProperties
+			{
+				IsPersistent = true,
+				ExpiresUtc = DateTime.UtcNow.AddDays(365)
+			};
+
 			if (_httpContextAccessor.HttpContext != null)
 			{
-				await _httpContextAccessor.HttpContext.SignInAsync("Cookie", principal);
+				await _httpContextAccessor.HttpContext.SignInAsync("Cookie", principal, authProperties);
 			}
 
 			return true;
@@ -81,7 +86,7 @@ namespace FamilyCalender.Infrastructure.Services
 		{
 			if (_httpContextAccessor.HttpContext != null)
 			{
-				await _httpContextAccessor.HttpContext.SignOutAsync();
+				await _httpContextAccessor.HttpContext.SignOutAsync("Cookie");
 			}
 		}
 
