@@ -21,13 +21,6 @@ namespace FamilyCalender
 
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddSession(options =>
-			{
-				options.IdleTimeout = TimeSpan.FromDays(365);
-				options.Cookie.HttpOnly = true;
-				options.Cookie.IsEssential = true;
-			});
-
 			builder.Services.AddAuthentication(options =>
 			{
 				options.DefaultScheme = "Cookie";
@@ -37,6 +30,7 @@ namespace FamilyCalender
 					options.LoginPath = "/Login"; 
 					options.LogoutPath = "/Login";
 					options.SlidingExpiration = true;
+					options.ExpireTimeSpan = TimeSpan.FromDays(365);
 
 				});
 
@@ -72,8 +66,6 @@ namespace FamilyCalender
 
 
 			var app = builder.Build();
-
-			app.UseSession();
 
 			//https://stackoverflow.com/questions/47598844/enabling-migrations-in-ef-core
 			using var serviceScope = app.Services.CreateScope();
