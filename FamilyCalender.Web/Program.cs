@@ -29,8 +29,8 @@ namespace FamilyCalender
 				{
 					options.LoginPath = "/Login"; 
 					options.LogoutPath = "/Login";
-					options.SlidingExpiration = true;
 					options.ExpireTimeSpan = TimeSpan.FromDays(365);
+					options.SlidingExpiration = true;
 
 				});
 
