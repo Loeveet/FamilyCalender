@@ -98,13 +98,13 @@ footer {
 
 .expanding-column {
     flex-grow: 1;
-    overflow: hidden;
+    /*overflow: hidden;*/
     word-break: break-word;
     min-width: 0;
     max-width: 3.75rem;
     min-width: 3.75rem;
     font-size: clamp(10px, 2vw, 20px);
-    white-space: nowrap;
+    /*white-space: nowrap;*/
     text-align:center;
 }
 
