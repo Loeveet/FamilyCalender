@@ -103,7 +103,7 @@ footer {
     min-width: 0;
     max-width: 3.75rem;
     min-width: 3.75rem;
-    font-size: clamp(10px, 2vw, 20px);
+    font-size: 12px; /* clamp(10px, 2vw, 20px);*/
     /*white-space: nowrap;*/
     text-align:center;
 }
@@ -111,16 +111,30 @@ footer {
 
 table.table.table-striped tr.today td {
     background-color: #e4f0d9;
-    font-size: 14px;
-    font-weight:bold;
+ 
 }
+
+table.table.table-striped .week-separator {
+    text-align: center;
+    background-color: #5f6d7c;
+    color: #fff;
+    padding: 0px;
+    margin: 0px;
+}
+
+table.table.table-striped .today {
+    text-align: center;
+    background-color: #e4f0d9;
+    color: #000;
+}
+
 
 .fixed-day-column {
     width: 10%;
     white-space: nowrap;
     text-align: center;
-    font-size: 0.7rem;
-
+    /*font-size: 0.7rem;*/
+    font-size:12px;
 }
 
 .truncated-title {
