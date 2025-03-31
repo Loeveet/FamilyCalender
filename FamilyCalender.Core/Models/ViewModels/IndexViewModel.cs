@@ -16,7 +16,7 @@ namespace FamilyCalender.Core.Models.ViewModels
         public ICollection<CalendarDto> CalendarDtos { get; set; } = [];
         public Calendar SelectedCalendar { get; set; } = new Core.Models.Entities.Calendar();
         public ICollection<Event> Events { get; set; } = [];
-        public ICollection<Member> Members { get; set; } = [];
+        public ICollection<Member> Members { get; set; } = new List<Core.Models.Entities.Member>();
         public ICollection<DayViewModel> DaysInMonth { get; set; } = [];
         public CultureInfo CultureInfo { get; set; } = new CultureInfo("sv-SE");
         public DateTime? SelectedDate { get; set; }
