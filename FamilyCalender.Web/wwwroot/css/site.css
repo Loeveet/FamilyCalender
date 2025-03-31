@@ -111,8 +111,9 @@ footer {
 
 table.table.table-striped tr.today td {
     background-color: #e4f0d9;
- 
 }
+
+
 
 table.table.table-striped .week-separator {
     text-align: center;
@@ -194,7 +195,9 @@ table.table.table-striped .today {
 .btn-lg:hover {
     opacity: 0.9;
 }
-.table thead th{
+
+
+.table thead th.sticky {
     position: sticky;
     top: 4rem;
     background-color: white;
