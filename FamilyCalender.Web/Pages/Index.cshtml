@@ -68,116 +68,128 @@ else
             <i class="bi bi-chevron-right"></i>
         </a>
 
-     
+
     </h3>
 
+
     <!-- delete this to get stick names or keep this to make table not fucking up on mobile if many names-->
-    <div class="@(Model.ViewModel.Members.Count > 5 ? "table-responsive" : "")">
+    <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover">
-        <thead>
-            <tr>
-                    <th class="fixed-day-column @(Model.ViewModel.Members.Count < 5 ? "sticky" : "")"></th>
-                @foreach (var member in Model.ViewModel.Members)
-                {
-                        <th class="expanding-column @(Model.ViewModel.Members.Count < 5 ? "sticky" : "")">@member.Name</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var day in Model.ViewModel.DaysInMonth)
-            {
-                @if (day.ShowWeekNumber && Model.ViewModel.Members != null)
-                {
-                    var colspan = @Model.ViewModel.Members.Count + 1;
-
-                    <tr>
-                        <td colspan="@colspan" class="week-separator">
-                            Vecka @day.WeekOfYear
-                        </td>
-                    </tr>
-                }
-
-                @if (day.IsCurrentDay)
-                {
-                    var colspan = Model.ViewModel.Members.Count + 1;
-                    <tr>
-                        <td colspan="@colspan" class="today">
-                            Idag @day.CapitalizedDayName @day.Date.Day
-                        </td>
-                    </tr>
-                }
-
-                <tr id="@(day.IsCurrentDay ? "today" : "")" class="@(day.IsCurrentDay ? "today" : "")">
-                    <td class="fixed-day-column">
-                        @*
-                @{
-                if (day.ShowWeekNumber)
-                {
-                <b>@($"v. {day.WeekOfYear}")</b>
-                <br />
-                }
-                }*@
-
-                        <div class="d-flex flex-column align-items-center">
-                            <span class="day-info day-info-small day-info-medium @(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "") d-block d-md-none">
-                                @day.CapitalizedDayName[..2]
-                            </span>
-
-                            <span class="day-info day-info-large @(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "") d-none d-md-block">
-                                @day.CapitalizedDayName
-                            </span>
-
-                            <span class="day-number">
-                                @day.Date.Day
-                            </span>
-                        </div>
-
-
-                        @if (!day.IsPastDay)
-                        {
-                            <a href="javascript:void(0)"
-                               class="text-decoration-none ms-2 add-event-button"
-                               data-bs-toggle="modal"
-                               data-bs-target="#eventModal"
-                               data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
-                               data-editable="false"
-                               onclick="setModalValues(this)">
-                                <i class="bi bi-plus-circle event-icon" title="Lägg till händelse"></i>
-                            </a>
-                        }
-                    </td>
-
-                    @foreach (var member in Model.ViewModel.Members ?? new List<Core.Models.Entities.Member>())
+           @* <thead>
+                <tr>
+                    <th class="fixed-day-column @(needResponsiveTable ? "sticky" : "")"></th>
+                    @foreach (var member in Model.ViewModel.Members)
                     {
-                        var eventMemberDates = Model.ViewModel.Events
-                        .SelectMany(e => e.EventMemberDates)
-                        .Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
-                        .ToList();
-                        <td class="expanding-column @(day.IsCurrentDay ? "active-day" : "")">
-                            <div class="d-flex flex-column justify-content-between gap-1">
-                                @if (eventMemberDates?.Any() ?? false)
-                                {
-                                    foreach (var eventMemberDate in eventMemberDates)
-                                    {
-                                        <a asp-page="./EventDetails"
-                                           asp-route-eventId="@eventMemberDate.EventId"
-                                           asp-route-memberId="@member.Id"
-                                           asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
-                                           class="text-decoration-none text-dark">
-                                            <span>@eventMemberDate.Event?.Title</span>
-                                        </a>
-                                        <br />
-                                    }
-                                }
-
-                            </div>
-                        </td>
+                        <th class="expanding-column @(needResponsiveTable ? "sticky" : "")">@member.Name</th>
                     }
                 </tr>
-            }
-        </tbody>
+            </thead>*@
+            <tbody>
+                @foreach (var day in Model.ViewModel.DaysInMonth)
+                {
 
-    </table>
+                    @if (day.ShowWeekNumber && Model.ViewModel.Members != null)
+                    {
+                        var colspan = @Model.ViewModel.Members.Count + 1;
+
+                        <tr>
+                            <td colspan="@colspan" class="week-separator">
+                                Vecka @day.WeekOfYear
+                            </td>
+                        </tr>
+                    }
+                    @if (day.ShowWeekNumber )
+                    {
+                        <tr class="extra-member-column-per-week">
+                            <td class="fixed-day-colum "></td>
+                            @foreach (var member in Model.ViewModel.Members)
+                            {
+                                <td class="expanding-column ">@member.Name</td>
+                            }
+                        </tr>
+                    }
+
+                    @if (day.IsCurrentDay)
+                    {
+                        var colspan = Model.ViewModel.Members.Count + 1;
+                        <tr>
+                            <td colspan="@colspan" class="today">
+                                Idag @day.CapitalizedDayName @day.Date.Day
+                            </td>
+                        </tr>
+                    }
+
+                    <tr id="@(day.IsCurrentDay ? "today" : "")" class="@(day.IsCurrentDay ? "today" : "")">
+                        <td class="fixed-day-column">
+                            @*
+                    @{
+                    if (day.ShowWeekNumber)
+                    {
+                    <b>@($"v. {day.WeekOfYear}")</b>
+                    <br />
+                    }
+                    }*@
+
+                            <div class="d-flex flex-column align-items-center">
+                                <span class="day-info day-info-small day-info-medium @(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "") d-block d-md-none">
+                                    @day.CapitalizedDayName[..2]
+                                </span>
+
+                                <span class="day-info day-info-large @(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "") d-none d-md-block">
+                                    @day.CapitalizedDayName
+                                </span>
+
+                                <span class="day-number">
+                                    @day.Date.Day
+                                </span>
+                            </div>
+
+
+                            @if (!day.IsPastDay)
+                            {
+                                <a href="javascript:void(0)"
+                                   class="text-decoration-none ms-2 add-event-button"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#eventModal"
+                                   data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
+                                   data-editable="false"
+                                   onclick="setModalValues(this)">
+                                    <i class="bi bi-plus-circle event-icon" title="Lägg till händelse"></i>
+                                </a>
+                            }
+                        </td>
+
+                        @foreach (var member in Model.ViewModel.Members ?? new List<Core.Models.Entities.Member>())
+                        {
+                            var eventMemberDates = Model.ViewModel.Events
+                            .SelectMany(e => e.EventMemberDates)
+                            .Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
+                            .ToList();
+                            <td class="expanding-column @(day.IsCurrentDay ? "active-day" : "")">
+                                <div class="d-flex flex-column justify-content-between gap-1">
+                                    @if (eventMemberDates?.Any() ?? false)
+                                    {
+                                        foreach (var eventMemberDate in eventMemberDates)
+                                        {
+                                            <a asp-page="./EventDetails"
+                                               asp-route-eventId="@eventMemberDate.EventId"
+                                               asp-route-memberId="@member.Id"
+                                               asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
+                                               class="text-decoration-none text-dark">
+                                                <span>@eventMemberDate.Event?.Title</span>
+                                            </a>
+                                            <br />
+                                        }
+                                    }
+
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+
+        </table>
     </div>
 }
 

@@ -20,6 +20,11 @@ footer {
     margin-top: auto; 
 }
 
+/*
+.extra-member-column-per-week {
+display:none;
+}*/
+
 
 @media (max-width: 576px) {
     .floating-button {
@@ -46,6 +51,10 @@ footer {
         display: none; /* Döljer knappen på små skärmar */
     }
 
+    .extra-member-column-per-week {
+        display: contents;
+    }
+
     .day-info-medium, .day-info-large {
         display: none; /* Döljer både dagförkortning och fullständigt namn */
     }
@@ -59,6 +68,9 @@ footer {
     .day-info-large {
         display: none; /* Döljer fullt namn på dag */
     }
+
+   
+   
 }
 
 @media (min-width: 768px) {
@@ -69,7 +81,11 @@ footer {
     .day-info-medium {
         display: none; /* Döljer förkortat namn på dag på stora skärmar */
     }
+
+   
 }
+
+
 
 .accordion-button.collapsed {
     border: 1px solid #007bff;
