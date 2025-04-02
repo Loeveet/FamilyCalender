@@ -326,7 +326,9 @@ else
 
     var today = document.getElementById('today');
     if (today !== null) {
-        today.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+        var elementPosition = today.getBoundingClientRect().top + window.scrollY;
+        var offsetPosition = elementPosition - 100;
+        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
     }
 
 
