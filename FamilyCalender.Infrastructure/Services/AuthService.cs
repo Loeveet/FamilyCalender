@@ -65,7 +65,10 @@ namespace FamilyCalender.Infrastructure.Services
                 var user = new User
                 {
                     Email = email,
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+					IsVerified = false,
+					VerificationToken = Guid.NewGuid().ToString(),
+
                 };
 
                 await _context.Users.AddAsync(user);
@@ -95,5 +98,10 @@ namespace FamilyCalender.Infrastructure.Services
 			//Gör en try catch eller returna ett fel om användaren inte hittas
 			return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 		}
-	}
+        public async Task<User> GetUserByTokenAsync(string verificationToken)
+        {
+            //Gör en try catch eller returna ett fel om användaren inte hittas
+            return await _context.Users.FirstOrDefaultAsync(u => u.VerificationToken == verificationToken);
+        }
+    }
 }
