@@ -500,7 +500,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function handleSwipe() {
         let swipeDistance = touchEndX - touchStartX;
-        let threshold = 50;
+        let threshold = window.innerWidth <= 500 ? window.innerWidth * 0.33 : window.innerWidth * 0.1; // krävs svep 33% på liten skärm, 10% på stor skärm
+
 
         if (swipeDistance > threshold) {
             changeMonth(-1);
