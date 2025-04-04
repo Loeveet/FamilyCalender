@@ -45,8 +45,6 @@ namespace FamilyCalender.Infrastructure.Services
 
         public void SendVerificationEmail(string userEmail, string verificationToken)
         {
-			//string verificationLink = $"https://planeramedflera.se/VerifyAccount/{verificationToken}";
-			//string verificationLink = $"https://localhost:7223/VerifyAccount?token={verificationToken}";
 			var request = _httpContextAccessor.HttpContext?.Request;
 			var verificationLink = $"{request?.Scheme}://{request?.Host}/VerifyAccount/{verificationToken}";
 

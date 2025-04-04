@@ -122,6 +122,7 @@ namespace FamilyCalender.Infrastructure.Services
 		{
             user.IsVerified = true;
             user.VerificationToken = null;
-        }
-    }
+			user.VerificationDateUtc = DateTime.UtcNow;
+		}
+	}
 }

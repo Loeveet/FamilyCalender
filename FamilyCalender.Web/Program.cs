@@ -40,9 +40,11 @@ namespace FamilyCalender
 					options.Conventions.AuthorizeFolder("/");
 					options.Conventions.AllowAnonymousToPage("/Login");
 					options.Conventions.AllowAnonymousToPage("/Register");
-					options.Conventions.AddPageRoute("/VerifyAccount", "/VerifyAccount/{token}");
+                    options.Conventions.AllowAnonymousToPage("/VerifyAccount");
+                    options.Conventions.AllowAnonymousToPage("/AccountVerified");
+                    options.Conventions.AddPageRoute("/VerifyAccount", "/VerifyAccount/{token}");
 
-				});
+                });
 
 			// Add DbContext with SQLite
 			builder.Services.AddDbContext<ApplicationDbContext>(options =>
