@@ -57,6 +57,19 @@ namespace FamilyCalender.Infrastructure.Services
 
             SendEmail(userEmail, "Bekräfta din e-postadress", emailBody);
         }
+
+        public void SendPasswordResetEmail(string userEmail, string resetToken)
+        {
+            var request = _httpContextAccessor.HttpContext?.Request;
+            var resetLink = $"{request?.Scheme}://{request?.Host}/ResetPassword/{resetToken}";
+
+            string emailBody = $@"
+        <h2>Återställ ditt lösenord</h2>
+        <p>Klicka på länken nedan för att återställa ditt lösenord:</p>
+        <a href='{resetLink}'>Återställ lösenord</a>";
+
+            SendEmail(userEmail, "Återställ ditt lösenord", emailBody);
+        }
     }
 
 }

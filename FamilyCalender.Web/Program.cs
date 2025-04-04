@@ -42,7 +42,10 @@ namespace FamilyCalender
 					options.Conventions.AllowAnonymousToPage("/Register");
                     options.Conventions.AllowAnonymousToPage("/VerifyAccount");
                     options.Conventions.AllowAnonymousToPage("/AccountVerified");
+                    options.Conventions.AllowAnonymousToPage("/ForgotPassword");
+                    options.Conventions.AllowAnonymousToPage("/ResetPassword");
                     options.Conventions.AddPageRoute("/VerifyAccount", "/VerifyAccount/{token}");
+                    options.Conventions.AddPageRoute("/ResetPassword", "/ResetPassword/{token}");
 
                 });
 

@@ -15,6 +15,10 @@ namespace FamilyCalender.Core.Interfaces
 		Task LogoutAsync();
 		Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByTokenAsync(string verificationToken);
+        Task<User> GetUserByPasswordResetTokenAsync(string passwordResetToken);
         Task<bool> VerifyAccount(string token);
+        Task SendPasswordResetEmailAsync(string email);
+        Task<bool> ResetPasswordAsync(string token, string newPassword);
+
     }
 }
