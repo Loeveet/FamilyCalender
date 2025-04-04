@@ -131,15 +131,23 @@ else
                     }*@
 
                             <div class="d-flex flex-column align-items-center">
-                                <span class="day-info day-info-small day-info-medium @(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "") d-block d-md-none">
+                                <span class="day-info day-info-small day-info-medium 
+                                @(day.IsCurrentDay ? "fw-bold" : "") 
+                                @(day.IsPastDay ? "text-muted" : "") 
+                                @(day.CapitalizedDayName == "Söndag" ? "text-danger" : "")
+                                d-block d-md-none">
                                     @day.CapitalizedDayName[..2]
                                 </span>
 
-                                <span class="day-info day-info-large @(day.IsCurrentDay ? "fw-bold" : "") @(day.IsPastDay ? "text-muted" : "") d-none d-md-block">
+                                <span class="day-info day-info-large 
+                                            @(day.IsCurrentDay ? "fw-bold" : "") 
+                                            @(day.IsPastDay ? "text-muted" : "")
+                                            @(day.CapitalizedDayName == "Söndag" ? "text-danger" : "")
+                                            d-none d-md-block">
                                     @day.CapitalizedDayName
                                 </span>
 
-                                <span class="day-number">
+                                <span class="day-number @(day.CapitalizedDayName == "Söndag" ? "text-danger" : "")">
                                     @day.Date.Day
                                 </span>
                             </div>
