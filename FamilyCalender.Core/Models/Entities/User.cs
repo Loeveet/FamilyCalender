@@ -12,9 +12,12 @@ namespace FamilyCalender.Core.Models.Entities
         public bool IsVerified { get; set; }
         public string? VerificationToken { get; set; }
 		public DateTime? VerificationDateUtc { get; set; }
+        public string? PasswordResetToken { get; set; }
+        public DateTime? PasswordResetTokenExpiry { get; set; }
 
 
-		public ICollection<CalendarAccess> CalendarAccesses { get; set; } = [];
+
+        public ICollection<CalendarAccess> CalendarAccesses { get; set; } = [];
         public ICollection<Calendar> OwnedCalendars { get; set; } = [];
         public ICollection<Member> Members { get; set; } = []; 
     }

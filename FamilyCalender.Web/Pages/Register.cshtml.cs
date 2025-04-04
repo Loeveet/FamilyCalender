@@ -14,12 +14,10 @@ namespace FamilyCalender.Web.Pages
     public class RegisterModel : PageModel
     {
         private readonly IAuthService _authService;
-        private readonly IEmailService _emailService;
 
-        public RegisterModel(IAuthService authService, IEmailService emailService)
+        public RegisterModel(IAuthService authService)
         {
             _authService = authService;
-            _emailService = emailService;
 
         }
         [BindProperty]
@@ -58,7 +56,6 @@ namespace FamilyCalender.Web.Pages
 
                 if (Succeeded)
                 {
-                    _emailService.SendVerificationEmail(Input.Email, Token);
 					TempData["VerificationMessage"] = "Vi har skickat ett e-postmeddelande för att bekräfta ditt konto. Kolla din inkorg!";
 				}
 				ErrorMessage = Error;
