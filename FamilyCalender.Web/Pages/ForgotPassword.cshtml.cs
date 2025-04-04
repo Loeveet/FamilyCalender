@@ -15,18 +15,18 @@ namespace FamilyCalender.Web.Pages
 
         [BindProperty]
         public string Email { get; set; }
+        public string Message { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (string.IsNullOrEmpty(Email))
             {
                 ModelState.AddModelError("", "Ange en giltig e-postadress.");
-                return Page();
             }
 
             await _authService.SendPasswordResetEmailAsync(Email);
-            TempData["Message"] = "Om e-postadressen finns registrerad har vi skickat en återställningslänk.";
-            return RedirectToPage("/Login");
+            Message = "Om e-postadressen finns registrerad har vi skickat en återställningslänk som är giltlig en timme.";
+            return Page();
         }
     }
 }

@@ -1,6 +1,7 @@
 using FamilyCalender.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 
 namespace FamilyCalender.Web.Pages
 {
@@ -16,11 +17,15 @@ namespace FamilyCalender.Web.Pages
         [BindProperty]
         public string Token { get; set; }
         [BindProperty]
+        [DataType(DataType.Password)]
         public string NewPassword { get; set; }
         [BindProperty]
+        [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
 
-        public string Message { get; set; }
+        public string ErrorMessage { get; set; }
+        public string SuccessMessage { get; set; }
+
 
         public IActionResult OnGet(string token)
         {
@@ -30,20 +35,25 @@ namespace FamilyCalender.Web.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (NewPassword.Length < 12)
+            {
+                ErrorMessage = "Lösenorden måste vara minst 12 tecken.";
+                return Page();
+            }
             if (NewPassword != ConfirmPassword)
             {
-                Message = "Lösenorden matchar inte.";
+                ErrorMessage = "Lösenorden matchar inte.";
                 return Page();
             }
 
             var result = await _authService.ResetPasswordAsync(Token, NewPassword);
             if (!result)
             {
-                Message = "Ogiltig eller utgången återställningslänk.";
+                ErrorMessage = "Ogiltig eller utgången återställningslänk.";
                 return Page();
             }
-
-            return RedirectToPage("/Login");
+            SuccessMessage = "Ditt lösenord är ändrat. Logga in igen.";
+            return Page();
         }
     }
 }
