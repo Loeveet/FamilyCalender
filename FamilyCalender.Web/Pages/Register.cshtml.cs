@@ -1,5 +1,6 @@
 using FamilyCalender.Core.Interfaces;
 using FamilyCalender.Core.Models.Entities;
+using FamilyCalender.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace FamilyCalender.Web.Pages
     public class RegisterModel : PageModel
     {
         private readonly IAuthService _authService;
+        private readonly IEmailService _emailService;
 
-        public RegisterModel(IAuthService authService)
+        public RegisterModel(IAuthService authService, IEmailService emailService)
         {
             _authService = authService;
+            _emailService = emailService;
 
         }
         [BindProperty]
@@ -36,7 +39,7 @@ namespace FamilyCalender.Web.Pages
 
             [Required]
             //Sätt krav på 10-12 tecken samt specialtecken när det är dags att köra skarpt sen
-            //[StringLength(50, ErrorMessage = "Lösenordet måste vara minst {2} och max {1} tecken långt.", MinimumLength = 12)]
+            [StringLength(50, ErrorMessage = "Lösenordet måste vara minst {2} och max {1} tecken långt.", MinimumLength = 12)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -51,13 +54,14 @@ namespace FamilyCalender.Web.Pages
         {
             if (ModelState.IsValid)
             {
-                var (Succeeded, Error) = await _authService.RegisterAsync(Input.Email, Input.Password);
+                var (Succeeded, Error, Token) = await _authService.RegisterAsync(Input.Email, Input.Password);
 
                 if (Succeeded)
                 {
-                    return RedirectToPage("/Login");
-                }
-                ErrorMessage = Error;
+                    _emailService.SendVerificationEmail(Input.Email, Token);
+					TempData["VerificationMessage"] = "Vi har skickat ett e-postmeddelande för att bekräfta ditt konto. Kolla din inkorg!";
+				}
+				ErrorMessage = Error;
 
 				foreach (var error in Error)
                 {

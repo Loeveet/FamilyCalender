@@ -10,7 +10,7 @@ namespace FamilyCalender.Core.Models.Entities
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public bool IsVerified { get; set; }
-        public string VerificationToken { get; set; }
+        public string? VerificationToken { get; set; }
 
         public ICollection<CalendarAccess> CalendarAccesses { get; set; } = [];
         public ICollection<Calendar> OwnedCalendars { get; set; } = [];
