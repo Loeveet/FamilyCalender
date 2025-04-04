@@ -23,7 +23,6 @@ namespace FamilyCalender.Web.Pages
 
 			if (await _authService.VerifyAccount(token))
             {
-                //return RedirectToPage("/Login", new { verified = true });
                 return RedirectToPage("/AccountVerified");
 
             }

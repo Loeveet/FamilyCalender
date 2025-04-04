@@ -31,7 +31,13 @@ namespace FamilyCalender.Infrastructure.Services
 			if (!isValidPassword)
 				return false;
 
-			var claims = new List<Claim>
+			var isVerified = user.IsVerified;
+            if (!isVerified)
+            {
+				return false;
+            }
+
+            var claims = new List<Claim>
 		{
 			new Claim(ClaimTypes.Name, user.Email)
 		};
