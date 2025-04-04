@@ -25,8 +25,13 @@
 				<label asp-for="Input.ConfirmPassword">Bekräfta lösenord</label>
 				<span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
 			</div>
+
 			<button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Skapa</button>
 		</form>
+		@if (TempData["VerificationMessage"] != null)
+		{
+			<h2>@TempData["VerificationMessage"]</h2>
+		}
 	</div>
 </div>
 	@if (Model.ErrorMessage != null)

@@ -6,19 +6,23 @@ using System.Net.Mail;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using FamilyCalender.Core.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace FamilyCalender.Infrastructure.Services
 {
-    public class EmailService
+    public class EmailService : IEmailService
     {
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EmailService(IConfiguration configuration)
+        public EmailService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
-        }
+			_httpContextAccessor = httpContextAccessor;
+		}
 
-        public void SendEmail(string to, string subject, string body)
+	private void SendEmail(string to, string subject, string body)
         {
             var smtpClient = new SmtpClient(_configuration["Email:SmtpServer"])
             {
@@ -41,9 +45,14 @@ namespace FamilyCalender.Infrastructure.Services
 
         public void SendVerificationEmail(string userEmail, string verificationToken)
         {
-            string verificationLink = $"https://yourwebsite.com/verify?token={verificationToken}";
+			//string verificationLink = $"https://planeramedflera.se/VerifyAccount/{verificationToken}";
+			//string verificationLink = $"https://localhost:7223/VerifyAccount?token={verificationToken}";
+			var request = _httpContextAccessor.HttpContext?.Request;
+			var verificationLink = $"{request?.Scheme}://{request?.Host}/VerifyAccount/{verificationToken}";
 
-            string emailBody = $@"
+
+
+			string emailBody = $@"
         <h2>Bekräfta din e-postadress</h2>
         <p>Klicka på länken nedan för att bekräfta din e-post:</p>
         <a href='{verificationLink}'>Verifiera mitt konto</a>";

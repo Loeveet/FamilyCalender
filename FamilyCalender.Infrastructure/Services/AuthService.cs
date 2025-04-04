@@ -52,12 +52,12 @@ namespace FamilyCalender.Infrastructure.Services
 			return true;
 		}
 
-        public async Task<(bool Succeeded, string Error)> RegisterAsync(string email, string password)
+        public async Task<(bool Succeeded, string Error, string Token)> RegisterAsync(string email, string password)
         {
             var userExists = await _context.Users.AnyAsync(u => u.Email == email);
             if (userExists)
             {
-				return (false, "E-postadressen används redan.");
+				return (false, "E-postadressen används redan.", string.Empty);
 			}
 
 			try
@@ -74,12 +74,12 @@ namespace FamilyCalender.Infrastructure.Services
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
 
-                return (true, string.Empty);
+                return (true, string.Empty, user.VerificationToken);
             }
             catch (Exception ex)
             {
 
-				return (false, "Ett fel uppstod under registrering. Vänligen försök igen senare.");
+				return (false, "Ett fel uppstod under registrering. Vänligen försök igen senare.", string.Empty);
 			}
 		}
 
@@ -102,6 +102,26 @@ namespace FamilyCalender.Infrastructure.Services
         {
             //Gör en try catch eller returna ett fel om användaren inte hittas
             return await _context.Users.FirstOrDefaultAsync(u => u.VerificationToken == verificationToken);
+        }
+
+        public async Task<bool> VerifyAccount(string token)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.VerificationToken == token);
+            if (user == null)
+            {
+                return false;
+            }
+
+            SetUserToVerified(user);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+		
+		private static void SetUserToVerified(User user)
+		{
+            user.IsVerified = true;
+            user.VerificationToken = null;
         }
     }
 }

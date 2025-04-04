@@ -40,6 +40,8 @@ namespace FamilyCalender
 					options.Conventions.AuthorizeFolder("/");
 					options.Conventions.AllowAnonymousToPage("/Login");
 					options.Conventions.AllowAnonymousToPage("/Register");
+					options.Conventions.AddPageRoute("/VerifyAccount", "/VerifyAccount/{token}");
+
 				});
 
 			// Add DbContext with SQLite
@@ -59,6 +61,7 @@ namespace FamilyCalender
 			builder.Services.AddScoped<ICalendarAccessService, CalendarAccessService>();
 			builder.Services.AddScoped<IMemberCalendarService, MemberCalendarService>();
 			builder.Services.AddScoped<IAuthService, AuthService>();
+			builder.Services.AddScoped<IEmailService, EmailService>();
 			builder.Services.AddScoped<EventManagementService>();
 			builder.Services.AddScoped<CalendarManagementService>();
 			builder.Services.AddScoped<InviteService>();
