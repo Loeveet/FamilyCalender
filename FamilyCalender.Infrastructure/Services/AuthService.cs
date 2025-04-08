@@ -49,7 +49,7 @@ namespace FamilyCalender.Infrastructure.Services
 			var authProperties = new AuthenticationProperties
 			{
 				IsPersistent = true,
-				//ExpiresUtc = DateTime.UtcNow.AddDays(365)
+				ExpiresUtc = DateTime.UtcNow.AddDays(365)
 			};
 
 			if (_httpContextAccessor.HttpContext != null)

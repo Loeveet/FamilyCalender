@@ -29,12 +29,17 @@ namespace FamilyCalender
 				{
 					options.LoginPath = "/Login"; 
 					options.LogoutPath = "/Login";
-					options.ExpireTimeSpan = TimeSpan.FromDays(365);
 					options.SlidingExpiration = true;
 
 				});
 
-			builder.Services.AddRazorPages()
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => false; // Kräver samtycke
+                options.MinimumSameSitePolicy = SameSiteMode.Lax; // Inställning för SameSite
+            });
+
+            builder.Services.AddRazorPages()
 				.AddRazorPagesOptions(options =>
 				{
 					options.Conventions.AuthorizeFolder("/");
@@ -94,7 +99,9 @@ namespace FamilyCalender
 
 			app.UseRouting();
 
-			app.UseAuthentication();
+            app.UseCookiePolicy();
+
+            app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.MapRazorPages();
