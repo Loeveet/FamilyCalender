@@ -43,5 +43,37 @@ namespace FamilyCalender.Infrastructure.Services
         {
             return await _memberRepository.GetAllByCalendarAsync(calendarId);
         }
-    }
+		public async Task<Member> UpdateMemberNameAsync(int memberId, string newName)
+		{
+			var member = await _memberRepository.GetByIdAsync(memberId);
+
+			if (string.IsNullOrWhiteSpace(newName))
+				throw new ArgumentException("Name can't be empty");
+
+			member.Name = newName;
+			return await _memberRepository.UpdateAsync(member);
+		}
+
+		public async Task DeleteMemberAsync(int memberId)
+		{
+			await _memberRepository.RemoveAsync(memberId);
+		}
+		public async Task<Member> CreateMemberAndAddToCalendarAsync(string name, int calendarId, User user)
+		{
+			if (string.IsNullOrWhiteSpace(name))
+				throw new ArgumentException("Member name cannot be empty.");
+
+			var member = new Member
+			{
+				Name = name,
+				UserId = user.Id,
+				User = user
+			};
+
+			var created = await _memberRepository.AddAsync(member);
+			await _memberRepository.AddMemberToCalendarAsync(created.Id, calendarId);
+
+			return created;
+		}
+	}
 }

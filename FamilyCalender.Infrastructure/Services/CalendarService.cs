@@ -1,7 +1,9 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Dto;
+using FamilyCalender.Core.Models.DTO;
 using FamilyCalender.Core.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -110,6 +112,46 @@ namespace FamilyCalender.Infrastructure.Services
 			await _calendarRepository.DeleteAsync(calendar);
 		}
 
+		//public async Task UpdateMembersAsync(int calendarId, List<MemberDto> updatedMembers)
+		//{
+		//	var calendar = await _calendarRepository.GetCalendarWithMembersAsync(calendarId);
+		//	if (calendar == null) throw new Exception("Calendar not found");
 
-    }
+		//	var existingMembers = calendar.MemberCalendars.Select(mc => mc.Member!).ToList();
+
+		//	// Ta bort borttagna medlemmar
+		//	var membersToRemove = existingMembers
+		//		.Where(em => !updatedMembers.Any(um => um.Id == em.Id))
+		//	.ToList();
+
+		//	foreach (var member in membersToRemove)
+		//	{
+		//		_context.Members.Remove(member);
+		//	}
+
+		//	// Uppdatera namn
+		//	foreach (var existing in existingMembers)
+		//	{
+		//		var updated = updatedMembers.FirstOrDefault(m => m.Id == existing.Id);
+		//		if (updated != null && existing.Name != updated.Name)
+		//		{
+		//			existing.Name = updated.Name;
+		//		}
+		//	}
+
+		//	// Lägg till nya
+		//	var newMembers = updatedMembers
+		//		.Where(m => m.Id == 0) // nya medlemmar har Id == 0
+		//		.Select(m => new Member
+		//		{
+		//			Name = m.Name,
+		//			MemberCalendars = [new MemberCalendar { CalendarId = calendarId }]
+		//		});
+
+		//	_context.Members.AddRange(newMembers);
+
+		//	await _context.SaveChangesAsync();
+		//}
+
+	}
 }

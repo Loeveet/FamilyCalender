@@ -13,15 +13,27 @@ using System;
 
 namespace FamilyCalender.Web.Pages
 {
-	public class HandleCalendarModel(CalendarManagementService calendarManagementService, IAuthService authService) : BasePageModel(authService)
+	public class HandleCalendarModel(CalendarManagementService calendarManagementService, IAuthService authService, IMemberService memberService) : BasePageModel(authService)
 	{
 		private readonly CalendarManagementService _calendarManagementService = calendarManagementService;
+		private readonly IMemberService _memberService = memberService;
 
 		[BindProperty]
 		public Calendar? Calendar { get; set; }
 
 		[BindProperty]
 		public string NewCalendarName { get; set; } = string.Empty;
+
+		[BindProperty]
+		public List<Member> Members { get; set; } = [];
+
+		[BindProperty]
+		public string NewMemberName { get; set; } = string.Empty;
+
+		[BindProperty]
+		public int MemberIdToEdit { get; set; }
+		[BindProperty]
+		public int MemberId { get; set; }
 
 		public async Task<IActionResult> OnGetAsync(int id)
 		{
@@ -34,6 +46,8 @@ namespace FamilyCalender.Web.Pages
 
 			Calendar = calendar;
 			NewCalendarName = calendar.Name;
+			Members = await _memberService.GetMembersForCalendarAsync(id);
+
 
 			return Page();
 		}
@@ -42,7 +56,7 @@ namespace FamilyCalender.Web.Pages
 		{
 			if (Calendar == null)
 			{
-				return NotFound();
+				throw new ArgumentNullException(nameof(Calendar));
 			}
 
 			await _calendarManagementService.UpdateCalendarNameAsync(Calendar.Id, NewCalendarName);
@@ -53,12 +67,32 @@ namespace FamilyCalender.Web.Pages
 		{
 			if (Calendar == null)
 			{
-				return NotFound();
+				throw new ArgumentNullException(nameof(Calendar));
 			}
 
 			await _calendarManagementService.DeleteCalendarAsync(Calendar.Id);
 			return RedirectToPage("/Index");
 		}
+
+		public async Task<IActionResult> OnPostDeleteMemberAsync()
+		{
+			await _memberService.DeleteMemberAsync(MemberId);
+			return RedirectToPage(new { Calendar.Id });
+		}
+
+		public async Task<IActionResult> OnPostRenameMemberAsync()
+		{
+			await _memberService.UpdateMemberNameAsync(MemberIdToEdit, NewMemberName);
+			return RedirectToPage(new { Calendar.Id });
+		}
+
+		public async Task<IActionResult> OnPostAddMemberAsync()
+		{
+			var user = await GetCurrentUserAsync();
+			await _calendarManagementService.AddMemberAsync(NewMemberName, Calendar.Id, user);
+			return RedirectToPage(new { id = Calendar.Id });
+		}
+
 	}
 
 }
