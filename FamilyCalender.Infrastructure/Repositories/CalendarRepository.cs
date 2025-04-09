@@ -11,45 +11,66 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Infrastructure.Repositories
 {
-    public class CalendarRepository : ICalendarRepository
-    {
-        private readonly ApplicationDbContext _context;
+	public class CalendarRepository : ICalendarRepository
+	{
+		private readonly ApplicationDbContext _context;
 
-        public CalendarRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+		public CalendarRepository(ApplicationDbContext context)
+		{
+			_context = context;
+		}
 
-        public async Task<Calendar> AddAsync(Calendar calendar)
-        {
-            _context.Calendars.Add(calendar);
-            await _context.SaveChangesAsync();
-            return calendar;
-        }
+		public async Task<Calendar> AddAsync(Calendar calendar)
+		{
+			_context.Calendars.Add(calendar);
+			await _context.SaveChangesAsync();
+			return calendar;
+		}
+
+
 
         public async Task<List<int>> GetAllIdsByUserAsync(int userId)
+		{
+			var calendarAccesses = await _context.CalendarAccesses
+				.Where(ca => ca.UserId == userId)
+				.Include(ca => ca.Calendar)
+				.ThenInclude(c => c.Events)
+				.ToListAsync();
+
+			var calendars = calendarAccesses
+				.Select(ca => ca.Calendar.Id)
+				.Distinct()
+				.ToList();
+
+			return calendars;
+
+		}
+
+		public async Task<Calendar> GetByIdAsync(int calendarId)
+		{
+			{
+				var calendar = await _context.Calendars
+					.Include(c => c.MemberCalendars)
+						.ThenInclude(mc => mc.Member)
+					.Include(c => c.Accesses)
+						.ThenInclude(a => a.User)
+					.Include(c => c.Events)
+					.FirstOrDefaultAsync(c => c.Id == calendarId);
+
+				return calendar ?? throw new ArgumentException($"Calendar with ID {calendarId} not found");
+			}
+		}
+
+        public async Task<Calendar?> GetByIdWithDetailsAsync(int calendarId)
         {
-            var calendarAccesses = await _context.CalendarAccesses
-                .Where(ca => ca.UserId == userId)
-                .Include(ca => ca.Calendar)
-                .ThenInclude(c => c.Events)
-                .ToListAsync();
-
-            var calendars = calendarAccesses
-                .Select(ca => ca.Calendar.Id)
-                .Distinct()
-                .ToList();
-
-            return calendars;
-
+            return await _context.Calendars
+                .Include(c => c.MemberCalendars)
+                .Include(c => c.Accesses)
+                .Include(c => c.Events)
+                .FirstOrDefaultAsync(c => c.Id == calendarId);
         }
 
-        public async Task<Calendar> GetByIdAsync(int calendarId)
-        {
-            return await _context.Calendars.FirstOrDefaultAsync(c => c.Id == calendarId);
-        }
-
-		public async Task<CalendarDto> GetCalendarDtoAsync(int calendarId)
+        public async Task<CalendarDto> GetCalendarDtoAsync(int calendarId)
 		{
 			return await _context.Calendars
 				.Where(c => c.Id == calendarId)
@@ -57,53 +78,79 @@ namespace FamilyCalender.Infrastructure.Repositories
 				{
 					Id = c.Id,
 					Name = c.Name,
-                    InviteId = c.InviteId
+					InviteId = c.InviteId
 				})
 				.FirstOrDefaultAsync() ?? throw new FileNotFoundException();
 		}
-        public async Task<List<CalendarDto>> GetCalendarDtosAsync(int userId)
-        {
-            var ownCalendars = await _context.Calendars
-                .Where(c => c.OwnerId == userId) 
-                .Select(c => new CalendarDto
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    InviteId = c.InviteId
+		public async Task<List<CalendarDto>> GetCalendarDtosAsync(int userId)
+		{
+			var ownCalendars = await _context.Calendars
+				.Where(c => c.OwnerId == userId)
+				.Select(c => new CalendarDto
+				{
+					Id = c.Id,
+					Name = c.Name,
+					InviteId = c.InviteId
 				})
-                .ToListAsync();
+				.ToListAsync();
 
-            var accessCalendars = await _context.CalendarAccesses
-                .Where(x => x.UserId == userId)
-                .Select(c => new CalendarDto()
-                {
-                    Id = c.CalendarId,
-                    Name = c.Calendar.Name,
+			var accessCalendars = await _context.CalendarAccesses
+				.Where(x => x.UserId == userId)
+				.Select(c => new CalendarDto()
+				{
+					Id = c.CalendarId,
+					Name = c.Calendar.Name,
 				}).ToListAsync();
 
-            ownCalendars.AddRange(accessCalendars);
+			ownCalendars.AddRange(accessCalendars);
 
-            return ownCalendars.DistinctBy(x => x.Id).ToList();
+			return ownCalendars.DistinctBy(x => x.Id).ToList();
+		}
+
+		public async Task RemoveAsync(int calendarId)
+		{
+			throw new NotImplementedException();
+		}
+		public async Task UpdateAsync(Calendar calendar)
+		{
+            _context.Calendars.Update(calendar);
+            await _context.SaveChangesAsync();
         }
+		public async Task<Calendar?> GetCalendarWithAllRelationsAsync(int calendarId)
+		{
+			return await _context.Calendars
+				.Include(c => c.Events)
+				.Include(c => c.Accesses)
+				.Include(c => c.MemberCalendars)
+							.ThenInclude(mc => mc.Member)
+				.FirstOrDefaultAsync(c => c.Id == calendarId);
+		}
 
-        public async Task RemoveAsync(int calendarId)
-        {
-            throw new NotImplementedException();
-        }
+		public async Task DeleteAsync(Calendar calendar)
+		{
+			_context.Events.RemoveRange(calendar.Events);
 
-        public async Task<Calendar> UpdateAsync(Calendar calendar)
-        {
-            var existingCalendar = await _context.Calendars
-                .Include(c => c.MemberCalendars)
-                .FirstOrDefaultAsync(c => c.Id == calendar.Id);
+			_context.CalendarAccesses.RemoveRange(calendar.Accesses);
 
-            if (existingCalendar != null)
-            {
-                _context.Calendars.Update(calendar);
-                await _context.SaveChangesAsync();
-                return calendar;
-            }
-            return null;
-        }
-    }
+			var membersToRemove = calendar.MemberCalendars
+				.Select(mc => mc.Member)
+				.ToList();
+
+			_context.MemberCalendars.RemoveRange(calendar.MemberCalendars);
+			
+			_context.Members.RemoveRange(membersToRemove);
+
+			_context.Calendars.Remove(calendar);
+
+			await _context.SaveChangesAsync();
+		}
+
+		public async Task<Calendar> UpdateCreateAsync(Calendar calendar)
+		{
+			_context.Calendars.Update(calendar);
+			await _context.SaveChangesAsync();
+			return calendar;
+		}
+
+	}
 }

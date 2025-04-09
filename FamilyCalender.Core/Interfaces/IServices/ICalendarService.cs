@@ -1,4 +1,5 @@
-﻿using FamilyCalender.Core.Models.Dto;
+﻿using FamilyCalender.Core.Interfaces.IRepositories;
+using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,9 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task <Calendar> GetOneCalendarAsync(int calendarId);
         Task <CalendarDto> GetCalendarDtoAsync(int calendarId);
         Task<List<CalendarDto>> GetCalendarDtosForUserAsync(int userId);
-
-
+        Task UpdateCalendarNameAsync(int calendarId, string newName);
+        Task DeleteCalendarAsync(int calendarId);
+        
 
 
     }

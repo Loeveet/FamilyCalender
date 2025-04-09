@@ -16,6 +16,9 @@ else
 {
     <h2 class="d-flex justify-content-between align-items-center">
         <span>@Model.ViewModel.SelectedCalendarName</span>
+        <a asp-page="/HandleCalendar" asp-route-id="@Model.ViewModel.SelectedCalendarId">
+            <i class="fa-solid fa-gear"></i> <!-- eller annan ikon -->
+        </a>
 
         @if (!string.IsNullOrWhiteSpace(Model.ViewModel.ShareLink))
         {

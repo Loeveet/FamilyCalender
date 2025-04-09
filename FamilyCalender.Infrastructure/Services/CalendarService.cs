@@ -74,12 +74,14 @@ namespace FamilyCalender.Infrastructure.Services
             return await _calendarRepository.GetByIdAsync(calendarId) ?? throw new FileNotFoundException();
 		}
 
-		public async Task<Calendar> UpdateCalendarAsync(Calendar calendar)
+        public async Task<Calendar> UpdateCalendarAsync(Calendar calendar)
         {
-            var updatedCalendar = await _calendarRepository.UpdateAsync(calendar);
-			return updatedCalendar ?? throw new InvalidDataException(); //Kolla igenom exceptions.
-		}
-		public async Task<CalendarDto> GetCalendarDtoAsync(int calendarId)
+            var updatedCalendar = await _calendarRepository.UpdateCreateAsync(calendar);
+            return updatedCalendar ?? throw new InvalidDataException(); //Kolla igenom exceptions.
+
+            throw new NotImplementedException();
+        }
+        public async Task<CalendarDto> GetCalendarDtoAsync(int calendarId)
         {
             return await _calendarRepository.GetCalendarDtoAsync(calendarId);
         }
@@ -87,6 +89,26 @@ namespace FamilyCalender.Infrastructure.Services
         {
             return await _calendarRepository.GetCalendarDtosAsync(userId);
         }
+
+        public async Task UpdateCalendarNameAsync(int calendarId, string newName)
+        {
+            var calendar = await _calendarRepository.GetByIdWithDetailsAsync(calendarId);
+            if (calendar == null) throw new ArgumentException("Calendar not found");
+            calendar.Name = newName;
+            await _calendarRepository.UpdateAsync(calendar);
+        }
+
+        public async Task DeleteCalendarAsync(int calendarId)
+        {
+			var calendar = await _calendarRepository.GetCalendarWithAllRelationsAsync(calendarId);
+
+			if (calendar == null)
+			{
+				throw new Exception("Kalendern hittades inte.");
+			}
+
+			await _calendarRepository.DeleteAsync(calendar);
+		}
 
 
     }

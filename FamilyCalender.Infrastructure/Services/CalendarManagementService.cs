@@ -2,6 +2,7 @@
 using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -46,7 +47,6 @@ namespace FamilyCalender.Infrastructure.Services
 		public async Task<CalendarDto> GetCalendarDtoByIdAsync(int calendarId)
 		{
 			return await _calendarService.GetCalendarDtoAsync(calendarId);
-
 		}
 		public async Task<List<Member>> GetMembersForCalendarAsync(int calendarId)
 		{
@@ -122,6 +122,20 @@ namespace FamilyCalender.Infrastructure.Services
 			return weekNumber;
 		}
 
+        public async Task<Core.Models.Entities.Calendar?> GetCalendarWithDetailsAsync(int calendarId)
+        {
+            return await _calendarService.GetOneCalendarAsync(calendarId);
+        }
 
-	}
+        public async Task UpdateCalendarNameAsync(int calendarId, string newName)
+        {
+            await _calendarService.UpdateCalendarNameAsync(calendarId, newName);
+        }
+
+        public async Task DeleteCalendarAsync(int calendarId)
+        {
+            await _calendarService.DeleteCalendarAsync(calendarId);
+        }
+
+    }
 }
