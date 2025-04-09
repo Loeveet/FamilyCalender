@@ -48,14 +48,40 @@ namespace FamilyCalender.Infrastructure.Repositories
 								 .ToListAsync();
 		}
 
-		public Task RemoveAsync(int memberId)
-        {
-            throw new NotImplementedException();
-        }
+		public async Task<Member> UpdateAsync(Member member)
+		{
+			_context.Members.Update(member);
+			await _context.SaveChangesAsync();
+			return member;
+		}
 
-        public Task<Member> UpdateAsync(Member member)
-        {
-            throw new NotImplementedException();
-        }
-    }
+
+		/// <summary>
+		/// Removes a member and all their related data (MemberCalendars, EventMemberDates)
+		/// </summary>
+		public async Task RemoveAsync(int memberId)
+		{
+			var member = await _context.Members
+				.Include(m => m.MemberCalendars)
+				.Include(m => m.EventMemberDates)
+				.FirstOrDefaultAsync(m => m.Id == memberId);
+
+			if (member == null) throw new FileNotFoundException();
+
+			_context.EventMemberDates.RemoveRange(member.EventMemberDates);
+			_context.MemberCalendars.RemoveRange(member.MemberCalendars);
+			_context.Members.Remove(member);
+			await _context.SaveChangesAsync();
+		}
+		public async Task AddMemberToCalendarAsync(int memberId, int calendarId)
+		{
+			var mc = new MemberCalendar
+			{
+				MemberId = memberId,
+				CalendarId = calendarId
+			};
+			_context.MemberCalendars.Add(mc);
+			await _context.SaveChangesAsync();
+		}
+	}
 }

@@ -136,6 +136,20 @@ namespace FamilyCalender.Infrastructure.Services
         {
             await _calendarService.DeleteCalendarAsync(calendarId);
         }
+		public async Task RenameMemberAsync(int memberId, string newName)
+		{
+			await _memberService.UpdateMemberNameAsync(memberId, newName);
+		}
 
-    }
+		public async Task DeleteMemberAsync(int memberId)
+		{
+			await _memberService.DeleteMemberAsync(memberId);
+		}
+
+		public async Task<Member> AddMemberAsync(string name, int calendarId, User user)
+		{
+			return await _memberService.CreateMemberAndAddToCalendarAsync(name, calendarId, user);
+		}
+
+	}
 }

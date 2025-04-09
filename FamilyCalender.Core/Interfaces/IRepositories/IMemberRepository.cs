@@ -15,5 +15,7 @@ namespace FamilyCalender.Core.Interfaces.IRepositories
         Task<Member> AddAsync(Member member);
         Task<Member> UpdateAsync(Member member);
         Task RemoveAsync(int memberId);
-    }
+        Task AddMemberToCalendarAsync(int memberId, int calendarId);
+
+	}
 }

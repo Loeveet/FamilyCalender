@@ -13,6 +13,10 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task<List<Member>> GetMembersForCalendarAsync(int calendarId);
         Task<Member> GetMemberByIdAsync(int memberId);
 		Task<List<Member>> GetMembersByIdAsync(List<int> memberIds);
+		Task<Member> UpdateMemberNameAsync(int memberId, string newName);
+		Task DeleteMemberAsync(int memberId);
+		Task<Member> CreateMemberAndAddToCalendarAsync(string name, int calendarId, User user);
+
 
 	}
 }

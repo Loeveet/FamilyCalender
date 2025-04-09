@@ -43,9 +43,106 @@
 
 <hr />
 
-<form method="post" onsubmit="return confirm('Är du säker på att du vill ta bort hela kalendern?');">
+<h3>Medlemmar</h3>
+
+@foreach (var member in Model.Members)
+{
+	<div class="mb-2">
+		<strong>@member.Name</strong>
+		<button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#renameMemberModal-@member.Id">Byt namn</button>
+		<button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteMemberModal-@member.Id">Ta bort</button>
+
+		<!-- Modal för att byta namn -->
+		<div class="modal fade" id="renameMemberModal-@member.Id" tabindex="-1" aria-labelledby="renameLabel-@member.Id" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<form method="post">
+						<div class="modal-header">
+							<h5 class="modal-title" id="renameLabel-@member.Id">Byt namn på @member.Name</h5>
+						</div>
+						<div class="modal-body">
+							<input type="hidden" asp-for="Calendar.Id" />
+							<input type="hidden" asp-for="MemberIdToEdit" value="@member.Id" />
+							<input asp-for="NewMemberName" class="form-control" placeholder="Nytt namn" />
+						</div>
+						<div class="modal-footer">
+							<button type="submit" asp-page-handler="RenameMember" class="btn btn-primary">Spara</button>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal för att bekräfta borttagning av medlem -->
+		<div class="modal fade" id="deleteMemberModal-@member.Id" tabindex="-1" aria-labelledby="deleteMemberLabel-@member.Id" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteMemberLabel-@member.Id">Är du säker på att du vill ta bort @member.Name?</h5>
+					</div>
+					<div class="modal-body">
+						Denna åtgärd går inte att ångra.
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+						<form method="post" id="deleteMemberForm-@member.Id">
+							<input type="hidden" name="MemberId" value="@member.Id" />
+							<input type="hidden" name="Calendar.Id" value="@Model.Calendar.Id" />
+							<button type="submit" class="btn btn-danger" asp-page-handler="DeleteMember">Ja, ta bort</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+<button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addMemberModal">+ Lägg till medlem</button>
+
+<!-- Form för att ta bort kalender -->
+<form method="post" id="deleteCalendarForm">
 	<input type="hidden" asp-for="Calendar.Id" />
-	<button type="submit" asp-page-handler="DeleteCalendar" class="btn btn-danger mt-4">
+	<button type="button" class="btn btn-danger mt-4" data-bs-toggle="modal" data-bs-target="#deleteCalendarModal">
 		Ta bort hela kalendern
 	</button>
 </form>
+<div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form method="post">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addLabel">Lägg till ny medlem</h5>
+				</div>
+				<div class="modal-body">
+					<input type="hidden" asp-for="Calendar.Id" />
+					<input asp-for="NewMemberName" class="form-control" placeholder="Namn på medlem" />
+				</div>
+				<div class="modal-footer">
+					<button type="submit" asp-page-handler="AddMember" class="btn btn-success">Lägg till</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+<!-- Modal för att bekräfta borttagning av kalender -->
+<div class="modal fade" id="deleteCalendarModal" tabindex="-1" aria-labelledby="deleteCalendarLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="deleteCalendarLabel">Är du säker på att du vill ta bort kalendern?</h5>
+			</div>
+			<div class="modal-body">
+				Denna åtgärd går inte att ångra.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+				<button type="submit" form="deleteCalendarForm" class="btn btn-danger" asp-page-handler="DeleteCalendar">Ja, ta bort</button>
+			</div>
+		</div>
+	</div>
+</div>
