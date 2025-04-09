@@ -15,14 +15,17 @@ namespace FamilyCalender.Core.Interfaces.IRepositories
         Task<Calendar> GetByIdAsync(int calendarId);
         Task<List<int>> GetAllIdsByUserAsync(int userId);
         Task<Calendar> AddAsync(Calendar calendar);
-        Task<Calendar> UpdateAsync(Calendar calendar);
         Task RemoveAsync(int calendarId);
         Task <CalendarDto> GetCalendarDtoAsync(int calendarId);
         Task<List<CalendarDto>> GetCalendarDtosAsync(int userId);
+        Task<Calendar?> GetCalendarWithAllRelationsAsync(int calendarId);
+		Task<Calendar?> GetByIdWithDetailsAsync(int calendarId);
+        Task UpdateAsync(Calendar calendar);
+        Task DeleteAsync(Calendar calendar);
+		Task<Calendar> UpdateCreateAsync(Calendar calendar);
 
 
 
 
-
-    }
+	}
 }

@@ -1,0 +1,51 @@
+﻿@page
+@model FamilyCalender.Web.Pages.HandleCalendarModel
+@{
+}
+<h1>Hantera</h1>
+<ul>
+	<li>
+		All ska kunna
+		<ul>
+			<li>Skapa ny kalender</li>
+		</ul>
+	</li>
+	<li>
+		Owner ska kunna
+		<ul>
+			<li>Ta bort hela kalendern</li>
+			<li>Ta bort, lägga till, ändra namn på medlemmar</li>
+			<li>Ta bort personer som har tillgång till kalendern</li>
+			<li>Bjuda in folk till kalendern</li>
+			<li>Välja på varje kalender om man vill ha mail vid uppdatering</li>
+		</ul>
+	</li>
+	<li>
+		Inte owner ska kunna
+		<ul>
+			<li>Lämna kalender</li>
+			<li>Välja om man vill ha mail vid uppdatering</li>
+			<li>Välja på varje kalender om man vill ha mail vid uppdatering</li>
+		</ul>
+	</li>
+</ul>
+
+<h2>Hantera Kalender</h2>
+
+<form method="post">
+	<input type="hidden" asp-for="Calendar.Id" />
+	<div>
+		<label for="name">Kalendernamn</label>
+		<input asp-for="NewCalendarName" class="form-control" />
+	</div>
+	<button type="submit" asp-page-handler="UpdateName" class="btn btn-primary mt-2">Spara namnändring</button>
+</form>
+
+<hr />
+
+<form method="post" onsubmit="return confirm('Är du säker på att du vill ta bort hela kalendern?');">
+	<input type="hidden" asp-for="Calendar.Id" />
+	<button type="submit" asp-page-handler="DeleteCalendar" class="btn btn-danger mt-4">
+		Ta bort hela kalendern
+	</button>
+</form>
