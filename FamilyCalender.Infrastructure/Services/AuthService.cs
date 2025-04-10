@@ -80,9 +80,9 @@ namespace FamilyCalender.Infrastructure.Services
 				};
 
 				await _context.Users.AddAsync(user);
-				await _context.SaveChangesAsync();
 
 				_emailService.SendVerificationEmail(user.Email, user.VerificationToken);
+				await _context.SaveChangesAsync();
 
 				return (true, string.Empty, user.VerificationToken);
 			}
