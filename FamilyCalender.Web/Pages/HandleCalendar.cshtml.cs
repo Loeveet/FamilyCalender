@@ -82,12 +82,20 @@ namespace FamilyCalender.Web.Pages
 
 		public async Task<IActionResult> OnPostRenameMemberAsync()
 		{
+			if (string.IsNullOrWhiteSpace(NewMemberName))
+			{
+				return RedirectToPage(new { Calendar.Id });
+			}
 			await _memberService.UpdateMemberNameAsync(MemberIdToEdit, NewMemberName);
 			return RedirectToPage(new { Calendar.Id });
 		}
 
 		public async Task<IActionResult> OnPostAddMemberAsync()
 		{
+			if (string.IsNullOrWhiteSpace(NewMemberName))
+			{
+				return RedirectToPage(new { Calendar.Id });
+			}
 			var user = await GetCurrentUserAsync();
 			await _calendarManagementService.AddMemberAsync(NewMemberName, Calendar.Id, user);
 			return RedirectToPage(new { id = Calendar.Id });

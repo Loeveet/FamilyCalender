@@ -2,7 +2,7 @@
 @model FamilyCalender.Web.Pages.HandleCalendarModel
 @{
 }
-<h1>Hantera</h1>
+@* <h1>Hantera</h1>
 <ul>
 	<li>
 		All ska kunna
@@ -28,9 +28,9 @@
 			<li>Välja på varje kalender om man vill ha mail vid uppdatering</li>
 		</ul>
 	</li>
-</ul>
+</ul> *@
 
-<h2>Hantera Kalender</h2>
+<h2>Hantera kalender</h2>
 
 <form method="post">
 	<input type="hidden" asp-for="Calendar.Id" />
@@ -38,7 +38,9 @@
 		<label for="name">Kalendernamn</label>
 		<input asp-for="NewCalendarName" class="form-control" />
 	</div>
-	<button type="submit" asp-page-handler="UpdateName" class="btn btn-primary mt-2">Spara namnändring</button>
+	<button type="submit" asp-page-handler="UpdateName" class="btn btn-primary rounded-pill px-4 py-2 mt-2 shadow-sm">
+		Spara namnändring
+	</button>
 </form>
 
 <hr />
@@ -47,10 +49,18 @@
 
 @foreach (var member in Model.Members)
 {
-	<div class="mb-2">
-		<strong>@member.Name</strong>
-		<button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#renameMemberModal-@member.Id">Byt namn</button>
-		<button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteMemberModal-@member.Id">Ta bort</button>
+	<div class="row align-items-center mb-2">
+		<div class="col-12 col-sm-6">
+			<strong>@member.Name</strong>
+		</div>
+		<div class="col-12 col-sm-6 text-sm-end mt-2 mt-sm-0">
+
+			<button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-2 shadow-sm
+			" data-bs-toggle="modal" data-bs-target="#renameMemberModal-@member.Id">
+				Byt namn
+			</button>
+			<button type="button" class="btn btn-sm btn-danger rounded-pill px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteMemberModal-@member.Id">Ta bort</button>
+		</div>
 
 		<!-- Modal för att byta namn -->
 		<div class="modal fade" id="renameMemberModal-@member.Id" tabindex="-1" aria-labelledby="renameLabel-@member.Id" aria-hidden="true">
@@ -98,15 +108,20 @@
 	</div>
 }
 
-<button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addMemberModal">+ Lägg till medlem</button>
+<button type="button" class="btn btn-success rounded-pill px-4 py-2 mt-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#addMemberModal">+ Lägg till medlem</button>
+
+<hr />
+
 
 <!-- Form för att ta bort kalender -->
 <form method="post" id="deleteCalendarForm">
 	<input type="hidden" asp-for="Calendar.Id" />
-	<button type="button" class="btn btn-danger mt-4" data-bs-toggle="modal" data-bs-target="#deleteCalendarModal">
+	<button type="button" class="btn btn-danger rounded-pill px-4 py-2 mt-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteCalendarModal">
 		Ta bort hela kalendern
 	</button>
 </form>
+
+<!-- Modal för att lägga till medlem -->
 <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
