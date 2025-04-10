@@ -3,6 +3,6 @@
 	<PropertyGroup>
 		
 		<DbConnectionString>Data Source=../FamilyCalender.Infrastructure/FamilyCalender.db</DbConnectionString>
-	
+		<SmtpServer>smtp.simply.com</SmtpServer>
 	</PropertyGroup>
 </Project>
