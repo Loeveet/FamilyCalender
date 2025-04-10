@@ -1,17 +1,12 @@
 using FamilyCalender.Core.Interfaces;
-using FamilyCalender.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Serilog;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 
 namespace FamilyCalender.Web.Pages
 {
     public class LoginModel(IAuthService authService) : BasePageModel(authService)
-
     {
-        //private readonly IAuthService _authService;
 
         [BindProperty]
         public string Email { get; set; }
@@ -23,6 +18,8 @@ namespace FamilyCalender.Web.Pages
         public string ErrorMessage { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
+            Log.Information("Testing login page");
+            
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
