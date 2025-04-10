@@ -55,7 +55,6 @@ namespace FamilyCalender
 
 
 
-
 			builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 			builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 			builder.Services.AddScoped<IEventRepository, EventRepository>();
@@ -70,10 +69,11 @@ namespace FamilyCalender
 			builder.Services.AddScoped<EventManagementService>();
 			builder.Services.AddScoped<CalendarManagementService>();
 			builder.Services.AddScoped<InviteService>();
+            builder.Services.AddSingleton(new EncryptionService(EncryptionService.Magic));
 
 
 
-			var app = builder.Build();
+            var app = builder.Build();
 
 			//https://stackoverflow.com/questions/47598844/enabling-migrations-in-ef-core
 			using var serviceScope = app.Services.CreateScope();
