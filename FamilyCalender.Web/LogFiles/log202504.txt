@@ -1,0 +1,2 @@
+2025-04-11 01:24:37.327 +02:00 [ERR] TESTING
+2025-04-11 01:25:11.368 +02:00 [WRN] Unable to load some services
