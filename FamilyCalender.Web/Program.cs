@@ -7,6 +7,7 @@ using FamilyCalender.Infrastructure.Repositories;
 using FamilyCalender.Infrastructure.Services;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Interfaces;
+using Serilog;
 
 
 namespace FamilyCalender
@@ -17,7 +18,8 @@ namespace FamilyCalender
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            
+         
 
             builder.Services.AddHttpContextAccessor();
 
@@ -25,21 +27,16 @@ namespace FamilyCalender
 			{
 				options.DefaultScheme = "Cookie";
 			})
-				.AddCookie("Cookie", options =>
-				{
-					options.LoginPath = "/Login"; 
-					options.LogoutPath = "/Login";
-					options.SlidingExpiration = true;
+			.AddCookie("Cookie", options =>
+			{
+				options.LoginPath = "/Login"; 
+				options.LogoutPath = "/Login";
+				options.ExpireTimeSpan = TimeSpan.FromDays(365);
+				options.SlidingExpiration = true;
 
-				});
+			});
 
-            builder.Services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => false; // Kräver samtycke
-                options.MinimumSameSitePolicy = SameSiteMode.Lax; // Inställning för SameSite
-            });
-
-            builder.Services.AddRazorPages()
+			builder.Services.AddRazorPages()
 				.AddRazorPagesOptions(options =>
 				{
 					options.Conventions.AuthorizeFolder("/");
@@ -53,11 +50,21 @@ namespace FamilyCalender
                     options.Conventions.AddPageRoute("/ResetPassword", "/ResetPassword/{token}");
 
                 });
+            //Add support to logging with SERILOG
+            //builder.Host.UseSerilog((context, configuration) =>
+            //    configuration.ReadFrom.Configuration(context.Configuration));
 
-			// Add DbContext with SQLite
-			builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File("LogFiles\\log.txt",
+                    rollingInterval: RollingInterval.Month)
+                .CreateLogger();
+            
+            Log.Information("Application started");
+           
+            // Add DbContext with SQLite
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 
 
 
@@ -75,19 +82,18 @@ namespace FamilyCalender
 			builder.Services.AddScoped<EventManagementService>();
 			builder.Services.AddScoped<CalendarManagementService>();
 			builder.Services.AddScoped<InviteService>();
+            builder.Services.AddSingleton(new EncryptionService(EncryptionService.Magic));
 
-
-
-			var app = builder.Build();
+            var app = builder.Build();
 
 			//https://stackoverflow.com/questions/47598844/enabling-migrations-in-ef-core
 			using var serviceScope = app.Services.CreateScope();
 			using var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 			context.Database.Migrate();
+            Log.Information("Database update with latest migration");
 
-
-			// Configure the HTTP request pipeline.
-			if (!app.Environment.IsDevelopment())
+            // Configure the HTTP request pipeline.
+            if (!app.Environment.IsDevelopment())
 			{
 				app.UseExceptionHandler("/Error");
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -97,11 +103,9 @@ namespace FamilyCalender
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
 
-			app.UseRouting();
+            app.UseRouting();
 
-            app.UseCookiePolicy();
-
-            app.UseAuthentication();
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.MapRazorPages();
