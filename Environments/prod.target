@@ -3,5 +3,6 @@
 	<PropertyGroup>
 
 		<DbConnectionString>Data Source=APP_DATA/FamilyCalender.db</DbConnectionString>
+		<SmtpServer>websmtp.simply.com</SmtpServer>
 	</PropertyGroup>
 </Project>
