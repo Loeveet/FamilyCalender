@@ -173,8 +173,14 @@ else
                             .SelectMany(e => e.EventMemberDates)
                             .Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
                             .ToList();
-                            <td class="expanding-column @(day.IsCurrentDay ? "active-day" : "")">
-                                <div class="d-flex flex-column justify-content-between gap-1">
+                            <td class="expanding-column clickable-cell"
+                                data-bs-toggle="modal"
+                                data-bs-target="#eventModal"
+                                data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
+                                data-member-id="@member.Id"
+                                onclick="setModalValues(this)">
+
+                                <div class="d-flex flex-column gap-1">
                                     @if (eventMemberDates?.Any() ?? false)
                                     {
                                         foreach (var eventMemberDate in eventMemberDates)
@@ -183,13 +189,12 @@ else
                                                asp-route-eventId="@eventMemberDate.EventId"
                                                asp-route-memberId="@member.Id"
                                                asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
-                                               class="text-decoration-none text-dark">
+                                               class="text-decoration-none text-dark"
+                                               onclick="event.stopPropagation();">
                                                 <span>@eventMemberDate.Event?.Title</span>
                                             </a>
-                                            <br />
                                         }
                                     }
-
                                 </div>
                             </td>
                         }
