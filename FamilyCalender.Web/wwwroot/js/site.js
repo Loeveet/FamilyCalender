@@ -17,6 +17,9 @@ function setModalValues(button) {
     document.querySelectorAll('.form-check-input').forEach(checkbox => {
         checkbox.checked = checkbox.value === memberId;
     });
+
+    var modal = new bootstrap.Modal(document.getElementById('eventModal'));
+    modal.show();
 }
 
 $('#eventModal').on('hidden.bs.modal', function () {
