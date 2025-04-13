@@ -85,7 +85,17 @@ display:none;
    
 }
 
+.event-title {
+    border: 1px solid #ccc;
+    display: inline-block;
+    font-size: 0.9rem;
+    background-color: #f8f9fa;
+}
 
+    .event-title:hover {
+        border-color: #007bff;
+        background-color: #e9f2ff;
+    }
 
 .accordion-button.collapsed {
     border: 1px solid #007bff;

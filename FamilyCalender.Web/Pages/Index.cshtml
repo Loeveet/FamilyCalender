@@ -180,7 +180,7 @@ else
                                 data-member-id="@member.Id"
                                 onclick="setModalValues(this)">
 
-                                <div class="d-flex flex-column gap-1">
+                                <div class="d-flex flex-column gap-1 h-100">
                                     @if (eventMemberDates?.Any() ?? false)
                                     {
                                         foreach (var eventMemberDate in eventMemberDates)
@@ -191,9 +191,11 @@ else
                                                asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
                                                class="text-decoration-none text-dark"
                                                onclick="event.stopPropagation();">
-                                                <span>@eventMemberDate.Event?.Title</span>
+                                                <span class="event-title rounded px-0 py-1 w-100 d-block">@eventMemberDate.Event?.Title</span>
                                             </a>
                                         }
+                                        <div class="mt-2" style="height: 20px;"></div>
+
                                     }
                                 </div>
                             </td>
