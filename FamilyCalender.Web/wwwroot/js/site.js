@@ -1,6 +1,7 @@
 ﻿
 function setModalValues(button) {
     var selectedDate = button.getAttribute("data-selected-date");
+    var memberId = button.getAttribute("data-member-id");
     var isEditable = button.getAttribute("data-editable") === "true";
 
     var dateInput = document.getElementById("modalSelectedDate");
@@ -12,6 +13,10 @@ function setModalValues(button) {
     }
 
     dateInput.readOnly = !isEditable;
+
+    document.querySelectorAll('.form-check-input').forEach(checkbox => {
+        checkbox.checked = checkbox.value === memberId;
+    });
 }
 
 $('#eventModal').on('hidden.bs.modal', function () {
