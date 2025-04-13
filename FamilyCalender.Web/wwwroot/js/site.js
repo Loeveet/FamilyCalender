@@ -37,6 +37,9 @@ $('#eventModal').on('hidden.bs.modal', function () {
     if (collapseOne.hasClass('show')) {
         collapseOne.collapse('hide');
     }
+
+    document.body.classList.remove('modal-open');
+    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
 });
 
 
