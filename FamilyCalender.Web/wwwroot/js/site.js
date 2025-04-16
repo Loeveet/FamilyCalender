@@ -17,6 +17,9 @@ function setModalValues(button) {
     document.querySelectorAll('.form-check-input').forEach(checkbox => {
         checkbox.checked = checkbox.value === memberId;
     });
+
+    var modal = new bootstrap.Modal(document.getElementById('eventModal'));
+    modal.show();
 }
 
 $('#eventModal').on('hidden.bs.modal', function () {
@@ -34,6 +37,9 @@ $('#eventModal').on('hidden.bs.modal', function () {
     if (collapseOne.hasClass('show')) {
         collapseOne.collapse('hide');
     }
+
+    document.body.classList.remove('modal-open');
+    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
 });
 
 
