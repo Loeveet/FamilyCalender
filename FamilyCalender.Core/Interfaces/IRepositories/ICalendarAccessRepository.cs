@@ -10,6 +10,8 @@ namespace FamilyCalender.Core.Interfaces.IRepositories
     public interface ICalendarAccessRepository
     {
         Task AddAsync(CalendarAccess access);
+        Task RemoveAsync(int userId, int calendarId);
 
-    }
+
+	}
 }

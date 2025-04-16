@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,8 @@ namespace FamilyCalender.Core.Interfaces
 		Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByTokenAsync(string verificationToken);
         Task<User> GetUserByPasswordResetTokenAsync(string passwordResetToken);
-        Task<bool> VerifyAccount(string token);
+        Task<User> GetUserByIdAsync(int ownerId);
+		Task<bool> VerifyAccount(string token);
         Task SendPasswordResetEmailAsync(string email);
         Task<bool> ResetPasswordAsync(string token, string newPassword);
 

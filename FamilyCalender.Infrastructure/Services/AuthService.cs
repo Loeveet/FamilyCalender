@@ -6,6 +6,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using System.Globalization;
 
 
 namespace FamilyCalender.Infrastructure.Services
@@ -117,9 +118,14 @@ namespace FamilyCalender.Infrastructure.Services
         {
             //Gör en try catch eller returna ett fel om användaren inte hittas
             return await _context.Users.FirstOrDefaultAsync(u => u.PasswordResetToken == passwordResetToken);
-        }
+		}
 
-        public async Task<bool> VerifyAccount(string token)
+		public async Task<User>GetUserByIdAsync(int ownerId)
+		{
+			return await _context.Users.FirstOrDefaultAsync(u => u.Id == ownerId);
+		}
+
+		public async Task<bool> VerifyAccount(string token)
 		{
 			var user = await _context.Users.FirstOrDefaultAsync(u => u.VerificationToken == token);
 			if (user == null)

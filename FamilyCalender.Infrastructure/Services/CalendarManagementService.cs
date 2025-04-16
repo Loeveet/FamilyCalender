@@ -17,15 +17,18 @@ namespace FamilyCalender.Infrastructure.Services
 		private readonly ICalendarService _calendarService;
 		private readonly IEventService _eventService;
 		private readonly IMemberService _memberService;
+		private readonly ICalendarAccessService _calendarAccessService;
 
 		public CalendarManagementService(
 			ICalendarService calendarService,
 			IEventService eventService,
-			IMemberService memberService)
+			IMemberService memberService,
+			ICalendarAccessService calendarAccessService)
 		{
 			_calendarService = calendarService;
 			_eventService = eventService;
 			_memberService = memberService;
+			_calendarAccessService = calendarAccessService;
 		}
 		public async Task<List<int>> GetCalendarIdsForUserAsync(int userId)
 		{
@@ -150,6 +153,17 @@ namespace FamilyCalender.Infrastructure.Services
 		{
 			return await _memberService.CreateMemberAndAddToCalendarAsync(name, calendarId, user);
 		}
+		public async Task RemoveUserFromCalendarAsync(int currentUserId, int calendarId)
+		{
+			await _calendarAccessService.RemoveUserFromCalendarAccessAsync(currentUserId, calendarId);
+		}
+
+		public async Task<bool> IsCalendarOwnerAsync(int calendarId, int userId)
+		{
+			var calendar = await _calendarService.GetOneCalendarAsync(calendarId);
+			return calendar.OwnerId == userId;
+		}
+
 
 	}
 }

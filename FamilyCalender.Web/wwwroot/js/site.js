@@ -551,3 +551,40 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // #endregion
+
+function CopyShareLink() {
+    // Get the text field
+    var copyText = document.getElementById("ShareLinkInput");
+
+    // Select the text field
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); // For mobile devices
+
+    // Copy the text inside the text field
+    navigator.clipboard.writeText(copyText.value).then(function () {
+        // Optional: Add a feedback mechanism for the user that the link was copied.
+        alert("Länken har kopierats!");
+    }).catch(function (err) {
+        alert("Det gick inte att kopiera länken.");
+    });
+
+    //ToggleShowShareLink();
+
+}
+
+function ToggleShowShareLink() {
+    var shareLinkContainer = $("#ShareLinkContainer");
+    // Toggle the 'visually-hidden' class to show/hide the container
+    shareLinkContainer.toggleClass('visually-hidden');
+}
+
+//function ToggleShowShareLink() {
+
+//    if ($("#ShareLinkContainer").hasClass('visually-hidden')) {
+//        $("#ShareLinkContainer").removeClass('visually-hidden');
+//    }
+//    else {
+//        $("#ShareLinkContainer").addClass('visually-hidden');
+//    }
+
+//}
