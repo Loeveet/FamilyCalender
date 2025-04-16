@@ -17,18 +17,18 @@ else
     <h2 class="d-flex justify-content-between align-items-center">
         <span>@Model.ViewModel.SelectedCalendarName</span>
         <a asp-page="/HandleCalendar" asp-route-id="@Model.ViewModel.SelectedCalendarId">
-            <i class="fa-solid fa-gear"></i> <!-- eller annan ikon -->
+            <i class="fa-solid fa-gear"></i>
         </a>
 
-        @if (!string.IsNullOrWhiteSpace(Model.ViewModel.ShareLink))
+@*         @if (!string.IsNullOrWhiteSpace(Model.ViewModel.ShareLink))
         {
             <button type="button" onclick="ToggleShowShareLink()" class="btn btn-primary">
                 <i class="bi bi-share"></i> Dela
             </button>
-        }
+        } *@
     </h2>
 
-    @if (!string.IsNullOrWhiteSpace(Model.ViewModel.ShareLink))
+@*     @if (!string.IsNullOrWhiteSpace(Model.ViewModel.ShareLink))
     {
         <div id="ShareLinkContainer" class="visually-hidden" style="margin-top: 20px;">
             <b>Dela</b>
@@ -40,7 +40,7 @@ else
                 </div>
             </div>
         </div>
-    }
+    } *@
 
 
     <a href="javascript:void(0)"

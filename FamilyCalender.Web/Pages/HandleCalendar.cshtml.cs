@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Globalization;
 
 namespace FamilyCalender.Web.Pages
 {
@@ -19,7 +20,7 @@ namespace FamilyCalender.Web.Pages
 		private readonly IMemberService _memberService = memberService;
 
 		[BindProperty]
-		public Calendar? Calendar { get; set; }
+		public Core.Models.Entities.Calendar? Calendar { get; set; }
 
 		[BindProperty]
 		public string NewCalendarName { get; set; } = string.Empty;
@@ -34,6 +35,16 @@ namespace FamilyCalender.Web.Pages
 		public int MemberIdToEdit { get; set; }
 		[BindProperty]
 		public int MemberId { get; set; }
+		[BindProperty]
+		public bool IsOwner { get; set; }
+		[BindProperty]
+		public User? CurrentUser { get; set; }
+		[BindProperty]
+		public string ShareLink { get; set; }
+		[BindProperty]
+		public List<User?> CalendarUsers { get; set; } = [];
+
+
 
 		public async Task<IActionResult> OnGetAsync(int id)
 		{
@@ -41,10 +52,34 @@ namespace FamilyCalender.Web.Pages
 			if (user == null) return RedirectToPage("/Login");
 
 			var calendar = await _calendarManagementService.GetCalendarWithDetailsAsync(id);
-			if (calendar == null || calendar.OwnerId != user.Id)
+			if (calendar == null)
 				return RedirectToPage("/Index");
 
-			Calendar = calendar;
+			if (calendar?.InviteId != null)
+			{
+				ShareLink = $"{Request.Scheme}://{Request.Host}/Invite?inviteId={calendar.InviteId}";
+			}
+			IsOwner = calendar.OwnerId == user.Id || calendar.Accesses.Any(a => a.UserId == user.Id && a.IsOwner);
+
+			if (IsOwner)
+			{
+				CalendarUsers = calendar.Accesses
+					.Select(a => a.User)
+					.Where(u => u.Id != calendar.OwnerId)
+					.Distinct()
+					.ToList();
+			}
+			else
+			{
+				var ownerUser = await _authService.GetUserByIdAsync(calendar.OwnerId);
+				if (ownerUser != null)
+				{
+					CalendarUsers = [ownerUser];
+				}
+			}
+
+			CurrentUser = user;
+            Calendar = calendar;
 			NewCalendarName = calendar.Name;
 			Members = await _memberService.GetMembersForCalendarAsync(id);
 
@@ -100,6 +135,26 @@ namespace FamilyCalender.Web.Pages
 			await _calendarManagementService.AddMemberAsync(NewMemberName, Calendar.Id, user);
 			return RedirectToPage(new { id = Calendar.Id });
 		}
+
+		public async Task<IActionResult> OnPostRemoveAccessAsync(int calendarId, int userId)
+		{
+			var isSelf = userId == CurrentUser.Id;
+			var isOwner = await _calendarManagementService.IsCalendarOwnerAsync(calendarId, CurrentUser.Id);
+
+			await _calendarManagementService.RemoveUserFromCalendarAsync(userId, calendarId);
+
+			if (isSelf && !isOwner)
+			{
+				return RedirectToPage("/Index");
+			}
+			else if (isOwner || isSelf)
+			{
+				return RedirectToPage(new { id = calendarId });
+			}
+
+			return RedirectToPage("/Index");
+		}
+
 
 	}
 

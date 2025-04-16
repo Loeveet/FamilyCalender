@@ -2,48 +2,27 @@
 @model FamilyCalender.Web.Pages.HandleCalendarModel
 @{
 }
-@* <h1>Hantera</h1>
-<ul>
-	<li>
-		All ska kunna
-		<ul>
-			<li>Skapa ny kalender</li>
-		</ul>
-	</li>
-	<li>
-		Owner ska kunna
-		<ul>
-			<li>Ta bort hela kalendern</li>
-			<li>Ta bort, lägga till, ändra namn på medlemmar</li>
-			<li>Ta bort personer som har tillgång till kalendern</li>
-			<li>Bjuda in folk till kalendern</li>
-			<li>Välja på varje kalender om man vill ha mail vid uppdatering</li>
-		</ul>
-	</li>
-	<li>
-		Inte owner ska kunna
-		<ul>
-			<li>Lämna kalender</li>
-			<li>Välja om man vill ha mail vid uppdatering</li>
-			<li>Välja på varje kalender om man vill ha mail vid uppdatering</li>
-		</ul>
-	</li>
-</ul> *@
 
-<h2>Hantera kalender</h2>
-
-<form method="post">
-	<input type="hidden" asp-for="Calendar.Id" />
-	<div>
-		<label for="name">Kalendernamn</label>
-		<input asp-for="NewCalendarName" class="form-control" />
-	</div>
-	<button type="submit" asp-page-handler="UpdateName" class="btn btn-primary rounded-pill px-4 py-2 mt-2 shadow-sm">
-		Spara namnändring
-	</button>
-</form>
+<h2>@Model.NewCalendarName</h2>
 
 <hr />
+
+@if (Model.IsOwner)
+{
+	<form method="post">
+		<input type="hidden" asp-for="Calendar.Id" />
+		<div>
+			<label for="name">Byt namn på kalender</label>
+			<input asp-for="NewCalendarName" class="form-control" />
+		</div>
+		<button type="submit" asp-page-handler="UpdateName" class="btn btn-primary rounded-pill px-4 py-2 mt-2 shadow-sm">
+			Spara namnändring
+		</button>
+	</form>
+
+	<hr />
+
+}
 
 <h3>Medlemmar</h3>
 
@@ -55,11 +34,16 @@
 		</div>
 		<div class="col-12 col-sm-6 text-sm-end mt-2 mt-sm-0">
 
-			<button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-2 shadow-sm
-			" data-bs-toggle="modal" data-bs-target="#renameMemberModal-@member.Id">
-				Byt namn
-			</button>
-			<button type="button" class="btn btn-sm btn-danger rounded-pill px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteMemberModal-@member.Id">Ta bort</button>
+			@if (Model.IsOwner)
+			{
+				<button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#renameMemberModal-@member.Id">
+					Byt namn
+				</button>
+				<button type="button" class="btn btn-sm btn-danger rounded-pill px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteMemberModal-@member.Id">
+					Ta bort
+				</button>
+			}
+
 		</div>
 
 		<!-- Modal för att byta namn -->
@@ -108,18 +92,108 @@
 	</div>
 }
 
-<button type="button" class="btn btn-success rounded-pill px-4 py-2 mt-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#addMemberModal">+ Lägg till medlem</button>
+@if (Model.IsOwner)
+{
+	<button type="button" class="btn btn-outline-success rounded-pill px-4 py-2 mt-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#addMemberModal">+ Lägg till medlem</button>
 
-<hr />
+	<hr />
 
+	@if (!string.IsNullOrWhiteSpace(Model.ShareLink))
+	{
+		<button type="button" onclick="ToggleShowShareLink()" class="btn btn-primary">
+			<i class="bi bi-share"></i> Dela
+		</button>
 
-<!-- Form för att ta bort kalender -->
-<form method="post" id="deleteCalendarForm">
-	<input type="hidden" asp-for="Calendar.Id" />
-	<button type="button" class="btn btn-danger rounded-pill px-4 py-2 mt-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteCalendarModal">
-		Ta bort hela kalendern
+		<div id="ShareLinkContainer" class="visually-hidden" style="margin-top: 20px;">
+			Dela följande länk med någon du vill ska vara med i din kalender:
+			<div class="input-group mb-3">
+				<input type="text" class="form-control" value="@Model.ShareLink" id="ShareLinkInput" readonly>
+				<div class="input-group-append">
+					<a id="CopyShareLinkButton" onclick="CopyShareLink()" class="btn btn-primary input-group-text">Kopiera</a>
+				</div>
+			</div>
+		</div>
+	}
+
+	<hr />
+
+	<form method="post" id="deleteCalendarForm">
+		<input type="hidden" asp-for="Calendar.Id" />
+		<button type="button" class="btn btn-danger rounded-pill px-4 py-2 mt-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteCalendarModal">
+			Ta bort hela kalendern
+		</button>
+	</form>
+}
+else
+{
+	<hr />
+
+	<button type="button"
+			class="btn btn-sm btn-outline-danger rounded-pill px-3 py-2 shadow-sm"
+			data-bs-toggle="modal"
+			data-bs-target="#leaveCalendarModal">
+		Lämna kalendern
 	</button>
-</form>
+
+}
+@if (Model.IsOwner && Model.CalendarUsers.Count > 0)
+{
+	<hr />
+
+	<h3>Användare med tillgång</h3>
+
+	@foreach (var user in Model.CalendarUsers)
+	{
+		<div class="row align-items-center mb-2">
+			<div class="col-12 col-sm-6">
+				<strong>@user.Email</strong>
+			</div>
+			<div class="col-12 col-sm-6 text-sm-end mt-2 mt-sm-0">
+
+				@if (Model.IsOwner)
+				{
+					<button type="button"
+							class="btn btn-sm btn-danger rounded-pill px-3 py-2 shadow-sm"
+							data-bs-toggle="modal"
+							data-bs-target="#removeAccessModal-@user.Id">
+						Ta bort tillgång
+					</button>
+
+				}
+
+			</div>
+		</div>
+
+		<!-- Modal för att ta bort en användare från kalendern -->
+		<div class="modal fade" id="removeAccessModal-@user.Id" tabindex="-1" aria-labelledby="removeAccessLabel-@user.Id" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="removeAccessLabel-@user.Id">Ta bort @user.Email?</h5>
+					</div>
+					<div class="modal-body">
+						Denna användare kommer tappa tillgång till kalendern.
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+						<form method="post">
+							<input type="hidden" name="CalendarId" value="@Model.Calendar.Id" />
+							<input type="hidden" name="UserId" value="@user.Id" />
+							<input type="hidden" asp-for="CurrentUser.Id" />
+							<button type="submit" asp-page-handler="RemoveAccess" class="btn btn-danger">Ja, ta bort tillgång</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}
+else if (!Model.IsOwner)
+{
+	<hr />
+	<h3>Ägare av @Model.Calendar.Name är @Model.CalendarUsers[0].Email</h3>
+}
+
 
 <!-- Modal för att lägga till medlem -->
 <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addLabel" aria-hidden="true">
@@ -161,3 +235,27 @@
 		</div>
 	</div>
 </div>
+
+<!-- Modal för att lämna kalender -->
+<div class="modal fade" id="leaveCalendarModal" tabindex="-1" aria-labelledby="leaveCalendarLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="leaveCalendarLabel">Lämna kalendern?</h5>
+			</div>
+			<div class="modal-body">
+				Du kommer att tappa all åtkomst till kalendern.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+				<form method="post">
+					<input type="hidden" name="CalendarId" value="@Model.Calendar.Id" />
+					<input type="hidden" asp-for="CurrentUser.Id" />
+					<input type="hidden" name="UserId" value="@Model.CurrentUser.Id" />
+					<button type="submit" asp-page-handler="RemoveAccess" class="btn btn-danger">Ja, lämna</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
