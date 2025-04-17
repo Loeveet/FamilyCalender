@@ -33,6 +33,12 @@ namespace FamilyCalender.Web.Pages
         {
             if (await _authService.LoginAsync(Email, Password))
             {
+                string returnUrl = HttpContext.Request.Query["returnUrl"];
+                if (Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+              
                 return RedirectToPage("/Index");
             }
 

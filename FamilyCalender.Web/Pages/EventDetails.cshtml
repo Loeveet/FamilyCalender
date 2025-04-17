@@ -12,7 +12,6 @@
 		</button>
 		<input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
 		<input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
-
 	</form>
 </div>
 
@@ -24,11 +23,18 @@
 		<div class="mb-2">
 			<strong><i class="bi bi-calendar-event"></i> Kalender:</strong> @Model.ViewModel.EventDetails.Calendar.Name
 		</div>
-		<div class="mb-2">
-			<strong><i class="bi bi-pencil"></i> Vad:</strong> @Model.ViewModel.EventDetails.Title
-		</div>
+        <div class="mb-2">
+            <strong>Titel:</strong> @Model.ViewModel.EventDetails.Title
+        </div>
+		
+        <div class="mb-2">
+            <strong>Beskrivning:</strong> 
+            <div>
+				@Html.Raw(Model.ViewModel.EventDetails.Text.ReplaceLineEndings("<br/>"))
+            </div>
+        </div>
 
-		<div class="mb-2">
+        <div class="mb-2">
 			@if (Model.ViewModel.IsSingleEvent)
 			{
 				<strong><i class="bi bi-clock"></i> När:</strong> @Model.ViewModel.FormattedDate
@@ -199,7 +205,7 @@
 
 <!-- Modal för att redigera eventet -->
 <div class="modal fade" id="editEventModal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered modal-sm">
+	<div class="modal-dialog modal-dialog-centered modal-fullscreen">
 		<div class="modal-content">
 
 			<div class="modal-header">
@@ -210,21 +216,28 @@
 			<div class="modal-body">
 				<form method="post" asp-page-handler="UpdateEvent" onsubmit="return validateEditForm()">
 
-					<div class="mb-3">
-						<label for="editEventTitle" class="form-label">Ändra titel</label>
-						<input type="text" class="form-control" value="@Model.ViewModel.EventDetails.Title" asp-for=ViewModel.NewTitle id="editEventTitle" />
-						<small id="editEventTitleError" class="text-danger d-none">Titel måste finnas</small>
-					</div>
+                    <div class="mb-3">
+                        <b for="editEventTitle" class="form-label">Titel</b>
+                        <input type="text" class="form-control" value="@Model.ViewModel.EventDetails.Title" asp-for=ViewModel.NewTitle id="editEventTitle" />
+                        <small id="editEventTitleError" class="text-danger d-none">Titel måste finnas</small>
+                    </div>
+					
+                    <div class="mb-3">
+                        <b for="eventText" class="form-label">Beskrivning</b>
+						<textarea rows="10" cols="3" class="form-control" asp-for="@Model.ViewModel.EventDetails.Text" id="eventText">
+						 </textarea>
+                        <small id="eventTextError" class="text-danger d-none">Ange titel</small>
+                    </div>
 
 
-					@if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1)
+                    @if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1)
 					{
 						var minEventDate = Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date); 
 						//< DateTime.Today ? DateTime.Today : Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date);
 							var maxEventDate = Model.ViewModel.EventDetails.EventMemberDates.Max(x => x.Date);
 
 						<div class="mb-3">
-							<label for="editStartDate" class="form-label">Välj nytt startdatum</label>
+							<b for="editStartDate" class="form-label">Välj nytt startdatum</b>
 							<input type="date" class="form-control" asp-for="ViewModel.StartDate" value="@minEventDate.ToString("yyyy-MM-dd")" id="editStartDate" />
 							<small id="edit-error-start-date" class="text-danger d-none"></small>
 
@@ -232,13 +245,13 @@
 						</div>
 
 						<div class="mb-3">
-							<label for="editEndDate" class="form-label">Välj nytt slutdatum</label>
+							<b for="editEndDate" class="form-label">Välj nytt slutdatum</b>
 							<input type="date" class="form-control" asp-for="ViewModel.EndDate" value="@maxEventDate.ToString("yyyy-MM-dd")" id="editEndDate" />
 							<small id="edit-error-end-date" class="text-danger d-none"></small>
 
 						</div>
 						<div class="mb-3">
-							<label class="form-label">Välj dagar</label>
+							<b class="form-label">Välj dagar</b>
 							<div>
 								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Måndag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Monday)) ? "checked" : "") /> Måndag <br />
 								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Tisdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Tuesday)) ? "checked" : "") /> Tisdag <br />
@@ -257,7 +270,7 @@
 					else
 					{
 						<div class="mb-3">
-							<label for="editEventDates" class="form-label">Ändra datum för vald händelse</label>
+							<b for="editEventDates" class="form-label">Ändra datum för vald händelse</b>
 							<input type="date" class="form-control" value="@Model.ViewModel.Day.ToString("yyyy-MM-dd")" asp-for="ViewModel.NewDate" id="editEventDates" />
 							<small id="edit-error-selected-date" class="text-danger d-none"></small>
 						</div>

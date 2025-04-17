@@ -3,7 +3,13 @@
 @{
 }
 
-<h2>@Model.NewCalendarName</h2>
+<h2><i class="bi bi-calendar"></i> @Model.NewCalendarName</h2>
+
+<div class="d-flex align-items-center">
+        <a href="/" class="btn btn-outline-dark btn-sm">
+            <i class="bi bi-arrow-left"></i> Tillbaka
+        </a>
+</div>
 
 <hr />
 
@@ -12,11 +18,11 @@
 	<form method="post">
 		<input type="hidden" asp-for="Calendar.Id" />
 		<div>
-			<label for="name">Byt namn på kalender</label>
+			<b for="name">Kalenderns namn</b>
 			<input asp-for="NewCalendarName" class="form-control" />
 		</div>
 		<button type="submit" asp-page-handler="UpdateName" class="btn btn-primary rounded-pill px-4 py-2 mt-2 shadow-sm">
-			Spara namnändring
+            <i class="bi bi-save"></i> Spara namnändring
 		</button>
 	</form>
 
@@ -24,7 +30,7 @@
 
 }
 
-<h3>Medlemmar</h3>
+<h3> <i class="bi bi-people"></i> Medlemmar</h3>
 
 @foreach (var member in Model.Members)
 {
@@ -100,8 +106,10 @@
 
 	@if (!string.IsNullOrWhiteSpace(Model.ShareLink))
 	{
+        <h3> <i class="bi bi-share"></i> Dela Kalender</h3>
+        <p>Klicka på dela-knappen för att få en delningslänk som du kan maila eller sms:a till de personer du vill bjuda in att delta i din kalender.</p>
 		<button type="button" onclick="ToggleShowShareLink()" class="btn btn-primary">
-			<i class="bi bi-share"></i> Dela
+			 Visa delningslänk
 		</button>
 
 		<div id="ShareLinkContainer" class="visually-hidden" style="margin-top: 20px;">
@@ -109,7 +117,7 @@
 			<div class="input-group mb-3">
 				<input type="text" class="form-control" value="@Model.ShareLink" id="ShareLinkInput" readonly>
 				<div class="input-group-append">
-					<a id="CopyShareLinkButton" onclick="CopyShareLink()" class="btn btn-primary input-group-text">Kopiera</a>
+					<a id="CopyShareLinkButton" onclick="CopyShareLink()" class="btn btn-primary input-group-text"><i class="bi bi-copy"></i> Kopiera</a>
 				</div>
 			</div>
 		</div>
@@ -117,6 +125,7 @@
 
 	<hr />
 
+	<h3><i class="bi bi-trash"></i> Radera</h3>
 	<form method="post" id="deleteCalendarForm">
 		<input type="hidden" asp-for="Calendar.Id" />
 		<button type="button" class="btn btn-danger rounded-pill px-4 py-2 mt-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteCalendarModal">
@@ -136,11 +145,13 @@ else
 	</button>
 
 }
+
+
 @if (Model.IsOwner && Model.CalendarUsers.Count > 0)
 {
 	<hr />
 
-	<h3>Användare med tillgång</h3>
+	<h3><i class="bi bi-pencil"></i> Användare med tillgång</h3>
 
 	@foreach (var user in Model.CalendarUsers)
 	{
@@ -194,6 +205,13 @@ else if (!Model.IsOwner)
 	<h3>Ägare av @Model.Calendar.Name är @Model.CalendarUsers[0].Email</h3>
 }
 
+<hr/>
+
+<div class="d-flex align-items-center">
+    <a href="/" class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-arrow-left"></i> Tillbaka
+    </a>
+</div>
 
 <!-- Modal för att lägga till medlem -->
 <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addLabel" aria-hidden="true">
