@@ -53,7 +53,7 @@ namespace FamilyCalender.Web.Pages
 
 		public async Task<IActionResult> OnPostAddEventAsync(List<int> selectedMemberIds, List<string> selectedDays)
 		{
-			if (!ModelState.IsValid || !IsValidInput(selectedMemberIds))
+			if (!IsValidInput(selectedMemberIds))
 			{
 				ModelState.AddModelError(string.Empty, "Titel, datum, medlem och kalender är obligatoriskt.");
 				return Page();
@@ -68,7 +68,7 @@ namespace FamilyCalender.Web.Pages
 
 			await _calendarManagementService.CreateEventAsync(
 				ViewModel.EventTitle,
-				ViewModel.EventText,
+				ViewModel.EventText ?? "",
 				eventMemberDates,
 				ViewModel.SelectedCalendarId,
 				selectedMemberIds);
