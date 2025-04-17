@@ -16,32 +16,13 @@ else
 {
     <h2 class="d-flex justify-content-between align-items-center">
         <span>@Model.ViewModel.SelectedCalendarName</span>
-        <a asp-page="/HandleCalendar" asp-route-id="@Model.ViewModel.SelectedCalendarId">
-            <i class="fa-solid fa-gear"></i>
-        </a>
-
-@*         @if (!string.IsNullOrWhiteSpace(Model.ViewModel.ShareLink))
-        {
-            <button type="button" onclick="ToggleShowShareLink()" class="btn btn-primary">
-                <i class="bi bi-share"></i> Dela
-            </button>
-        } *@
     </h2>
+    <a asp-page="/HandleCalendar" style="color:#000; float:left; font-size:18px; text-decoration:none; text-align:left" asp-route-id="@Model.ViewModel.SelectedCalendarId">
+        <i class="fa-solid fa-gear"></i> Inställningar / Dela
+    </a>
 
-@*     @if (!string.IsNullOrWhiteSpace(Model.ViewModel.ShareLink))
-    {
-        <div id="ShareLinkContainer" class="visually-hidden" style="margin-top: 20px;">
-            <b>Dela</b>
-            Dela följande länk med någon du vill ska vara med i din kalender:
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" value="@Model.ViewModel.ShareLink" id="ShareLinkInput" readonly>
-                <div class="input-group-append">
-                    <a id="CopyShareLinkButton" onclick="CopyShareLink()" class="btn btn-primary input-group-text">Kopiera</a>
-                </div>
-            </div>
-        </div>
-    } *@
-
+    <br/>
+    <br/>
 
     <a href="javascript:void(0)"
        class="floating-button d-sm-none"
@@ -219,20 +200,35 @@ else
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">Lägg till händelse</h5>
+                <h5 class="modal-title">Lägg till händelse i <span class="text-secondary">@Model.ViewModel.SelectedCalendarName</span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
                 <form method="post" asp-page-handler="AddEvent" onsubmit="return validateForm()">
-
+                    <input type="hidden" asp-for="ViewModel.SelectedCalendarId" value="@Model.ViewModel.SelectedCalendarId" />
+                    <input type="hidden" asp-for="ViewModel.SelectedCalendarName" value="@Model.ViewModel.SelectedCalendarName" />
+                   
+                    
                     <div class="mb-3">
-                        <label class="form-label">@Model.ViewModel.SelectedCalendarName</label>
-                        <input type="hidden" asp-for="ViewModel.SelectedCalendarId" value="@Model.ViewModel.SelectedCalendarId" />
+                        <b for="eventTitle" class="form-label">Titel</b>
+                        <i class="text-secondary">Titeln syns i kalender översikten</i>
+                        <input type="text" class="form-control" asp-for="ViewModel.EventTitle" id="eventTitle" />
+                        <small id="eventTitleError" class="text-danger d-none">Ange titel</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <b for="eventText" class="form-label">Beskrivning</b>
+                        <i class="text-secondary">Titeln syns i kalender översikten</i>
+                        <textarea rows="4" cols="3" class="form-control" asp-for="ViewModel.EventText" id="eventText">
+    
+                    </textarea>
+                        <small id="eventTextError" class="text-danger d-none">Ange titel</small>
                     </div>
 
+
                     <div class="mb-3">
-                        <label for="modalSelectedDate" class="form-label">Datum</label>
+                        <b for="modalSelectedDate" class="form-label">Datum</b>
                         <input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" readonly />
                         <small id="error-selected-date" class="text-danger d-none"></small>
                     </div>
@@ -247,7 +243,7 @@ else
                             <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#eventOptionsAccordion">
                                 <div class="accordion-body">
                                     <div class="mb-3">
-                                        <label for="startDate" class="form-label">Startdatum</label>
+                                        <b for="startDate" class="form-label">Startdatum</b>
                                         <input type="date" class="form-control" id="modalStartDate" asp-for="ViewModel.StartDate" />
                                         <small id="error-start-date" class="text-danger d-none"></small>
 
@@ -255,14 +251,14 @@ else
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="endDate" class="form-label">Slutdatum</label>
+                                        <b for="endDate" class="form-label">Slutdatum</b>
                                         <input type="date" class="form-control" id="modalEndDate" asp-for="ViewModel.EndDate" />
                                         <small id="error-end-date" class="text-danger d-none"></small>
 
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Välj dagar</label>
+                                        <b class="form-label">Välj dagar</b>
                                         <div class="form-check">
                                             <input class="form-check-input day-checkbox" type="checkbox" id="monday" name="SelectedDays" value="Måndag" />
                                             <label class="form-check-label" for="monday">Måndag</label>
@@ -300,27 +296,28 @@ else
                             </div>
                         </div>
                     </div>
-
+                    <br/>
                     <div class="mb-3">
-                        <label class="form-label">Välj medlemmar</label>
+                        <b class="form-label"><i class="bi bi-people"></i> Välj medlemmar</b>
                         <div id="memberList">
                             @foreach (var member in Model.ViewModel.Members ?? [])
                             {
-                                <div class="form-check">
+                                <div class="form-check form-switch">
                                     <input class="form-check-input member-checkbox" type="checkbox" id="member-@member.Id" value="@member.Id" name="SelectedMemberIds" />
                                     <label class="form-check-label" for="member-@member.Id">@member.Name</label>
                                 </div>
+
+                               @*  <div class="form-check">
+                                    <input class="form-check-input member-checkbox" type="checkbox" id="member-@member.Id" value="@member.Id" name="SelectedMemberIds" />
+                                    <label class="form-check-label" for="member-@member.Id">@member.Name</label>
+                                </div> *@
                             }
                         </div>
                         <small id="memberError" class="text-danger d-none">Du måste välja minst en medlem</small>
                     </div>
 
 
-                    <div class="mb-3">
-                        <label for="eventTitle" class="form-label">Titel</label>
-                        <input type="text" class="form-control" asp-for="ViewModel.EventTitle" id="eventTitle" />
-                        <small id="eventTitleError" class="text-danger d-none">Ange titel</small>
-                    </div>
+                
 
 
                     <input type="hidden" asp-for="ViewModel.CurrentYear" value="@Model.ViewModel.CurrentYear" />

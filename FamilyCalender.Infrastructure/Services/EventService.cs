@@ -16,12 +16,13 @@ namespace FamilyCalender.Infrastructure.Services
             _eventRepository = eventRepository;
 		}
 
-		public async Task<Event> CreateEventAsync(string eventTitle, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
+		public async Task<Event> CreateEventAsync(string eventTitle, string text, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
 		{
 			var newEvent = new Event
 			{
 				Title = eventTitle,
 				CalendarId = calendarId,
+				Text = text
 			};
 
 			var addedEvent = await _eventRepository.AddAsync(newEvent);
