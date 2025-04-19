@@ -57,7 +57,7 @@ namespace FamilyCalender.Web.Pages
 
 			if (calendar?.InviteId != null)
 			{
-				ShareLink = $"{Request.Scheme}://{Request.Host}/Invite?inviteId={calendar.InviteId}";
+				ShareLink = $"{Request.Scheme}://{Request.Host}/Invite/{calendar.InviteId}";
 			}
 			IsOwner = calendar.OwnerId == user.Id || calendar.Accesses.Any(a => a.UserId == user.Id && a.IsOwner);
 

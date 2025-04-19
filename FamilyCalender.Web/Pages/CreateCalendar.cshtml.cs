@@ -2,9 +2,7 @@ using FamilyCalender.Core.Interfaces;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FamilyCalender.Web.Pages
 {
@@ -66,7 +64,7 @@ namespace FamilyCalender.Web.Pages
                 return Page();
             }
 
-            return RedirectToPage("/Index");
+            return RedirectToPage("/CalendarOverview");
         }
 
     }
