@@ -8,6 +8,7 @@ using FamilyCalender.Infrastructure.Services;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Interfaces;
 using Serilog;
+using System.Security.Claims;
 
 
 namespace FamilyCalender
@@ -43,6 +44,7 @@ namespace FamilyCalender
 					
 
 					options.Conventions.AuthorizeFolder("/CalendarOverview");
+					options.Conventions.AuthorizeFolder("/CreateCalendar");
 					options.Conventions.AllowAnonymousToPage("/Login");
 					options.Conventions.AllowAnonymousToPage("/Register");
                     options.Conventions.AllowAnonymousToPage("/VerifyAccount");
@@ -51,11 +53,10 @@ namespace FamilyCalender
                     options.Conventions.AllowAnonymousToPage("/ResetPassword");
                     options.Conventions.AddPageRoute("/VerifyAccount", "/VerifyAccount/{token}");
                     options.Conventions.AddPageRoute("/ResetPassword", "/ResetPassword/{token}");
+                    options.Conventions.AddPageRoute("/Invite", "/Invite/{inviteId}");
 
                 });
-            //Add support to logging with SERILOG
-            //builder.Host.UseSerilog((context, configuration) =>
-            //    configuration.ReadFrom.Configuration(context.Configuration));
+  
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
@@ -70,8 +71,7 @@ namespace FamilyCalender
 				options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-
-			builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
+            builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 			builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 			builder.Services.AddScoped<IEventRepository, EventRepository>();
 			builder.Services.AddScoped<ICalendarAccessRepository, CalendarAccessRepository>();
@@ -102,6 +102,7 @@ namespace FamilyCalender
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
+
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
