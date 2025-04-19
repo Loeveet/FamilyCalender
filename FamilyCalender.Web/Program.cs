@@ -39,7 +39,10 @@ namespace FamilyCalender
 			builder.Services.AddRazorPages()
 				.AddRazorPagesOptions(options =>
 				{
-					options.Conventions.AuthorizeFolder("/");
+					options.Conventions.AllowAnonymousToPage("/");
+					
+
+					options.Conventions.AuthorizeFolder("/CalendarOverview");
 					options.Conventions.AllowAnonymousToPage("/Login");
 					options.Conventions.AllowAnonymousToPage("/Register");
                     options.Conventions.AllowAnonymousToPage("/VerifyAccount");
