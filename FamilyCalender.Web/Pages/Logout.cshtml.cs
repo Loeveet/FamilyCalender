@@ -16,7 +16,7 @@ namespace FamilyCalender.Web.Pages
 		public async Task<IActionResult> OnPost()
 		{
 			await _authService.LogoutAsync();
-			return RedirectToPage("/Login");
+			return RedirectToPage("/Index");
 		}
 	}
 }

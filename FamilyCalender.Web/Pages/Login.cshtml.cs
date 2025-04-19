@@ -23,7 +23,7 @@ namespace FamilyCalender.Web.Pages
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                return RedirectToPage("/Index");
+                return RedirectToPage("/CalendarOverview");
             }
             return Page();
 
@@ -39,7 +39,7 @@ namespace FamilyCalender.Web.Pages
                     return Redirect(returnUrl);
                 }
               
-                return RedirectToPage("/Index");
+                return RedirectToPage("/CalendarOverview");
             }
 
             ErrorMessage = "Invalid login attempt.";
