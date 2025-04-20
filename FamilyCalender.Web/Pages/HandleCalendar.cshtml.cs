@@ -49,11 +49,17 @@ namespace FamilyCalender.Web.Pages
 		public async Task<IActionResult> OnGetAsync(int id)
 		{
 			var user = await GetCurrentUserAsync();
-			if (user == null) return RedirectToPage("/Login");
+			if (user == null)
+            {
+                return RedirectToPage("/Login");
+            }
 
 			var calendar = await _calendarManagementService.GetCalendarWithDetailsAsync(id);
-			if (calendar == null)
-				return RedirectToPage("/Index");
+            if (calendar == null)
+            {
+                return RedirectToPage("/CalendarOverview");
+            }
+				
 
 			if (calendar?.InviteId != null)
 			{
@@ -106,7 +112,7 @@ namespace FamilyCalender.Web.Pages
 			}
 
 			await _calendarManagementService.DeleteCalendarAsync(Calendar.Id);
-			return RedirectToPage("/Index");
+			return RedirectToPage("/CalendarOverview");
 		}
 
 		public async Task<IActionResult> OnPostDeleteMemberAsync()
@@ -145,14 +151,14 @@ namespace FamilyCalender.Web.Pages
 
 			if (isSelf && !isOwner)
 			{
-				return RedirectToPage("/Index");
+				return RedirectToPage("/CalendarOverview");
 			}
 			else if (isOwner || isSelf)
 			{
 				return RedirectToPage(new { id = calendarId });
 			}
 
-			return RedirectToPage("/Index");
+			return RedirectToPage("/CalendarOverview");
 		}
 
 

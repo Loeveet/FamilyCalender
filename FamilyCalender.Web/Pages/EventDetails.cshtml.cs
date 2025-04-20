@@ -92,7 +92,7 @@ namespace FamilyCalender.Web.Pages
 
 			if (!eventToUpdate.EventMemberDates.Any(e => e.Date == ViewModel.Day) && editOption == "all")
 			{
-				return RedirectToPage("./Index", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
+				return RedirectToPage("./CalendarOverview", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
 			}
 
 			return RedirectToPage("./EventDetails", new { eventId = eventToUpdate.Id, memberId = ViewModel.MemberId, day = ViewModel.NewDate.Year != 1 ? ViewModel.NewDate : ViewModel.Day });
@@ -107,11 +107,11 @@ namespace FamilyCalender.Web.Pages
 
 			await _eventManagementService.DeleteEventAsync(ViewModel.EventId, ViewModel.MemberId, ViewModel.Day, selectedMemberIds, deleteOption);
 
-			return RedirectToPage("./Index", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
+			return RedirectToPage("./CalendarOverview", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
 		}
 		public async Task<IActionResult> OnPostRouteToIndexAsync()
 		{
-			return RedirectToPage("./Index", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
+			return RedirectToPage("./CalendarOverview", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
 		}
 
 
