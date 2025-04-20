@@ -3,17 +3,19 @@ using FamilyCalender.Infrastructure.Services;
 using FamilyCalender.Core.Models.ViewModels;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Interfaces;
+using FamilyCalender.Web.Code;
 
 namespace FamilyCalender.Web.Pages
 {
     public class CalendarOverviewModel(
 			CalendarManagementService calendarManagementService,
-			IAuthService authService) : BasePageModel(authService)
+            PublicHolidayService publicHolidayService,
+            IAuthService authService) : BasePageModel(authService)
 	{
 		private readonly CalendarManagementService _calendarManagementService = calendarManagementService;
 
 		[BindProperty]
-		public IndexViewModel ViewModel { get; set; } = new IndexViewModel();
+		public CalendarOverViewViewModel ViewModel { get; set; } = new CalendarOverViewViewModel();
 
 		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
 		{
@@ -23,7 +25,10 @@ namespace FamilyCalender.Web.Pages
 				return RedirectToPage("/Login");
 			}
 			SetCurrentYearAndMonth(year, month);
-			ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo);
+
+            var publicHolidays = publicHolidayService.GetHolidays(ViewModel.CurrentYear);
+
+			ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo, publicHolidays);
 
             var calendarDtos = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
 			ViewModel.CalendarDtos = calendarDtos;
