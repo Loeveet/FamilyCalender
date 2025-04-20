@@ -19,7 +19,14 @@ namespace FamilyCalender.Web.Pages
 
 		public async Task<IActionResult> OnGetAsync(Guid inviteId)
 	    {
-		    var calendar = await _inviteService.GetByInviteId(inviteId);
+
+            var user = await GetCurrentUserAsync();
+            if (user == null)
+            {
+                return Redirect($"/Login?ReturnUrl={HttpContext.Request.Path}");
+            }
+
+            var calendar = await _inviteService.GetByInviteId(inviteId);
 			ViewModel.Calendar = calendar;
 			ViewModel.InviteId = inviteId;
 
