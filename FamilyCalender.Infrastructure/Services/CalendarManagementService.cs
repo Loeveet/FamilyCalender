@@ -137,6 +137,11 @@ namespace FamilyCalender.Infrastructure.Services
             await _calendarService.UpdateCalendarNameAsync(calendarId, newName);
         }
 
+		public async Task UpdateCalenderInviteIdAsync(Core.Models.Entities.Calendar cal)
+		{
+			await _calendarService.UpdateCalendarInviteIdAsync(cal);
+		}
+
         public async Task DeleteCalendarAsync(int calendarId)
         {
             await _calendarService.DeleteCalendarAsync(calendarId);

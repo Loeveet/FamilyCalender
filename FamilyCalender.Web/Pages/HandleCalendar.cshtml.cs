@@ -148,6 +148,7 @@ namespace FamilyCalender.Web.Pages
 			var isOwner = await _calendarManagementService.IsCalendarOwnerAsync(calendarId, CurrentUser.Id);
 
 			await _calendarManagementService.RemoveUserFromCalendarAsync(userId, calendarId);
+			await SetNewInviteGuid(calendarId);
 
 			if (isSelf && !isOwner)
 			{
@@ -159,6 +160,13 @@ namespace FamilyCalender.Web.Pages
 			}
 
 			return RedirectToPage("/CalendarOverview");
+		}
+
+		private async Task SetNewInviteGuid(int calendarId)
+		{
+			var cal = await _calendarManagementService.GetCalendarByCalendarIdAsync(calendarId);
+			cal.InviteId = Guid.NewGuid();
+			await _calendarManagementService.UpdateCalenderInviteIdAsync(cal);
 		}
 
 
