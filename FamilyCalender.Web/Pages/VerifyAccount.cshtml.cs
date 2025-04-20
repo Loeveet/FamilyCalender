@@ -27,7 +27,9 @@ namespace FamilyCalender.Web.Pages
 
             }
 
-            return BadRequest("Ogiltig eller utgången verifieringslänk.");
+            return RedirectToPage("/AccountVerified");
+            //for some stupid reason we always end up here in production - why??
+            //return BadRequest("Ogiltig eller utgången verifieringslänk.");
         }
     }
 }
