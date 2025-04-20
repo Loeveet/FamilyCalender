@@ -33,7 +33,7 @@ else
         <i class="bi bi-plus-circle" title="Lägg till händelse"></i>
     </a>
     <h3 class="d-flex justify-content-center align-items-center sticky-header">
-        <a asp-page="./Index" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
+        <a asp-page="./CalendarOverview" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
            asp-route-month="@(Model.ViewModel.CurrentMonth == 1 ? 12 : Model.ViewModel.CurrentMonth - 1)"
            asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
            class="btn btn-secondary btn-block mb-2">
@@ -44,7 +44,7 @@ else
             @Model.ViewModel.CapitalizedMonthName @Model.ViewModel.CurrentYear
         </span>
 
-        <a asp-page="./Index" asp-route-year="@(Model.ViewModel.CurrentMonth == 12 ? Model.ViewModel.CurrentYear + 1 : Model.ViewModel.CurrentYear)"
+        <a asp-page="./CalendarOverview" asp-route-year="@(Model.ViewModel.CurrentMonth == 12 ? Model.ViewModel.CurrentYear + 1 : Model.ViewModel.CurrentYear)"
            asp-route-month="@(Model.ViewModel.CurrentMonth == 12 ? 1 : Model.ViewModel.CurrentMonth + 1)"
            asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
            class="btn btn-secondary btn-block mb-2">
