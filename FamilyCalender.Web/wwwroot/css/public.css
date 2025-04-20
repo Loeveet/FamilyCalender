@@ -69,7 +69,7 @@ header {
 .features {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+    gap: 5rem;
     padding: 2rem;
     background-color: white;
 }
@@ -86,7 +86,40 @@ header {
         color: #1e3a8a; 
     }
 
-    
+.coming-soon-label {
+    display: inline-block;
+    background-color: #ff6f61; /* Snygg färg för att sticka ut */
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+footer {
+    background-color: #4a4a4a;
+    color: white;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.footer-content h4 {
+    margin-top: 0;
+    font-size: 1.5rem;
+}
+
+.footer-content p {
+    margin: 0.5rem 0;
+}
+
+.footer-content a {
+    color: #ff6f61;
+    text-decoration: none;
+}
+
+    .footer-content a:hover {
+        text-decoration: underline;
+    }  
 
 /* lila tema 
 body {

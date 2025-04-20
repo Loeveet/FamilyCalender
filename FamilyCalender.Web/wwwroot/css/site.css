@@ -162,7 +162,7 @@ footer {
 
 
 table.table tr.today td {
-    background-color: #e4f0d9;
+    background-color: #a5c0ee;
 }
 
 
@@ -191,8 +191,8 @@ table.table .public-holiday {
 
 table.table .today {
     text-align: center;
-    background-color: #e4f0d9;
-    color: #000;
+    background-color: #a5c0ee;
+    color: #FFF;
 }
 
 
