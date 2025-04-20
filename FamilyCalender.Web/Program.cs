@@ -48,6 +48,7 @@ namespace FamilyCalender
 
 					options.Conventions.AuthorizeFolder("/CalendarOverview");
 					options.Conventions.AuthorizeFolder("/CreateCalendar");
+					options.Conventions.AuthorizeFolder("/Invite");
 					options.Conventions.AllowAnonymousToPage("/Login");
 					options.Conventions.AllowAnonymousToPage("/Register");
                     options.Conventions.AllowAnonymousToPage("/VerifyAccount");
