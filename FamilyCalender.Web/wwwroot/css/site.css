@@ -43,10 +43,15 @@ footer {
     margin-top: auto; 
 }
 
-/*
+
 .extra-member-column-per-week {
-display:none;
-}*/
+    background: linear-gradient(to right, #a6c1ee, #4f9bd2);
+}
+
+.extra-member-column-per-week td{
+    color: white;
+    font-weight:bold;
+}
 
 
 @media (max-width: 576px) {
@@ -74,9 +79,7 @@ display:none;
         display: none; /* Döljer knappen på små skärmar */
     }
 
-    .extra-member-column-per-week {
-        display: contents;
-    }
+  
 
     .day-info-medium, .day-info-large {
         display: none; /* Döljer både dagförkortning och fullständigt namn */
@@ -111,7 +114,7 @@ display:none;
 .event-title {
     border: 1px solid #ccc;
     display: inline-block;
-    font-size: 0.9rem;
+    font-size: 0.6rem;
     background-color: #f8f9fa;
 }
 
@@ -152,27 +155,29 @@ display:none;
     min-width: 0;
     max-width: 3.75rem;
     min-width: 3.75rem;
-    font-size: 12px; /* clamp(10px, 2vw, 20px);*/
+    font-size: 0.7rem; /* clamp(10px, 2vw, 20px);*/
     /*white-space: nowrap;*/
     text-align:center;
 }
 
 
-table.table.table-striped tr.today td {
+table.table tr.today td {
     background-color: #e4f0d9;
 }
 
 
 
-table.table.table-striped .week-separator {
+table.table .week-separator {
     text-align: center;
-    background-color: #5f6d7c;
+    xxbackground-color: #5f6d7c;
+    background: linear-gradient(to right, #a6c1ee, #4f9bd2);
     color: #fff;
-    padding: 0px;
+    padding: 5px;
     margin: 0px;
+    font-size:1rem;
 }
 
-table.table.table-striped .today {
+table.table .today {
     text-align: center;
     background-color: #e4f0d9;
     color: #000;
@@ -251,7 +256,7 @@ table.table.table-striped .today {
     top: 4rem;
     background-color: white;
     z-index: 10;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .sticky-header {

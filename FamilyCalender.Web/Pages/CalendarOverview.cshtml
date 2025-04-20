@@ -54,10 +54,49 @@ else
 
     </h3>
 
+    <style>
+
+        .table-container {
+            display: flex;
+            flex-direction: column;
+            margin: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header, .table-row {
+            display: flex;
+            padding: 0.5rem;
+            background-color: #00796b;
+            color: white;
+        }
+
+        .table-header {
+            font-weight: bold;
+        }
+
+        .table-cell {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem;
+            border-right: 1px solid #e0e0e0;
+        }
+
+            .table-cell:last-child {
+                border-right: none;
+            }
+
+        .table-row {
+            background-color: #b2dfdb;
+        }
+    </style>
+
 
     <!-- delete this to get stick names or keep this to make table not fucking up on mobile if many names-->
     <div class="table-responsive">
-        <table class="table table-bordered table-striped table-hover">
+        <table class="table table-condensed">
            @* <thead>
                 <tr>
                     <th class="fixed-day-column @(needResponsiveTable ? "sticky" : "")"></th>
@@ -87,7 +126,7 @@ else
                             <td class="fixed-day-colum "></td>
                             @foreach (var member in Model.ViewModel.Members)
                             {
-                                <td class="expanding-column ">@member.Name</td>
+                                <td class="expanding-column">@member.Name</td>
                             }
                         </tr>
                     }
@@ -97,7 +136,7 @@ else
                         var colspan = Model.ViewModel.Members.Count + 1;
                         <tr>
                             <td colspan="@colspan" class="today">
-                                Idag @day.CapitalizedDayName @day.Date.Day
+                                Idag @day.CapitalizedDayName @day.Date.Day <small>(vecka @day.WeekOfYear)</small>
                             </td>
                         </tr>
                     }
