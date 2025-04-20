@@ -174,7 +174,19 @@ table.table .week-separator {
     color: #fff;
     padding: 5px;
     margin: 0px;
-    font-size:1rem;
+    font-size: 1rem;
+    border: none;
+}
+
+table.table .public-holiday {
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
+    font-size: 0.6rem;
+    color: #be2f10 !important;
+    border: none;
+    
+    background:transparent;
 }
 
 table.table .today {
