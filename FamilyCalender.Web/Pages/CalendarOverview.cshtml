@@ -91,12 +91,14 @@ else
         .table-row {
             background-color: #b2dfdb;
         }
+
+       
     </style>
 
 
     <!-- delete this to get stick names or keep this to make table not fucking up on mobile if many names-->
     <div class="table-responsive">
-        <table class="table table-condensed">
+        <table class="table ">
            @* <thead>
                 <tr>
                     <th class="fixed-day-column @(needResponsiveTable ? "sticky" : "")"></th>
@@ -114,15 +116,15 @@ else
                     {
                         var colspan = @Model.ViewModel.Members.Count + 1;
 
-                        <tr>
-                            <td colspan="@colspan" class="week-separator">
+                        <tr style="border:none">
+                            <td colspan="@colspan" class="week-separator" style="border:none">
                                 Vecka @day.WeekOfYear
                             </td>
                         </tr>
                     }
                     @if (day.ShowWeekNumber )
                     {
-                        <tr class="extra-member-column-per-week">
+                        <tr class="extra-member-column-per-week" >
                             <td class="fixed-day-colum "></td>
                             @foreach (var member in Model.ViewModel.Members)
                             {
@@ -134,29 +136,35 @@ else
                     @if (day.IsCurrentDay)
                     {
                         var colspan = Model.ViewModel.Members.Count + 1;
-                        <tr>
-                            <td colspan="@colspan" class="today">
+                        <tr style="border:none">
+                            <td colspan="@colspan" class="today" style="border:none">
                                 Idag @day.CapitalizedDayName @day.Date.Day <small>(vecka @day.WeekOfYear)</small>
                             </td>
                         </tr>
                     }
+                    @if (day.PublicHoliday != null )
+                    {
+                        var colspan = @Model.ViewModel.Members.Count + 1;
+
+                        <tr style="border:none">
+                            <td colspan="@colspan" class=" @(day.IsCurrentDay ? "today" : "") public-holiday" style="border:none">
+                               @day.PublicHoliday.HolidayName
+                            </td>
+                        </tr>
+                    } 
 
                     <tr id="@(day.IsCurrentDay ? "today" : "")" class="@(day.IsCurrentDay ? "today" : "")">
+                        
+                      
+
                         <td class="fixed-day-column">
-                            @*
-                    @{
-                    if (day.ShowWeekNumber)
-                    {
-                    <b>@($"v. {day.WeekOfYear}")</b>
-                    <br />
-                    }
-                    }*@
+
 
                             <div class="d-flex flex-column align-items-center">
                                 <span class="day-info day-info-small day-info-medium 
                                 @(day.IsCurrentDay ? "fw-bold" : "") 
                                 @(day.PublicHoliday != null ? "text-danger" : "")
-                                @(day is {IsPastDay: true, PublicHoliday: null} ?  "text-muted" : "") 
+                                @(day is {IsPastDay: true, PublicHoliday: null} ? "text-muted" : "") 
                              
                                 @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")
                                 d-block d-md-none">
@@ -165,8 +173,8 @@ else
 
                                 <span class="day-info day-info-large 
                                             @(day.IsCurrentDay ? "fw-bold" : "") 
-                                             @(day is {IsPastDay: true, PublicHoliday: null} ?  "text-muted" : "")
-                                            @(day.CapitalizedDayName == "Söndag"  || day.PublicHoliday != null ? "text-danger" : "")
+                                             @(day is {IsPastDay: true, PublicHoliday: null} ? "text-muted" : "")
+                                            @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")
                                             d-none d-md-block">
                                     @day.CapitalizedDayName
                                 </span>
@@ -174,13 +182,6 @@ else
                                 <span class="day-number @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")">
                                     @day.Date.Day
                                 </span>
-                                
-                                @if (day.PublicHoliday != null)
-                                {
-                                    <span class="text-danger">
-                                        @day.PublicHoliday.HolidayName
-                                    </span>
-                                }
                             </div>
 
 
@@ -201,11 +202,11 @@ else
                         @foreach (var member in Model.ViewModel.Members ?? new List<Core.Models.Entities.Member>())
                         {
                             var eventMemberDates = Model.ViewModel.Events
-                            .SelectMany(e => e.EventMemberDates)
-                            .Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
-                            .ToList();
+                                .SelectMany(e => e.EventMemberDates)
+                                .Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
+                                .ToList();
                             <td class="expanding-column clickable-cell"
-@*                                 data-bs-toggle="modal"
+                                @*                                 data-bs-toggle="modal"
                                 data-bs-target="#eventModal" *@
                                 data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
                                 data-member-id="@member.Id"
@@ -225,6 +226,7 @@ else
                                                 <span class="event-title rounded px-0 py-1 w-100 d-block">@eventMemberDate.Event?.Title</span>
                                             </a>
                                         }
+
                                         <div class="mt-2" style="height: 20px;"></div>
 
                                     }
