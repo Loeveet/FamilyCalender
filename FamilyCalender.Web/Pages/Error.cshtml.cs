@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics;
+using Serilog;
 
 namespace FamilyCalender.Web.Pages
 {
@@ -17,7 +19,18 @@ namespace FamilyCalender.Web.Pages
 		public void OnGet()
 		{
 			RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-		}
+
+            try
+            {
+                var ex = HttpContext.Features.Get<Exception>();
+
+                Log.Error($"Error when {ex.Message} {ex.StackTrace}");
+            }
+            catch (Exception e)
+            {
+               
+            }
+        }
 	}
 
 }

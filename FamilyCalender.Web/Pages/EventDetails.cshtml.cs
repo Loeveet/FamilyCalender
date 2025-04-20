@@ -72,10 +72,10 @@ namespace FamilyCalender.Web.Pages
 
 		public async Task<IActionResult> OnPostUpdateEventAsync(List<int> selectedMemberIds, string? editOption, List<string> selectedDays)
 		{
-			if (!ModelState.IsValid)
-			{
-				return Page();
-			}
+			//if (!ModelState.IsValid)
+			//{
+			//	return Page();
+			//}
 
 			var eventToUpdate = await _eventManagementService.GetEventDetailsAsync(ViewModel.EventId);
 			if (eventToUpdate == null)

@@ -106,8 +106,6 @@ namespace FamilyCalender
 				app.UseHsts();
 			}
 
-			
-
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
