@@ -2,12 +2,51 @@
 @model FamilyCalender.Web.Pages.IndexModel
 @{
 
-
+    Layout = "Shared/_LayoutPublic";
 }
-<div class="start-page">
+<header>
+    
+    <h1><img src="~/images/favicon-32x32.png" /> Planera Med Flera</h1>
+</header>
+
+<section class="hero">
+    <h2>Håll koll på familjens schema – enkelt, säkert och med enkel delning</h2>
+    <p>Skapa familjemedlemmar, lägg till aktiviteter och få överblick varje månad.</p>
+    <button class="btn-starta" onclick="window.location.href='/Register'">Kom igång</button>
+    <button class="btn-login" onclick="window.location.href='/Login'">Logga in</button>
+</section>
+
+<section class="features">
+    <div class="feature">
+        <h3>👨‍👩‍👧‍👦 Enkel familjehantering</h3>
+        <p>Lägg till eller ta bort familjemedlemmar med ett klick.</p>
+    </div>
+    <div class="feature">
+        <h3>📆 Månadsöversikt</h3>
+        <p>Se alla aktiviteter tydligt per person och dag.</p>
+    </div>
+    <div class="feature">
+        <h3>🔁 Återkommande aktiviteter</h3>
+        <p>Skapa intervalbaserade aktiviteter som upprepas veckovis, månadsvis eller vid valfri frekvens – så du slipper lägga in dem manuellt varje gång.</p>
+    </div>
+    <div class="feature">
+        <h3>📨 Enkel delning</h3>
+        <p>Dela kalendern med andra familjemedlemmar via länk.</p>
+    </div>
+    <div class="feature">
+        <h3>🔒 Krypterad lagring</h3>
+        <p>Alla dina familjeuppgifter och kalenderdata lagras säkert med kryptering, så att ingen obehörig kan komma åt informationen.</p>
+    </div>
+    <div class="feature">
+        <h3>📲 Mobilanpassad</h3>
+        <p>Redigera enkelt via mobilen som du alltid har med dig.</p>
+    </div>
+</section>
+
+@* <div class="start-page">
 
     <div class="box-container">
         @Html.Partial("Shared/_ProductInfo")
     </div>
 
-</div>
+</div> *@
