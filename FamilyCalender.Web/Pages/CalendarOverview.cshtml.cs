@@ -66,7 +66,7 @@ namespace FamilyCalender.Web.Pages
 				ViewModel.SelectedCalendarId,
 				selectedMemberIds);
 
-			return RedirectToPage("./Index", new
+			return RedirectToPage("./CalendarOverview", new
 			{
 				year = ViewModel.CurrentYear,
 				month = ViewModel.CurrentMonth,

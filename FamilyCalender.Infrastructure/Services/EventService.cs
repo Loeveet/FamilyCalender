@@ -1,18 +1,22 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
+using static System.Net.Mime.MediaTypeNames;
+using System.Globalization;
 
 namespace FamilyCalender.Infrastructure.Services
 {
     public class EventService : IEventService
     {
         private readonly ICalendarRepository _calendarRepository;
+        private readonly EncryptionService _encryptionService;
         private readonly IEventRepository _eventRepository;
 
-        public EventService(ICalendarRepository calendarRepository
-			, IEventRepository eventRepository)
+        public EventService(ICalendarRepository calendarRepository, EncryptionService encryptionService,
+            IEventRepository eventRepository)
         {
             _calendarRepository = calendarRepository;
+            _encryptionService = encryptionService;
             _eventRepository = eventRepository;
 		}
 
@@ -20,9 +24,9 @@ namespace FamilyCalender.Infrastructure.Services
 		{
 			var newEvent = new Event
 			{
-				Title = eventTitle,
+				Title = _encryptionService.AutoDetectEncryptStringToString(eventTitle, calendarId.ToString()),
 				CalendarId = calendarId,
-				Text = text
+				Text = _encryptionService.AutoDetectEncryptStringToString(text, calendarId.ToString())
 			};
 
 			var addedEvent = await _eventRepository.AddAsync(newEvent);
@@ -76,17 +80,33 @@ namespace FamilyCalender.Infrastructure.Services
 
 		public async Task<Event> GetEventByIdAsync(int eventId)
 		{
-			return await _eventRepository.GetByIdAsync(eventId);
-		}
+			var evt =  await _eventRepository.GetByIdAsync(eventId);
+            if (evt != null)
+            {
+                evt.Title = _encryptionService.AutoDetectDecryptStringToString(evt.Title, evt.CalendarId.ToString());
+                evt.Text = _encryptionService.AutoDetectDecryptStringToString(evt.Text, evt.CalendarId.ToString());
+            }
+
+            return evt;
+        }
 
 		public async Task<List<Event>> GetEventForCalendarAsync(int calendarId, int year, int month)
         {
-            return await _eventRepository.GetByCalendar(calendarId, year, month);
-        }
+            var events = await _eventRepository.GetByCalendar(calendarId, year, month);
+            foreach (var evt in events)
+            {
+                evt.Title = _encryptionService.AutoDetectDecryptStringToString(evt.Title, evt.CalendarId.ToString());
+                evt.Text = _encryptionService.AutoDetectDecryptStringToString(evt.Text, evt.CalendarId.ToString());
+            }
 
-		public async Task UpdateEventAsync(Event e)
-		{
-			await _eventRepository.UpdateAsync(e);
+            return events;
+        }
+        public async Task UpdateEventAsync(Event e)
+        {
+            e.Title = _encryptionService.AutoDetectEncryptStringToString(e.Title, e.CalendarId.ToString());
+            e.Text = _encryptionService.AutoDetectEncryptStringToString(e.Text, e.CalendarId.ToString());
+
+            await _eventRepository.UpdateAsync(e);
 		}
     }
 }
