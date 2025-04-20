@@ -40,7 +40,7 @@ namespace FamilyCalender.Web.Pages
 
 			_inviteService.Join(ViewModel.InviteId, user.Id);
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./CalendarOverview");
         }
 
     }
