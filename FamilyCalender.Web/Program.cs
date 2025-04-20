@@ -21,8 +21,6 @@ namespace FamilyCalender
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
-
-            
          
 
             builder.Services.AddHttpContextAccessor();
@@ -34,7 +32,7 @@ namespace FamilyCalender
 			.AddCookie("Cookie", options =>
 			{
 				options.LoginPath = "/Login"; 
-				options.LogoutPath = "/Login";
+				options.LogoutPath = "/Logout";
 				options.ExpireTimeSpan = TimeSpan.FromDays(365);
 				options.SlidingExpiration = true;
 
@@ -108,6 +106,8 @@ namespace FamilyCalender
 				app.UseHsts();
 			}
 
+			
+
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
@@ -120,6 +120,8 @@ namespace FamilyCalender
 			app.MapRazorPages();
 
 			app.Run();
+
+			
 		}
 	}
 }
