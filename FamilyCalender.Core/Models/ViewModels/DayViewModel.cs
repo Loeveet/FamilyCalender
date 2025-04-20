@@ -16,6 +16,7 @@ namespace FamilyCalender.Core.Models.ViewModels
         public int WeekOfYear { get; set; }
         public bool ShowWeekNumber { get; set; }
         public ICollection<EventMemberDate> Events { get; set; } = [];
+        public PublicHoliday? PublicHoliday { get; set; } = null;
     }
 
 }

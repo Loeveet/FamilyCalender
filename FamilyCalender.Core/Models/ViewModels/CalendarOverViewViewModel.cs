@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
 using Calendar = FamilyCalender.Core.Models.Entities.Calendar;
 
 namespace FamilyCalender.Core.Models.ViewModels
 {
-    public class IndexViewModel
+    public class CalendarOverViewViewModel
     {
         public ICollection<Calendar> Calendars { get; set; } = [];
         public ICollection<CalendarDto> CalendarDtos { get; set; } = [];

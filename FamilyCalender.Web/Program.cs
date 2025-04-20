@@ -9,6 +9,9 @@ using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Interfaces;
 using Serilog;
 using System.Security.Claims;
+using NuGet.Packaging;
+using PublicHoliday;
+using FamilyCalender.Web.Code;
 
 
 namespace FamilyCalender
@@ -56,7 +59,7 @@ namespace FamilyCalender
                     options.Conventions.AddPageRoute("/Invite", "/Invite/{inviteId}");
 
                 });
-  
+
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
@@ -86,6 +89,7 @@ namespace FamilyCalender
 			builder.Services.AddScoped<CalendarManagementService>();
 			builder.Services.AddScoped<InviteService>();
             builder.Services.AddSingleton(new EncryptionService(EncryptionService.Magic));
+            builder.Services.AddSingleton(new PublicHolidayService(new SwedenPublicHoliday(), "SWEDEN"));
 
             var app = builder.Build();
 

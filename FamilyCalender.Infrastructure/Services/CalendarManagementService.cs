@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FamilyCalender.Core.Models;
 
 namespace FamilyCalender.Infrastructure.Services
 {
@@ -61,7 +62,7 @@ namespace FamilyCalender.Infrastructure.Services
 			await _eventService.CreateEventAsync(eventTitle, text, eventMemberDates, calendarId, memberIds);
 		}
 
-		public static List<DayViewModel> GenerateMonthDays(int year, int month, CultureInfo cultureInfo)
+		public static List<DayViewModel> GenerateMonthDays(int year, int month, CultureInfo cultureInfo, List<PublicHoliday> publicHolidays)
 		{
 			var daysCount = DateTime.DaysInMonth(year, month);
 			var days = new List<DayViewModel>();
@@ -80,6 +81,7 @@ namespace FamilyCalender.Infrastructure.Services
 					WeekOfYear = weekOfYear,
 					ShowWeekNumber = date.DayOfWeek == DayOfWeek.Monday || date.Day == 1,
 					CapitalizedDayName = char.ToUpper(dayName[0]) + dayName.Substring(1),
+					PublicHoliday = publicHolidays.FirstOrDefault(x => x.DateTime.Year == year && x.DateTime.Month == month && x.DateTime.Day == day)
 				});
 			}
 

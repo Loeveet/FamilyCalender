@@ -116,23 +116,32 @@ else
                             <div class="d-flex flex-column align-items-center">
                                 <span class="day-info day-info-small day-info-medium 
                                 @(day.IsCurrentDay ? "fw-bold" : "") 
-                                @(day.IsPastDay ? "text-muted" : "") 
-                                @(day.CapitalizedDayName == "Söndag" ? "text-danger" : "")
+                                @(day.PublicHoliday != null ? "text-danger" : "")
+                                @(day is {IsPastDay: true, PublicHoliday: null} ?  "text-muted" : "") 
+                             
+                                @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")
                                 d-block d-md-none">
                                     @day.CapitalizedDayName[..2]
                                 </span>
 
                                 <span class="day-info day-info-large 
                                             @(day.IsCurrentDay ? "fw-bold" : "") 
-                                            @(day.IsPastDay ? "text-muted" : "")
-                                            @(day.CapitalizedDayName == "Söndag" ? "text-danger" : "")
+                                             @(day is {IsPastDay: true, PublicHoliday: null} ?  "text-muted" : "")
+                                            @(day.CapitalizedDayName == "Söndag"  || day.PublicHoliday != null ? "text-danger" : "")
                                             d-none d-md-block">
                                     @day.CapitalizedDayName
                                 </span>
 
-                                <span class="day-number @(day.CapitalizedDayName == "Söndag" ? "text-danger" : "")">
+                                <span class="day-number @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")">
                                     @day.Date.Day
                                 </span>
+                                
+                                @if (day.PublicHoliday != null)
+                                {
+                                    <span class="text-danger">
+                                        @day.PublicHoliday.HolidayName
+                                    </span>
+                                }
                             </div>
 
 
