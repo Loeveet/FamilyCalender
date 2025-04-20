@@ -23,7 +23,7 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task<List<CalendarDto>> GetCalendarDtosForUserAsync(int userId);
         Task UpdateCalendarNameAsync(int calendarId, string newName);
         Task DeleteCalendarAsync(int calendarId);
-        
+        Task UpdateCalendarInviteIdAsync(Calendar calendar);
 
 
     }

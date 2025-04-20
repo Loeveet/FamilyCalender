@@ -552,7 +552,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // #endregion
 
-function 
+function CopyShareLink()
 {
     // Get the text field
     var copyText = document.getElementById("ShareLinkInput");

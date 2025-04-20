@@ -83,6 +83,11 @@ namespace FamilyCalender.Infrastructure.Services
 
             throw new NotImplementedException();
         }
+
+        public async Task UpdateCalendarInviteIdAsync(Calendar calendar)
+        {
+            await _calendarRepository.UpdateAsync(calendar);
+        }
         public async Task<CalendarDto> GetCalendarDtoAsync(int calendarId)
         {
             return await _calendarRepository.GetCalendarDtoAsync(calendarId);
