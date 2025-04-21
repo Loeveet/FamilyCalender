@@ -97,6 +97,7 @@ namespace FamilyCalender
 
             var app = builder.Build();
 
+
 			//https://stackoverflow.com/questions/47598844/enabling-migrations-in-ef-core
 			using var serviceScope = app.Services.CreateScope();
 			using var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
