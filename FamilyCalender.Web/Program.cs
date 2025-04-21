@@ -12,6 +12,8 @@ using System.Security.Claims;
 using NuGet.Packaging;
 using PublicHoliday;
 using FamilyCalender.Web.Code;
+using static FamilyCalender.Infrastructure.Services.EmailService;
+using System.Configuration;
 
 
 namespace FamilyCalender
@@ -72,8 +74,11 @@ namespace FamilyCalender
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+			Log.Information($"Using database connectionstring {builder.Configuration.GetConnectionString("DefaultConnection")}");
 
-            builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
+			var emailSettings = builder.Configuration.GetSection("Email").Get<EmailSettings>() ?? new EmailSettings();
+
+			builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 			builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 			builder.Services.AddScoped<IEventRepository, EventRepository>();
 			builder.Services.AddScoped<ICalendarAccessRepository, CalendarAccessRepository>();
@@ -83,7 +88,7 @@ namespace FamilyCalender
 			builder.Services.AddScoped<ICalendarAccessService, CalendarAccessService>();
 			builder.Services.AddScoped<IMemberCalendarService, MemberCalendarService>();
 			builder.Services.AddScoped<IAuthService, AuthService>();
-			builder.Services.AddScoped<IEmailService, EmailService>();
+			builder.Services.AddScoped<IEmailService>(c => new EmailService(emailSettings));
 			builder.Services.AddScoped<EventManagementService>();
 			builder.Services.AddScoped<CalendarManagementService>();
 			builder.Services.AddScoped<InviteService>();
@@ -105,6 +110,7 @@ namespace FamilyCalender
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
+
 
 
 			app.UseHttpsRedirection();

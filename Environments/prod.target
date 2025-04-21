@@ -4,5 +4,6 @@
 
 		<DbConnectionString>Data Source=APP_DATA/FamilyCalender.db</DbConnectionString>
 		<SmtpServer>websmtp.simply.com</SmtpServer>
+		<HostingDomain>https://planeramedflera.se</HostingDomain>
 	</PropertyGroup>
 </Project>
