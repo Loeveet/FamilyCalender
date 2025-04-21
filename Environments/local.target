@@ -4,5 +4,6 @@
 		
 		<DbConnectionString>Data Source=../FamilyCalender.Infrastructure/FamilyCalender.db</DbConnectionString>
 		<SmtpServer>smtp.simply.com</SmtpServer>
+		<HostingDomain>https://localhost:7223</HostingDomain>
 	</PropertyGroup>
 </Project>
