@@ -31,7 +31,7 @@ body {
     text-align:center;
 }
 
-.bubble {
+/*.bubble {
     display: inline-block;
     background-color: #ff6f61;
     color: white;
@@ -39,11 +39,27 @@ body {
     border-radius: 20px;
     margin-left: 115px;
     position: absolute;
-    transform: translateX(-50%) rotate(25deg);
+    transform: translateX(-50%) rotate(25deg);*/
     /* top: 17rem; */
-    margin-bottom: -2rem;
+    /*margin-bottom: -2rem;
     font-weight: bold;
     margin-top: -55px;
+    font-size: 1rem;
+    animation: pop 0.3s ease-out;
+}*/
+
+.bubble {
+    display: inline-block;
+    background-color: #ff6f61;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    margin-left: 55px;
+    position: absolute;
+    transform: translateX(-50%) rotate(-15deg);
+    margin-bottom: -2rem;
+    font-weight: bold;
+    margin-top: -57px;
     font-size: 1rem;
     animation: pop 0.3s ease-out;
 }
