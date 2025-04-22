@@ -3,33 +3,71 @@
 @{
 }
 
-<div class="container mt-5">
-    <h2>Skapa Kalender</h2>
+<a href="/CalendarOverview" class="btn btn-outline-dark btn-sm">
+    <i class="bi bi-arrow-left"></i> Jag ångra mig - jag vill gå tillbaka
+</a>
+
+<div class="container mt-5" style="text-align:center">
+    <h2>Skapa Kalender 📅</h2>
+    
+    
+   
     <form method="post" class="mt-4">
         <div class="mb-3">
            
         </div>
-
-        <div class="form-floating mb-2">
-            <input asp-for="Calendar.Name" class="form-control" name="Calendar.Name" type="text" />
-            <span asp-validation-for="Calendar.Name" class="text-danger"></span>
-            <label for="Calendar.Name" class="form-label">Kalendernamn</label>
+        
+        <div class="orange-box mb-4">
+            <div class="arrow"></div>
+            <h4 class="text-center">Steg 1 - Bestäm namnet på din kalender</h4>
         </div>
         
-        <h4>Skapa medlem</h4>
-        <div class="input-group mb-2">
-            <div class="form-floating">
-                <input type="text" id="memberName" class="form-control" />
-                <label class="form-label" for="memberName">Namn</label>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="card-title"></h4>
+                <div class="form-floating mb-2">
+                    <input asp-for="Calendar.Name" class="form-control" name="Calendar.Name" type="text" placeholder="Familjen, Vännerna etc" />
+                    <span asp-validation-for="Calendar.Name" class="text-danger"></span>
+                    <label for="Calendar.Name" class="form-label">Kalendernamn - Familjen, Vännerna etc</label>
+                </div>
             </div>
-            <button type="button" class="input-group-text btn btn-secondary pt-3" onclick="addMember()">Lägg till</button>
         </div>
         
-        <ul id="memberList" class="list-group mb-3">
-        </ul>
+        <!-- Pil och Orange Box -->
+        <div class="orange-box mb-4">
+            <div class="arrow"></div>
+            <h4 class="text-center">Steg 2 - Skapa medlemmar</h4>
+        </div>
+       
+        <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="card-title"></h4>
+                <p>Skriv ett namn och klicka på lägg till</p>
+                <div class="input-group mb-2">
+                   
+                    <br/>
+                    <div class="form-floating">
+                        <input type="text" id="memberName" class="form-control"/>
+                        <label class="form-label" for="memberName">Namn</label>
+                    </div>
+                    
+                   
+                    <button type="button" class="input-group-text btn btn-pmf pt-3" onclick="addMember()">Lägg till</button>
+                </div>
+                
+                <ul id="memberList" class="list-group mb-3">
+                </ul>
 
-        <div id="hiddenMembersInputs"></div>
+                <div id="hiddenMembersInputs"></div>
+                
+                <div class="info-box">
+                    <span class="info-icon">ℹ️</span>
+                    <span class="info-text">Hej, du kan alltid redigera medlemmar under inställningar senare.</span>
+                </div>
+            </div>
+        </div>
 
-        <button type="submit" class="btn btn-primary"><i class="fa fa-save fa-1x"></i> Skapa kalender</button>
+
+        <button type="submit" class="btn btn-pmf btn-lg"><i class="fa fa-save fa-1x"></i> Skapa kalender</button>
     </form>
 </div>

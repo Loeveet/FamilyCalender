@@ -9,16 +9,29 @@
 
 @if (Model.ViewModel.SelectedCalendarId == 0)
 {
-    <h3>
-        Oj, här var det tomt!
-    </h3>
-    <p>
-        Men misströsta inte — att skapa en kalender är bara några klick bort.
-        När den väl är på plats kan du bjuda in familj, vänner, sambos, kusiner eller svärmor (om du vågar)
-        …och vips så har ni full koll på vem som gör vad, när och var! 🗓️✨
-    </p>
+    <div class="center-text">
+        <h2>
+            Hej 🤗 Gissar att du är en ny användare?!
+        </h2>
+        <h4>Du måste skapa en kalender om du vill börja planera - om du inte blir inbjuden av en vän?</h4>
+        <br/>
+        <p>
+            Att skapa en kalender går snabbt så ta det lugnt!
+            <br/>
+            När den väl är på plats kan du bjuda in familj, vänner, sambos, kusiner eller svärmor (om du vågar) <br /> <br />
+            <i>…och vips så har ni full koll på vem som gör vad, när och var! 🗓️✨</i>
+        </p>
 
-    <a asp-page="/CreateCalendar" class="btn btn-primary">Skapa kalender</a>
+        <a asp-page="/CreateCalendar" class="btn btn-pmf btn-lg">Skapa kalender</a>
+        <br />
+        <br/>
+        <br/>
+        <br/>
+        <div class="info-box">
+            <span class="info-icon">ℹ️</span>
+            <span class="info-text">Visste du att man kan skapa flera kalendrar?</span>
+        </div>
+    </div>
 }
 else
 {

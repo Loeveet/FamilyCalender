@@ -21,7 +21,7 @@
 			<b for="name">Kalenderns namn</b>
 			<input asp-for="NewCalendarName" class="form-control" />
 		</div>
-		<button type="submit" asp-page-handler="UpdateName" class="btn btn-primary rounded-pill px-4 py-2 mt-2 shadow-sm">
+		<button type="submit" asp-page-handler="UpdateName" class="btn btn-pmf rounded-pill px-4 py-2 mt-2 shadow-sm">
             <i class="bi bi-save"></i> Spara namnändring
 		</button>
 	</form>
@@ -42,10 +42,10 @@
 
 			@if (Model.IsOwner)
 			{
-				<button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#renameMemberModal-@member.Id">
+				<button type="button" class="btn btn-sm btn-pmf-outline rounded-pill px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#renameMemberModal-@member.Id">
 					Byt namn
 				</button>
-				<button type="button" class="btn btn-sm btn-danger rounded-pill px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteMemberModal-@member.Id">
+				<button type="button" class="btn btn-sm btn-pmf-inverted rounded-pill px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteMemberModal-@member.Id">
 					Ta bort
 				</button>
 			}
@@ -66,7 +66,7 @@
 							<input asp-for="NewMemberName" class="form-control" placeholder="Nytt namn" />
 						</div>
 						<div class="modal-footer">
-							<button type="submit" asp-page-handler="RenameMember" class="btn btn-primary">Spara</button>
+							<button type="submit" asp-page-handler="RenameMember" class="btn btn-pmf">Spara</button>
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
 						</div>
 					</form>
@@ -89,7 +89,7 @@
 						<form method="post" id="deleteMemberForm-@member.Id">
 							<input type="hidden" name="MemberId" value="@member.Id" />
 							<input type="hidden" name="Calendar.Id" value="@Model.Calendar.Id" />
-							<button type="submit" class="btn btn-danger" asp-page-handler="DeleteMember">Ja, ta bort</button>
+							<button type="submit" class="btn btn-pmf-inverted" asp-page-handler="DeleteMember">Ja, ta bort</button>
 						</form>
 					</div>
 				</div>
@@ -108,16 +108,18 @@
 	{
         <h3> <i class="bi bi-share"></i> Dela Kalender</h3>
         <p>Klicka på dela-knappen för att få en delningslänk som du kan maila eller sms:a till de personer du vill bjuda in att delta i din kalender.</p>
-		<button type="button" onclick="ToggleShowShareLink()" class="btn btn-primary">
+		<button type="button" onclick="ToggleShowShareLink()" class="btn btn-pmf">
 			 Visa delningslänk
 		</button>
 
 		<div id="ShareLinkContainer" class="visually-hidden" style="margin-top: 20px;">
-			Dela följande länk med någon du vill ska vara med i din kalender:
+            Dela följande länk med någon du vill ska vara med i din kalender:
+            <br/>
+            <i class="bi bi-info-circle"></i> <small> Personen du bjuder in måste också ha ett PlaneraMedFlera konto (vi vet, det är as segt - men kontot kan skapas i samband med inbjudan)</small>
 			<div class="input-group mb-3">
 				<input type="text" class="form-control" value="@Model.ShareLink" id="ShareLinkInput" readonly>
 				<div class="input-group-append">
-					<a id="CopyShareLinkButton" onclick="CopyShareLink()" class="btn btn-primary input-group-text"><i class="bi bi-copy"></i> Kopiera</a>
+					<a id="CopyShareLinkButton" onclick="CopyShareLink()" class="btn btn-pmf input-group-text"><i class="bi bi-copy"></i> Kopiera</a>
 				</div>
 			</div>
 		</div>
@@ -128,7 +130,7 @@
 	<h3><i class="bi bi-trash"></i> Radera</h3>
 	<form method="post" id="deleteCalendarForm">
 		<input type="hidden" asp-for="Calendar.Id" />
-		<button type="button" class="btn btn-danger rounded-pill px-4 py-2 mt-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteCalendarModal">
+		<button type="button" class="btn btn-pmf-inverted rounded-pill px-4 py-2 mt-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteCalendarModal">
 			Ta bort hela kalendern
 		</button>
 	</form>
@@ -164,7 +166,7 @@ else
 				@if (Model.IsOwner)
 				{
 					<button type="button"
-							class="btn btn-sm btn-danger rounded-pill px-3 py-2 shadow-sm"
+							class="btn btn-sm btn-pmf-inverted rounded-pill px-3 py-2 shadow-sm"
 							data-bs-toggle="modal"
 							data-bs-target="#removeAccessModal-@user.Id">
 						Ta bort tillgång
@@ -191,7 +193,7 @@ else
 							<input type="hidden" name="CalendarId" value="@Model.Calendar.Id" />
 							<input type="hidden" name="UserId" value="@user.Id" />
 							<input type="hidden" asp-for="CurrentUser.Id" />
-							<button type="submit" asp-page-handler="RemoveAccess" class="btn btn-danger">Ja, ta bort tillgång</button>
+							<button type="submit" asp-page-handler="RemoveAccess" class="btn btn-pmf-inverted">Ja, ta bort tillgång</button>
 						</form>
 					</div>
 				</div>
@@ -248,7 +250,7 @@ else if (!Model.IsOwner)
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
-				<button type="submit" form="deleteCalendarForm" class="btn btn-danger" asp-page-handler="DeleteCalendar">Ja, ta bort</button>
+				<button type="submit" form="deleteCalendarForm" class="btn btn-pmf-inverted" asp-page-handler="DeleteCalendar">Ja, ta bort</button>
 			</div>
 		</div>
 	</div>
@@ -270,7 +272,7 @@ else if (!Model.IsOwner)
 					<input type="hidden" name="CalendarId" value="@Model.Calendar.Id" />
 					<input type="hidden" asp-for="CurrentUser.Id" />
 					<input type="hidden" name="UserId" value="@Model.CurrentUser.Id" />
-					<button type="submit" asp-page-handler="RemoveAccess" class="btn btn-danger">Ja, lämna</button>
+					<button type="submit" asp-page-handler="RemoveAccess" class="btn btn-pmf-inverted">Ja, lämna</button>
 				</form>
 			</div>
 		</div>
