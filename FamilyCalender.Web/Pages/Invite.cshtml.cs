@@ -23,10 +23,12 @@ namespace FamilyCalender.Web.Pages
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                return Redirect($"/Login?ReturnUrl={HttpContext.Request.Path}");
+	            ViewModel.LoginRedirectUrl = $"/Login?ReturnUrl={HttpContext.Request.Path}";
+	            //return Redirect($"/Login?ReturnUrl={HttpContext.Request.Path}");
             }
 
             var calendar = await _inviteService.GetByInviteId(inviteId);
+            ViewModel.UserIsOwner = calendar.OwnerId == user?.Id && user?.Id != null;
 			ViewModel.Calendar = calendar;
 			ViewModel.InviteId = inviteId;
 

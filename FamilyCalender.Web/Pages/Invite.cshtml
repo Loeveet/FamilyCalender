@@ -4,22 +4,62 @@
     ViewData["Title"] = "Invite";
 }
 
-<h2>Kalenderinbjudan</h2>
+<div style="text-align:center">
+    <h2>Kalenderinbjudan</h2>
 
-@if (Model.ViewModel?.Calendar == null)
-{
-    <p>Tyvärr kan du inte längre gå med i kalendern. Vänligen kontakta den som bjöd in dig och be denna göra en ny inbjudan. Detta kan beror på att länken är för gammal, redan använd eller så finns inte kalendern längre</p>
-}
-else
-{
+    <br/>
+    @if (Model.ViewModel?.Calendar == null)
+    {
+        <p>Tyvärr kan du inte längre gå med i kalendern. Vänligen kontakta den som bjöd in dig och be denna göra en ny inbjudan. Detta kan beror på att länken är för gammal, redan använd eller så finns inte kalendern längre</p>
+    }
+    else
+    {
+        @if (Model.ViewModel.UserIsOwner)
+        {
+            <h4>Hur tänkte du nu? Du kan ju inte gå med i din egna kalender 😄</h4>
+            <p>Du äger redan kalender <strong>@Model.ViewModel.Calendar.Name</strong></p>
+            <br/>
+            <i>Men du - riktigt kul att du ändå försökte</i>
+            <br/>
+            <b>Mvh. PlaneraMedFlera´s utvecklare</b>
+        }
+        else
+        {
+            if (Model.ViewModel.RequireLoginOrCreateAccount)
+            {
+                <h4>Vad kul att du blivit inbjuden till kalendern <b>@Model.ViewModel.Calendar.Name</b> ✨</h4>
+                <p>För att acceptera inbjudan måste du först logga in. Saknar du konto måste du först registrera dig - ta det lugnt, det tar mindre än 30 sekunder att göra. Därefter kan du klicka på inbjudningslänk igen så lovar vi att du ska få gå med i kalendern 🙌</p>
+                <br />
+                <br />
+                <br/>
+                <br/>
 
-    <form method="post" asp-page-handler="JoinEvent">
-        <p>Du har blivit inbjuden att gå med i kalendern <b>@Model.ViewModel.Calendar.Name</b></p>
-        <button type="submit" class="btn btn-primary">Gå med</button>
+                <a href="@Model.ViewModel.LoginRedirectUrl" class="btn btn-pmf">Logga in</a>
+            
+                <div class="bubble">Gör det! Det är gratis!</div>
+                <a href="/Register" class="btn btn-pmf-inverted">Skapa konto</a>
+                <br/>
         
-        @Html.HiddenFor(m => Model.ViewModel.InviteId, new {@id = "inviteId"})
+            }
+            else
+            {
+                <h4>Vad kul att du blivit inbjuden till kalendern <b>@Model.ViewModel.Calendar.Name</b> ✨</h4>
+                <form method="post" asp-page-handler="JoinEvent">
+                
+                    <p>Klicka på knappen för att gå med i <b>@Model.ViewModel.Calendar.Name</b></p>
+                    <button type="submit" class="btn btn-pmf">Gå med</button>
+        
+                    @Html.HiddenFor(m => Model.ViewModel.InviteId, new {@id = "inviteId"})
 
-    </form>
+                </form>
 
     
-}
+            } 
+        }
+        
+    }
+</div>
+
+<style>
+
+</style>

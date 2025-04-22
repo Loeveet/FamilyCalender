@@ -38,7 +38,19 @@ header {
 .btn-starta {
     padding: 1rem 2rem;
     font-size: 1.1rem;
-    background-color: #1e3a8a; 
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    
+    background-color: #1e3a8a;
     color: white;
     border: none;
     border-radius: 8px;
@@ -50,17 +62,48 @@ header {
     background-color: #0e2c8a; 
 }
 
-
-.btn-login {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
+.bubble {
+    display: inline-block;
     background-color: #ff6f61;
     color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    margin-left: -10px;
+    position: absolute;
+    transform: translateX(-50%) rotate(-25deg);
+    /* top: 17rem; */
+    margin-bottom: -2rem;
+    font-weight: bold;
+    margin-top: -45px;
+    font-size: 1rem;
+    animation: pop 0.3s ease-out;
 }
+
+    .bubble::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 10px 10px 0;
+        border-style: solid;
+        border-color: #ff6f61 transparent transparent transparent;
+    }
+
+@keyframes pop {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+
 
 .btn-login:hover {
     background-color: #e85a4f;
