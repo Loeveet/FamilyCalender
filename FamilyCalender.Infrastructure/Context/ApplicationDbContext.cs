@@ -20,6 +20,7 @@ namespace FamilyCalender.Infrastructure.Context
             }
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserNotificationSetting> UserNotificationSettings { get; set; }
         public DbSet<Calendar> Calendars { get; set; }
         public DbSet<CalendarAccess> CalendarAccesses { get; set; }
         public DbSet<Event> Events { get; set; }

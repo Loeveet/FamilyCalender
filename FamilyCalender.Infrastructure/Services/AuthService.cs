@@ -78,12 +78,16 @@ namespace FamilyCalender.Infrastructure.Services
 		public async Task<User> GetUserByEmailAsync(string email)
 		{
 			//Gör en try catch eller returna ett fel om användaren inte hittas
-			return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-		}
+            return await _context.Users
+                .Include(c => c.NotificationSetting)
+                .FirstOrDefaultAsync(u => u.Email == email);
+        }
 		public async Task<User> GetUserByTokenAsync(string verificationToken)
 		{
 			//Gör en try catch eller returna ett fel om användaren inte hittas
-			return await _context.Users.FirstOrDefaultAsync(u => u.VerificationToken == verificationToken);
+			return await _context.Users
+                .Include(c => c.NotificationSetting)
+                .FirstOrDefaultAsync(u => u.VerificationToken == verificationToken);
 		}
         public async Task<User> GetUserByPasswordResetTokenAsync(string passwordResetToken)
         {
@@ -93,7 +97,9 @@ namespace FamilyCalender.Infrastructure.Services
 
 		public async Task<User>GetUserByIdAsync(int ownerId)
 		{
-			return await _context.Users.FirstOrDefaultAsync(u => u.Id == ownerId);
+			return await _context.Users
+                .Include(c => c.NotificationSetting)
+                .FirstOrDefaultAsync(u => u.Id == ownerId);
 		}
 
 		public async Task<bool> VerifyAccount(string token)

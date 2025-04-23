@@ -10,6 +10,7 @@ using PublicHoliday;
 using FamilyCalender.Web.Code;
 using static FamilyCalender.Infrastructure.Services.EmailService;
 using FamilyCalender.Web;
+using FamilyCalender.Infrastructure;
 
 
 namespace FamilyCalender
@@ -113,6 +114,9 @@ namespace FamilyCalender
 				app.UseHsts();
 			}
 
+			app.MapControllerRoute(
+				"default",
+				pattern: "{controller=Home}/{action=index}/{id?}");
 
 
 			app.UseHttpsRedirection();

@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\push_service_0003.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FamilyCalender.Core\FamilyCalender.Core.csproj" />
     <ProjectReference Include="..\FamilyCalender.Infrastructure\FamilyCalender.Infrastructure.csproj" />
   </ItemGroup>
@@ -34,6 +38,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
     <PackageReference Include="PublicHoliday" Version="3.2.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="WebPush" Version="1.0.12" />
   </ItemGroup>
 
 </Project>

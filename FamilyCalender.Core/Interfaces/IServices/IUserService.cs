@@ -1,14 +1,13 @@
 ﻿using FamilyCalender.Core.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FamilyCalender.Core.Interfaces.IServices
 {
     public interface IUserService
     {
         Task<List<User>> GetAllUsersAsync();
-    }
+        Task CreateNotificationAsync(UserNotificationSetting uns);
+        Task UpdateNotificationAsync(UserNotificationSetting uns);
+        Task DeleteNotificationAsync(int userId);
+
+	}
 }

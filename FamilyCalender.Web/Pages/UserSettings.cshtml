@@ -1,0 +1,254 @@
+﻿@page
+@using FamilyCalender.Web.Code
+@model FamilyCalender.Web.Pages.UserSettingModel
+@{
+}
+<style>
+    .notification-container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+        .logo img {
+            height: 60px;
+        }
+
+    h1 {
+        text-align: center;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-check {
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        background: #f1f5f9;
+    }
+
+    .form-check-label {
+        margin-bottom: 0;
+        font-weight: 500;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        border: none;
+        background-color: #3b82f6;
+        color: white;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+
+        button:hover {
+            background-color: #2563eb;
+        }
+</style>
+
+<div class="notification-container">
+    @*  <div class="logo">
+        <img src="/images/kalender-logo.png" alt="PlaneraMedFlera Logotyp">
+    </div> *@
+    <h1>Pushnotiser</h1>
+
+
+    <form method="post" id="NotificationSettingsForm" asp-page-handler="OnPostAsync">
+        <div class="form-check form-switch">
+            <div class="d-flex align-items-center">
+
+                <label class="form-check-label" asp-for="NotificationSettings.UserNotificationSetting.AllowNotifications"> <i id="pushStatusIcon" class="bi bi-bell-slash-fill icon-status"></i>  Pushnotiser</label>
+            </div>
+            <input class="form-check-input" asp-for="NotificationSettings.UserNotificationSetting.AllowNotifications" type="checkbox" role="switch">
+        </div>
+
+        <input type="hidden" asp-for="NotificationSettings.UserNotificationSetting.Endpoint" value="@Model.NotificationSettings.UserNotificationSetting.Endpoint" />
+        <input type="hidden" asp-for="NotificationSettings.UserNotificationSetting.Auth" value="@Model.NotificationSettings.UserNotificationSetting.Auth" />
+        <input type="hidden" asp-for="NotificationSettings.UserNotificationSetting.P256dh" value="@Model.NotificationSettings.UserNotificationSetting.P256dh" />
+        <input type="hidden" asp-for="NotificationSettings.UserNotificationSetting.Id" value="@Model.NotificationSettings.UserNotificationSetting.Id" />
+        <input type="hidden" asp-for="NotificationSettings.UserNotificationSetting.UserId" value="@Model.NotificationSettings.UserNotificationSetting.UserId" />
+
+        <div id="notificationSettings" style="@( Model.NotificationSettings.UserNotificationSetting.AllowNotifications ? "display: block" : "display: none" )">
+            <div class="form-check form-switch">
+                <label class="form-check-label" for="notifyCreate">Meddela när något skapas</label>
+                <input class="form-check-input" type="checkbox" role="switch" asp-for="NotificationSettings.UserNotificationSetting.AllowOnNewCalendarEvents">
+            </div>
+            <div class="form-check form-switch">
+                <label class="form-check-label" for="notifyUpdate">Meddela när något ändras</label>
+                <input class="form-check-input" type="checkbox" role="switch" asp-for="NotificationSettings.UserNotificationSetting.AllowOnEditCalendarEvents">
+            </div>
+            <div class="form-check form-switch">
+                <label class="form-check-label" for="notifyDelete">Meddela när något tas bort</label>
+                <input class="form-check-input" type="checkbox" role="switch" asp-for="NotificationSettings.UserNotificationSetting.AllowOnDeleteCalendarEvents">
+            </div>
+            <div class="form-check form-switch">
+                <label class="form-check-label" for="notifyDelete">Meddela när någon ansluter till min kalender</label>
+                <input class="form-check-input" type="checkbox" role="switch" asp-for="NotificationSettings.UserNotificationSetting.AllowOnCalendarInviteAcceptEvents">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-pmf">Spara inställningarna</button>
+    </form>
+</div>
+
+<script>
+
+   
+
+    var unregister = '@Model.NotificationSettings.HasTurndOff';
+    if(unregister === 'True'){
+        notificationService.UnregisterPush();
+    }
+
+   
+
+    const enablePush = document.getElementById("NotificationSettings_UserNotificationSetting_AllowNotifications");
+    const notificationSettings = document.getElementById("notificationSettings");
+    const pushStatusIcon = document.getElementById("pushStatusIcon");
+
+    if(enablePush.checked){
+        pushStatusIcon.classList.remove("bi-bell-slash-fill");
+        pushStatusIcon.classList.add("bi-bell-fill");
+        pushStatusIcon.style.color = "#f59e0b";
+
+    }
+    else{
+        pushStatusIcon.classList.remove("bi-bell-fill");
+        pushStatusIcon.classList.add("bi-bell-slash-fill");
+        pushStatusIcon.style.color = "#6b7280";
+    }
+
+    enablePush.addEventListener("change", () => {
+       if (enablePush.checked) {
+         if (isUnsupportedBrowser()) {
+           Swal.fire({
+             icon: 'error',
+             title: 'Tyvärr!',
+             text: 'Din webbläsare stödjer inte våra pushnotiser.',
+             confirmButtonText: 'Okej',
+             confirmButtonColor: '#f59e0b'
+           });
+           enablePush.checked = false;
+           pushStatusIcon.classList.remove("bi-bell-fill");
+           pushStatusIcon.classList.add("bi-bell-slash-fill");
+           pushStatusIcon.style.color = "#6b7280";
+           notificationSettings.style.display = "none";
+           return;
+         }
+
+     
+         var hasRegisteredEarlier = '@Model.NotificationSettings.IsRegistered';
+         if(hasRegisteredEarlier === 'False'){
+            registerDevice();
+            checkNotificationPermissionWithTimeout();
+         }
+         else{
+            pushStatusIcon.classList.remove("bi-bell-slash-fill");
+            pushStatusIcon.classList.add("bi-bell-fill");
+            pushStatusIcon.style.color = "#f59e0b";
+            notificationSettings.style.display = "block";
+         }
+
+
+       } else {
+         pushStatusIcon.classList.remove("bi-bell-fill");
+         pushStatusIcon.classList.add("bi-bell-slash-fill");
+         pushStatusIcon.style.color = "#6b7280";
+         notificationSettings.style.display = "none";
+       }
+     });
+
+    function saveSettings() {
+      const settings = {
+        notifyCreate: document.getElementById("notifyCreate").checked,
+        notifyUpdate: document.getElementById("notifyUpdate").checked,
+        notifyDelete: document.getElementById("notifyDelete").checked,
+      };
+      console.log("Sparade inställningar:", settings);
+      // TODO: Spara inställningar till backend
+    }
+
+      function isUnsupportedBrowser() {
+      return navigator.userAgent.includes("Edg/");
+    }
+
+    function registerDevice() {
+        // var hasRegistreredEarlier = '@Model.NotificationSettings.IsRegistered';
+
+        // if(hasRegistreredEarlier === "False") {
+            Swal.fire({
+                title: 'Aktivera pushnotiser?',
+                text: "Vill du få aviseringar när något händer i din kalender?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#1e3a8a',
+                cancelButtonColor: '#ff6f61',
+                confirmButtonText: 'Ja, aktivera',
+                cancelButtonText: 'Nej, tack'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    notificationService.RegisterDevice('@GlobalSettings.VapidPublicKey');
+                }
+            });
+       // }
+
+      // TODO: Lägg in befintlig JS push-kod här
+    }
+
+      function checkNotificationPermissionWithTimeout() {
+      let timer = 0;
+      const maxWaitTime = 30; // Maximal väntetid i sekunder
+      const interval = 2000; // Kontrollintervall i millisekunder (2 sekunder)
+
+      const permissionCheck = setInterval(() => {
+        // Kolla om användaren har gett tillstånd
+        if (Notification.permission === "granted") {
+          // Om godkänt, gör något (t.ex. aktivera pushnotiser)
+          enablePush.checked = true;
+          pushStatusIcon.classList.remove("bi-bell-slash-fill");
+          pushStatusIcon.classList.add("bi-bell-fill");
+          pushStatusIcon.style.color = "#f59e0b";
+          notificationSettings.style.display = "block";
+          clearInterval(permissionCheck); // Stoppa intervallet
+        }
+        else if (Notification.permission === "denied") {
+          // Om nekats, gör något (t.ex. visa meddelande)
+          enablePush.checked = false;
+          pushStatusIcon.classList.remove("bi-bell-fill");
+          pushStatusIcon.classList.add("bi-bell-slash-fill");
+          pushStatusIcon.style.color = "#6b7280";
+          notificationSettings.style.display = "none";
+          clearInterval(permissionCheck); // Stoppa intervallet
+        }
+
+
+        timer += interval / 1000;
+        if (timer >= maxWaitTime) {
+          clearInterval(permissionCheck);
+             Swal.fire({
+             icon: 'error',
+             title: 'Tyvärr!',
+             text: 'Du verkar inte godkänt förfrågan i tid. Testa ladda om sidan och försök igen!',
+             confirmButtonText: 'Okej',
+             confirmButtonColor: '#f59e0b'
+           });
+        }
+      }, interval); // Kontroll varannan sekund (2000 ms)
+    }
+</script>

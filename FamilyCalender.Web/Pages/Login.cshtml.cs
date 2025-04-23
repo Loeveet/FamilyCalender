@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using FamilyCalender.Core.Interfaces.IServices;
+using FamilyCalender.Web.Code;
 
 namespace FamilyCalender.Web.Pages
 {
@@ -39,7 +40,7 @@ namespace FamilyCalender.Web.Pages
 	            {
 		            new Claim(ClaimTypes.Name, Email)
 	            };
-	            var identity = new ClaimsIdentity(claims, Infrastructure.GlobalSettings.AuthCookieName);
+	            var identity = new ClaimsIdentity(claims, GlobalSettings.AuthCookieName);
 	            var principal = new ClaimsPrincipal(identity);
 
 	            var authProperties = new AuthenticationProperties

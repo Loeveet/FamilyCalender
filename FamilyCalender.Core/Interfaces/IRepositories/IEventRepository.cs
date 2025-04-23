@@ -1,11 +1,4 @@
 ﻿using FamilyCalender.Core.Models.Entities;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FamilyCalender.Core.Interfaces.IRepositories
 {
@@ -15,6 +8,7 @@ namespace FamilyCalender.Core.Interfaces.IRepositories
         Task<List<Event>> GetByCalendar(int calendarId, int year, int month);
         Task<EventMemberDate> GetMemberEventDateByEventIdAndMemberIdAsync(int eventId, int memberId, DateTime date);
         Task<List<EventMemberDate>> GetEventMemberDatesByEventIdAndMemberIdAsync(int eventId, int memberId);
+        Task<List<User>> GetPushSubscribers(int calendarId, int exceptUserId);
 		Task<Event> AddAsync(Event e);
         Task UpdateAsync(Event e);
         Task RemoveAsync(Event e);
