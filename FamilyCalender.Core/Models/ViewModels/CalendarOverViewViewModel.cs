@@ -34,7 +34,37 @@ namespace FamilyCalender.Core.Models.ViewModels
 			}
 		}
 
+        public string GetCategoryColor(Event evt)
+        {
+            if (evt is null)
+            {
+                return "";
+            }
+
+            switch (evt.EventCategoryColor)
+            {
+                case EventCategoryColor.None:
+                    return "";
+                case EventCategoryColor.Blue:
+                    return "event-color-category-blue";
+                case EventCategoryColor.Green:
+                    return "event-color-category-green";
+                case EventCategoryColor.Yellow:
+                    return "event-color-category-yellow";
+                case EventCategoryColor.Pink:
+                    return "event-color-category-pink";
+                case EventCategoryColor.Red:
+                    return "event-color-category-red";
+                case EventCategoryColor.Purple:
+                    return "event-color-category-purple";
+
+                default:
+                    return "";
+            }
+        }
+
 		public string ShareLink { get; set; }
         public string EventText { get; set; }
+        public EventCategoryColor SelectedCategoryColor { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 ﻿@page
+@using FamilyCalender.Core.Models.Entities
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model FamilyCalender.Web.Pages.EventDetailsModel
 @{
 	var culture = new System.Globalization.CultureInfo("sv-SE");
@@ -30,9 +32,15 @@
         <div class="mb-2">
             <strong>Beskrivning:</strong> 
             <div>
-				@Html.Raw(Model.ViewModel.EventDetails.Text.ReplaceLineEndings("<br/>"))
+                @Html.Raw(Model.ViewModel.EventDetails.Text.ReplaceLineEndings("<br/>"))
             </div>
         </div>
+		
+        <div class="mb-2">
+			<strong>Färgkategori:</strong> <span class="@Model.ViewModel.GetCategoryColorDiamond()">&#x1F539;</span> @Model.ViewModel.GetCategoryColorName()
+        </div>
+		
+		       
 
         <div class="mb-2">
 			@if (Model.ViewModel.IsSingleEvent)
@@ -279,7 +287,22 @@
 
 					}
 
-					<div id="editMemberList">
+
+
+					<div class="mb-3">
+						<b for="SelectedCategoryColor" class="form-label">Färg för kategori</b>
+						<select id="categoryColor" class="color-select form-control" asp-for="ViewModel.EventDetails.EventCategoryColor">
+							<option style="background-color: #f8f9fa;" value="">Ingen</option>
+							<option style="background-color: #cce5ff;" value="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</option>
+							<option style="background-color: #d4edda;" value="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</option>
+							<option style="background-color: #fff3cd;" value="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</option>
+							<option style="background-color: #f8d7da;" value="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</option>
+							<option style="background-color: #f8c1c1;" value="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</option>
+							<option style="background-color: #e2d6f9;" value="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</option>
+						</select>
+					</div>
+
+                    <div id="editMemberList">
 						@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
 						{
 							<input type="hidden" name="selectedMemberIds" value="@member?.Id" />

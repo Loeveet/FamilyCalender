@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NuGet.Packaging;
 using System.Globalization;
+using FamilyCalender.Core.Models.Entities;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FamilyCalender.Web.Pages
@@ -85,6 +86,7 @@ namespace FamilyCalender.Web.Pages
 
 			eventToUpdate.Title = ViewModel.NewTitle;
 			eventToUpdate.Text = ViewModel?.EventDetails?.Text ?? "";
+			eventToUpdate.EventCategoryColor = ViewModel?.EventDetails?.EventCategoryColor ?? EventCategoryColor.None;
 
 			await _eventManagementService.UpdateEventAsync(eventToUpdate, selectedMemberIds, editOption, ViewModel.StartDate, ViewModel.EndDate, ViewModel.NewDate, selectedDays);
 			ViewModel.SelectedDays = selectedDays;
