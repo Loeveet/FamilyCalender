@@ -246,7 +246,14 @@ else
                                                asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
                                                class="text-decoration-none text-dark"
                                                onclick="event.stopPropagation();">
-                                                <span class="event-title rounded px-0 py-1 w-100 d-block @Model.ViewModel.GetCategoryColor(eventMemberDate?.Event)">@eventMemberDate.Event?.Title</span>
+                                                <span class="event-title rounded px-0 py-1 w-100 d-block @Model.ViewModel.GetCategoryColor(eventMemberDate?.Event)">
+                                                    @eventMemberDate.Event?.Title
+                                                    @if (!string.IsNullOrWhiteSpace(eventMemberDate.Event.EventTime))
+                                                    {
+                                                        <br/>
+                                                        <span>🕒 @eventMemberDate.Event.EventTime</span>
+                                                    }
+                                                </span>
                                             </a>
                                         }
 
@@ -304,11 +311,16 @@ else
                         <small id="error-selected-date" class="text-danger d-none"></small>
                     </div>
                     
+                    <div class="mb-3">
+                        <b for="EventTime" class="form-label">Klockslag <small>(Valfritt)</small></b>
+                        <input type="time" id="eventTime" class="form-control" asp-for="ViewModel.EventTime">
+                    </div>
+                    
                     
                     <div class="mb-3">
-                        <b for="SelectedCategoryColor" class="form-label">Färg för kategori</b>
+                        <b for="SelectedCategoryColor" class="form-label">Kategorifärg</b>
                         <select id="categoryColor" class="color-select form-control" asp-for="ViewModel.SelectedCategoryColor">
-                            <option style="background-color: #f8f9fa;" value="">Ingen kategori färg</option>
+                            <option style="background-color: #f8f9fa;" value="">Ingen kategorifärg</option>
                             <option style="background-color: #cce5ff;" value="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</option>
                             <option style="background-color: #d4edda;" value="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</option>
                             <option style="background-color: #fff3cd;" value="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</option>

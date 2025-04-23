@@ -86,6 +86,7 @@ namespace FamilyCalender.Web.Pages
 
 			eventToUpdate.Title = ViewModel.NewTitle;
 			eventToUpdate.Text = ViewModel?.EventDetails?.Text ?? "";
+            eventToUpdate.EventTime = ViewModel?.EventDetails?.EventTime ?? "";
 			eventToUpdate.EventCategoryColor = ViewModel?.EventDetails?.EventCategoryColor ?? EventCategoryColor.None;
 
 			await _eventManagementService.UpdateEventAsync(eventToUpdate, selectedMemberIds, editOption, ViewModel.StartDate, ViewModel.EndDate, ViewModel.NewDate, selectedDays);
