@@ -37,7 +37,7 @@
         </div>
 		
         <div class="mb-2">
-			<strong>Färgkategori:</strong> <span class="@Model.ViewModel.GetCategoryColorDiamond()">&#x1F539;</span> @Model.ViewModel.GetCategoryColorName()
+			<strong>Färgkategori:</strong> @Html.Raw(Model.ViewModel.GetCategoryColorDiamond()) @Model.ViewModel.GetCategoryColorName()
         </div>
 		
 		       
