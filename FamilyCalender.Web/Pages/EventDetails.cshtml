@@ -37,7 +37,7 @@
         </div>
 		
         <div class="mb-2">
-			<strong>Färgkategori:</strong> @Html.Raw(Model.ViewModel.GetCategoryColorDiamond()) @Model.ViewModel.GetCategoryColorName()
+			<strong>Kategorifärg:</strong> @Html.Raw(Model.ViewModel.GetCategoryColorDiamond()) @Model.ViewModel.GetCategoryColorName()
         </div>
 		
 		       
@@ -45,11 +45,21 @@
         <div class="mb-2">
 			@if (Model.ViewModel.IsSingleEvent)
 			{
-				<strong><i class="bi bi-clock"></i> När:</strong> @Model.ViewModel.FormattedDate
+				<strong> När:</strong> 
+                @Model.ViewModel.FormattedDate 
+                @if(!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
+                {
+					<Span> <i class="bi bi-clock"></i> @Model.ViewModel.EventDetails?.EventTime</Span>
+				}
 			}
 			else
 			{
-				<strong><i class="bi bi-calendar-range"></i> När:</strong> @Model.ViewModel.FormattedInterval
+				<strong><i class="bi bi-calendar-range"></i> När:</strong> 
+                @Model.ViewModel.FormattedInterval
+                @if(!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
+                {
+                    <Span> <i class="bi bi-clock"></i> @Model.ViewModel.EventDetails?.EventTime</Span>
+                }
 				<br />
 				<strong><i class="bi bi-calendar-day"></i> Veckodagar:</strong> @string.Join(", ", Model.ViewModel.SortedDaysInSwedish)
 			}
@@ -236,7 +246,19 @@
 						 </textarea>
                         <small id="eventTextError" class="text-danger d-none">Ange titel</small>
                     </div>
-
+					
+					<div class="mb-3">
+						<b for="SelectedCategoryColor" class="form-label">Kategorifärg</b>
+						<select id="categoryColor" class="color-select form-control" asp-for="@Model.ViewModel.EventDetails.EventCategoryColor">
+							<option style="background-color: #f8f9fa;" value="">Ingen kategorifärg</option>
+							<option style="background-color: #cce5ff;" value="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</option>
+							<option style="background-color: #d4edda;" value="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</option>
+							<option style="background-color: #fff3cd;" value="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</option>
+							<option style="background-color: #f8d7da;" value="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</option>
+							<option style="background-color: #f8c1c1;" value="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</option>
+							<option style="background-color: #e2d6f9;" value="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</option>
+						</select>
+					</div>
 
                     @if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1)
 					{
@@ -248,28 +270,27 @@
 							<b for="editStartDate" class="form-label">Välj nytt startdatum</b>
 							<input type="date" class="form-control" asp-for="ViewModel.StartDate" value="@minEventDate.ToString("yyyy-MM-dd")" id="editStartDate" />
 							<small id="edit-error-start-date" class="text-danger d-none"></small>
-
-
 						</div>
 
 						<div class="mb-3">
 							<b for="editEndDate" class="form-label">Välj nytt slutdatum</b>
 							<input type="date" class="form-control" asp-for="ViewModel.EndDate" value="@maxEventDate.ToString("yyyy-MM-dd")" id="editEndDate" />
 							<small id="edit-error-end-date" class="text-danger d-none"></small>
+						</div>
+                        <div class="mb-3">
+                            <b class="form-label">Välj dagar</b>
+                            <div>
+                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Måndag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Monday)) ? "checked" : "") /> Måndag <br />
+                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Tisdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Tuesday)) ? "checked" : "") /> Tisdag <br />
+                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Onsdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Wednesday)) ? "checked" : "") /> Onsdag <br />
+                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Torsdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Thursday)) ? "checked" : "") /> Torsdag <br />
+                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Fredag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Friday)) ? "checked" : "") /> Fredag <br />
+                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Lördag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Saturday)) ? "checked" : "") /> Lördag <br />
+                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Söndag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Sunday)) ? "checked" : "") /> Söndag
+                            </div>
+                        </div>
 
-						</div>
-						<div class="mb-3">
-							<b class="form-label">Välj dagar</b>
-							<div>
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Måndag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Monday)) ? "checked" : "") /> Måndag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Tisdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Tuesday)) ? "checked" : "") /> Tisdag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Onsdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Wednesday)) ? "checked" : "") /> Onsdag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Torsdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Thursday)) ? "checked" : "") /> Torsdag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Fredag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Friday)) ? "checked" : "") /> Fredag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Lördag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Saturday)) ? "checked" : "") /> Lördag <br />
-								<input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Söndag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Sunday)) ? "checked" : "") /> Söndag
-							</div>
-						</div>
+                      
 						<input type="hidden" name="editOption" value="all" />
 
 						<small id="edit-error-right-weekdays" class="text-danger d-none"></small>
@@ -286,21 +307,11 @@
 						<input type="hidden" name="editOption" value="single" />
 
 					}
-
-
-
-					<div class="mb-3">
-						<b for="SelectedCategoryColor" class="form-label">Färg för kategori</b>
-						<select id="categoryColor" class="color-select form-control" asp-for="ViewModel.EventDetails.EventCategoryColor">
-							<option style="background-color: #f8f9fa;" value="">Ingen</option>
-							<option style="background-color: #cce5ff;" value="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</option>
-							<option style="background-color: #d4edda;" value="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</option>
-							<option style="background-color: #fff3cd;" value="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</option>
-							<option style="background-color: #f8d7da;" value="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</option>
-							<option style="background-color: #f8c1c1;" value="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</option>
-							<option style="background-color: #e2d6f9;" value="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</option>
-						</select>
-					</div>
+					
+                    <div class="mb-3">
+                        <b for="EventTime" class="form-label">Nytt Klockslag?</b>
+                        <input type="time" id="eventTime" class="form-control" asp-for="@Model.ViewModel.EventDetails.EventTime">
+                    </div>
 
                     <div id="editMemberList">
 						@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())

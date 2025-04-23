@@ -10,6 +10,7 @@
         public ICollection<EventMemberDate> EventMemberDates { get; set; } = [];
 
         public EventCategoryColor EventCategoryColor { get; set; }
+        public string EventTime { get; set; }
     }
 
     public enum EventCategoryColor

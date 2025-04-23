@@ -1,8 +1,6 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
-using static System.Net.Mime.MediaTypeNames;
-using System.Globalization;
 
 namespace FamilyCalender.Infrastructure.Services
 {
@@ -20,14 +18,15 @@ namespace FamilyCalender.Infrastructure.Services
             _eventRepository = eventRepository;
 		}
 
-		public async Task<Event> CreateEventAsync(string eventTitle, string text, EventCategoryColor categoryColor, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
+		public async Task<Event> CreateEventAsync(string eventTitle, string text,string eventTime, EventCategoryColor categoryColor, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
 		{
 			var newEvent = new Event
 			{
 				Title = _encryptionService.AutoDetectEncryptStringToString(eventTitle, calendarId.ToString()),
 				CalendarId = calendarId,
 				Text = _encryptionService.AutoDetectEncryptStringToString(text, calendarId.ToString()),
-				EventCategoryColor = categoryColor
+				EventCategoryColor = categoryColor,
+				EventTime = eventTime
 			};
 
 			var addedEvent = await _eventRepository.AddAsync(newEvent);
