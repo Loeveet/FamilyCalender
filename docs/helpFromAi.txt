@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Välkommen till Familjekalendern</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+      color: #333;
+    }
+
+    header {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      color: #4a4a4a;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .hero h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn-starta {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-starta:hover {
+      background-color: #e85a4f;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      padding: 2rem;
+      background-color: white;
+    }
+
+    .feature {
+      background-color: #fff7f0;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .feature h3 {
+      margin-top: 0;
+      color: #ff6f61;
+    }
+	    .bubble {
+  display: inline-block;
+  background-color: #ff6f61;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  position: relative;
+  top: -2.5rem;
+  margin-bottom: -2rem;
+  font-weight: bold;
+  font-size: 1rem;
+  animation: pop 0.3s ease-out;
+}
+
+    .btn-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+.bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: #ff6f61 transparent transparent transparent;
+}
+
+
+@@keyframes pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Familjekalendern</h1>
+  </header>
+
+  <section class="hero">
+    <h2>Håll koll på hela familjens schema – enkelt och färgglatt</h2>
+    <p>Skapa familjemedlemmar, lägg till aktiviteter och få överblick varje månad.</p>
+	<div class="btn-wrapper">
+	<div class="bubble">Gör det</div>
+    <button class="btn-starta" onclick="window.location.href='kalender.html'">Kom igång nu</button>
+	</div>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <h3>👨‍👩‍👧‍👦 Enkel familjehantering</h3>
+      <p>Lägg till eller ta bort familjemedlemmar med ett klick.</p>
+    </div>
+    <div class="feature">
+      <h3>📆 Månadsöversikt</h3>
+      <p>Se alla aktiviteter tydligt per person och dag.</p>
+    </div>
+    <div class="feature">
+      <h3>🎨 Färgkodade kolumner</h3>
+      <p>Snabbt se vem som gör vad med personliga färger.</p>
+    </div>
+    <div class="feature">
+      <h3>🖨️ Export & utskrift</h3>
+      <p>Skriv ut din kalender eller spara som PDF.</p>
+    </div>
+  </section>
+</body>
+</html>
+
+😊 😄 🤗 🙌 💬 📤 🔒 🧾 📆 🎉 📱 🧡 👨‍👩‍👧‍👦 🕒 ✨ ✅ 🔔 🗓️ 🔁 💡 📌 🧠 🔧 🗃️ 📥 🛡️ 🖥️ 🖨️ 🎨 📊 💾
+📅 📢 ❗
+
+
+🎨 1. Mjuk pastell (vänlig & modern)
+Bakgrundsgradient: #f6d365 → #fda085 (aprikos till persika)
+
+Knapp: #6c63ff (lila-blå)
+
+css
+Copy
+Edit
+background: linear-gradient(to right, #f6d365, #fda085);
+.btn-starta {
+  background-color: #6c63ff;
+}
+💼 2. Stilren & professionell
+Bakgrundsgradient: #e0eafc → #cfdef3 (ljusblå och vitblå)
+
+Knapp: #0077b6 (djup blå)
+
+css
+Copy
+Edit
+background: linear-gradient(to right, #e0eafc, #cfdef3);
+.btn-starta {
+  background-color: #0077b6;
+}
+🌈 3. Färgglad & energisk
+Bakgrundsgradient: #ff9a9e → #fad0c4 (rosa till ljusrosa)
+
+Knapp: #00b894 (mintgrön)
+
+css
+Copy
+Edit
+background: linear-gradient(to right, #ff9a9e, #fad0c4);
+.btn-starta {
+  background-color: #00b894;
+}
+🌿 4. Naturlig & harmonisk
+Bakgrundsgradient: #a1c4fd → #c2e9fb (klarblå till babyblå)
+
+Knapp: #55efc4 (ljusgrön/turkos)
+
+css
+Copy
+Edit
+background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+.btn-starta {
+  background-color: #55efc4;
+}
+🔥 5. Djärv & iögonfallande
+Bakgrundsgradient: #ffecd2 → #fcb69f (varm persika till korall)
+
+Knapp: #d63031 (klar röd)
+
+css
+Copy
+Edit
+background: linear-gradient(to right, #ffecd2, #fcb69f);
+.btn-starta {
+  background-color: #d63031;
+}
+Vill du att jag slänger in en av dem i hela HTML-koden så du ser det live direkt? 😄
+
+
+Ljusblå – #cce5ff
+(T.ex. för skola eller arbete)
+
+Ljusgrön – #d4edda
+(T.ex. för träning eller hälsa)
+
+Ljusgul – #fff3cd
+(T.ex. för familjeaktivitet eller utflykt)
+
+Ljusrosa – #f8d7da
+(T.ex. för personlig tid eller vård)
+
+Ljuslila – #e2d6f9
+(T.ex. för fritid eller kreativitet)
+🔴 Ljusröd – #f8c1c1
+Passar t.ex. för viktigt, läkare, deadlines eller påminnelser.
+
+<label for="categoryColor">Välj färg för kategori:</label>
+<select id="categoryColor" class="color-select">
+  <option style="background-color: #cce5ff;" value="#cce5ff">&#x1F539;</option> <!-- Ljusblå -->
+  <option style="background-color: #d4edda;" value="#d4edda">&#x1F539;</option> <!-- Ljusgrön -->
+  <option style="background-color: #fff3cd;" value="#fff3cd">&#x1F539;</option> <!-- Ljusgul -->
+  <option style="background-color: #f8d7da;" value="#f8d7da">&#x1F539;</option> <!-- Ljusrosa -->
+  <option style="background-color: #e2d6f9;" value="#e2d6f9">&#x1F539;</option> <!-- Ljuslila -->
+  <option style="background-color: #f8c1c1;" value="#f8c1c1">&#x1F539;</option> <!-- Ljusröd -->
+</select>
+
+<style>
+  .color-select {
+    width: 100px;
+    height: 40px;
+    padding: 5px;
+    font-size: 1.2rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    appearance: none;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .color-select option {
+    height: 30px;
+    padding: 10px;
+  }
+</style>
+
+
+<select id="categoryColor" class="color-select">
+  <option value="#cce5ff">🔵 Ljusblå (t.ex. för skola/arbete)</option>
+  <option value="#d4edda">🟢 Ljusgrön (t.ex. för träning/hälsa)</option>
+  <option value="#fff3cd">🟡 Ljusgul (t.ex. för familjeaktivitet)</option>
+  <option value="#f8d7da">🌸 Ljusrosa (t.ex. för vård/egentid)</option>
+  <option value="#e2d6f9">🟣 Ljuslila (t.ex. för fritid/kreativitet)</option>
+  <option value="#f8c1c1">🔴 Ljusröd (t.ex. för viktigt/påminnelse)</option>
+</select>
+
+<label for="categoryColor">Välj färg för kategori:</label>
+<select id="categoryColor" class="color-select">
+  <option value="#cce5ff">&#x1F535; Ljusblå (t.ex. för skola/arbete)</option>     <!-- 🔵 -->
+  <option value="#d4edda">&#x1F7E2; Ljusgrön (t.ex. för träning/hälsa)</option>   <!-- 🟢 -->
+  <option value="#fff3cd">&#x1F7E1; Ljusgul (t.ex. för familjeaktivitet)</option> <!-- 🟡 -->
+  <option value="#f8d7da">&#x1F338; Ljusrosa (t.ex. för vård/egentid)</option>    <!-- 🌸 -->
+  <option value="#e2d6f9">&#x1F7E3; Ljuslila (t.ex. för fritid/kreativitet)</option> <!-- 🟣 -->
+  <option value="#f8c1c1">&#x1F534; Ljusröd (t.ex. för viktigt/påminnelse)</option> <!-- 🔴 -->
+</select>
