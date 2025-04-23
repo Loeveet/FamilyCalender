@@ -284,3 +284,59 @@ Passar t.ex. för viktigt, läkare, deadlines eller påminnelser.
   <option value="#e2d6f9">&#x1F7E3; Ljuslila (t.ex. för fritid/kreativitet)</option> <!-- 🟣 -->
   <option value="#f8c1c1">&#x1F534; Ljusröd (t.ex. för viktigt/påminnelse)</option> <!-- 🔴 -->
 </select>
+
+CUSTOM select
+<div class="color-dropdown">
+  <div class="selected" onclick="toggleDropdown()">🟢 Ljusgrön (träning/hälsa)</div>
+  <div class="options">
+    <div data-value="#cce5ff" style="background-color:#cce5ff;">🔵 Ljusblå (skola/arbete)</div>
+    <div data-value="#d4edda" style="background-color:#d4edda;">🟢 Ljusgrön (träning/hälsa)</div>
+    <div data-value="#fff3cd" style="background-color:#fff3cd;">🟡 Ljusgul (familj)</div>
+    <div data-value="#f8d7da" style="background-color:#f8d7da;">🔴 Ljusrosa (vård)</div>
+    <div data-value="#e2d6f9" style="background-color:#e2d6f9;">🟣 Ljuslila (fritid)</div>
+  </div>
+</div>
+
+<style>
+.color-dropdown {
+  position: relative;
+  width: 300px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.color-dropdown .selected {
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+
+.color-dropdown .options {
+  display: none;
+  position: absolute;
+  width: 100%;
+  top: 110%;
+  z-index: 1000;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.color-dropdown .options div {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.color-dropdown .options div:hover {
+  background: #f0f0f0;
+}
+</style>
+
+<script>
+function toggleDropdown() {
+  document.querySelector('.options').style.display =
+    document.querySelector('.options').style.display === 'block' ? 'none' : 'block';
+}
+</script>
