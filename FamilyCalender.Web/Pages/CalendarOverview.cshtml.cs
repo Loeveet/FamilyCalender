@@ -69,6 +69,7 @@ namespace FamilyCalender.Web.Pages
 			await _calendarManagementService.CreateEventAsync(
 				ViewModel.EventTitle,
 				ViewModel.EventText ?? "",
+				ViewModel.SelectedCategoryColor,
 				eventMemberDates,
 				ViewModel.SelectedCalendarId,
 				selectedMemberIds);

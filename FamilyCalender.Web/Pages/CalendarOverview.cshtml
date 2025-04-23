@@ -1,4 +1,5 @@
 ﻿@page
+@using FamilyCalender.Core.Models.Entities
 @model FamilyCalender.Web.Pages.CalendarOverviewModel
 @{
     ViewData["Title"] = "Calendar";
@@ -245,9 +246,11 @@ else
                                                asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
                                                class="text-decoration-none text-dark"
                                                onclick="event.stopPropagation();">
-                                                <span class="event-title rounded px-0 py-1 w-100 d-block">@eventMemberDate.Event?.Title</span>
+                                                <span class="event-title rounded px-0 py-1 w-100 d-block @Model.ViewModel.GetCategoryColor(eventMemberDate?.Event)">@eventMemberDate.Event?.Title</span>
                                             </a>
                                         }
+
+                                      
 
                                         <div class="mt-2" style="height: 20px;"></div>
 
@@ -299,6 +302,20 @@ else
                         <b for="modalSelectedDate" class="form-label">Datum</b>
                         <input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" readonly />
                         <small id="error-selected-date" class="text-danger d-none"></small>
+                    </div>
+                    
+                    
+                    <div class="mb-3">
+                        <b for="SelectedCategoryColor" class="form-label">Färg för kategori</b>
+                        <select id="categoryColor" class="color-select form-control" asp-for="ViewModel.SelectedCategoryColor">
+                            <option style="background-color: #f8f9fa;" value="">Ingen kategori färg</option>
+                            <option style="background-color: #cce5ff;" value="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</option>
+                            <option style="background-color: #d4edda;" value="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</option>
+                            <option style="background-color: #fff3cd;" value="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</option>
+                            <option style="background-color: #f8d7da;" value="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</option>
+                            <option style="background-color: #f8c1c1;" value="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</option>
+                            <option style="background-color: #e2d6f9;" value="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</option>
+                        </select>
                     </div>
 
                     <div class="accordion" id="eventOptionsAccordion">

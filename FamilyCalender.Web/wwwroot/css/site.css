@@ -422,3 +422,62 @@ h4 {
 .list-group-item {
     border-radius: 8px;
 }
+
+.color-select {
+    width: 100px;
+    height: 40px;
+    padding: 5px;
+    font-size: 1.2rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    appearance: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+    .color-select option {
+        height: 30px;
+        padding: 10px;
+    }
+
+
+
+/* NEVER rename these - they are being used when creating event with category, and the class name is being stored in database*/
+.event-color-category-blue {
+    background-color: #cce5ff;
+}
+.event-color-category-green {
+    background-color: #d4edda;
+}
+.event-color-category-yellow {
+    background-color: #fff3cd;
+}
+.event-color-category-pink {
+    background-color: #f8d7da;
+}
+.event-color-category-red {
+    background-color: #f8c1c1;
+}
+.event-color-category-purple {
+    background-color: #e2d6f9;
+}
+
+.event-color-category-blue-text {
+    color: #cce5ff;
+}
+.event-color-category-green-text {
+    color: #d4edda;
+}
+.event-color-category-yellow-text {
+    color: #fff3cd;
+}
+.event-color-category-pink-text {
+    color: #f8d7da;
+}
+.event-color-category-red-text {
+    color: #f8c1c1;
+}
+.event-color-category-purple-text {
+    color: #e2d6f9;
+}
+/* End of category colors */

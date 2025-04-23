@@ -8,5 +8,18 @@
         public int CalendarId { get; set; }
         public Calendar? Calendar { get; set; }
         public ICollection<EventMemberDate> EventMemberDates { get; set; } = [];
+
+        public EventCategoryColor EventCategoryColor { get; set; }
+    }
+
+    public enum EventCategoryColor
+    {
+        None = 0,
+        Blue = 10,
+        Green = 20,
+        Yellow = 30,
+        Pink = 40,
+        Red = 50,
+        Purple = 60
     }
 }
