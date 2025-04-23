@@ -340,3 +340,86 @@ function toggleDropdown() {
     document.querySelector('.options').style.display === 'block' ? 'none' : 'block';
 }
 </script>
+
+<!-- funkar -->
+<div class="color-dropdown" onclick="toggleDropdown(event)">
+  <div class="selected" id="selectedColor">
+    🟣 Ljuslila (t.ex. fritid eller kreativitet)
+  </div>
+  <div class="options" id="colorOptions">
+    <div data-color="#e2d6f9">🟣 Ljuslila (t.ex. fritid eller kreativitet)</div>
+    <div data-color="#d4edda">🟢 Ljusgrön (t.ex. träning eller hälsa)</div>
+    <div data-color="#fff3cd">🟡 Ljusgul (t.ex. familjeaktiviteter)</div>
+    <div data-color="#f8d7da">🔴 Ljusrosa (t.ex. vård eller egentid)</div>
+    <div data-color="#cce5ff">🔵 Ljusblå (t.ex. skola eller arbete)</div>
+  </div>
+  <!-- Dold input om du vill skicka med färg i formulär -->
+  <input type="hidden" name="selectedColor" id="selectedColorInput" value="#e2d6f9">
+</div>
+
+<style>
+.color-dropdown {
+  position: relative;
+  width: 300px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.selected {
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+
+.options {
+  display: none;
+  position: absolute;
+  width: 100%;
+  top: 110%;
+  z-index: 1000;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.options div {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.options div:hover {
+  background-color: #f0f0f0;
+}
+</style>
+
+<script>
+function toggleDropdown(event) {
+  const dropdown = event.currentTarget;
+  const options = dropdown.querySelector('.options');
+
+  // Toggle dropdown visibility
+  options.style.display = options.style.display === 'block' ? 'none' : 'block';
+
+  // Add click event to options
+  options.querySelectorAll('div').forEach(option => {
+    option.onclick = () => {
+      const selected = dropdown.querySelector('.selected');
+      const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+
+      selected.innerHTML = option.innerHTML;
+      hiddenInput.value = option.dataset.color;
+      options.style.display = 'none';
+    };
+  });
+
+  // Stop event from closing immediately
+  event.stopPropagation();
+}
+
+// Close dropdown if clicking outside
+document.addEventListener('click', () => {
+  document.querySelectorAll('.options').forEach(opt => opt.style.display = 'none');
+});
+</script>
