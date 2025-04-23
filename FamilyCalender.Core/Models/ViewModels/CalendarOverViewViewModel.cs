@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Numerics;
 using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
 using Calendar = FamilyCalender.Core.Models.Entities.Calendar;
@@ -24,6 +25,8 @@ namespace FamilyCalender.Core.Models.ViewModels
 		public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public ICollection<string> SelectedDays { get; set; } = [];
+
+		public bool ShowUserSettings { get; set; }
 		public string CapitalizedMonthName
 		{
 			get

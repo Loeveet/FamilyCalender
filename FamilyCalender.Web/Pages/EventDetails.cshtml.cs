@@ -1,14 +1,9 @@
-using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.ViewModels;
 using FamilyCalender.Infrastructure.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NuGet.Packaging;
 using System.Globalization;
 using FamilyCalender.Core.Models.Entities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FamilyCalender.Web.Pages
 {

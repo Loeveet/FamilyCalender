@@ -1,11 +1,6 @@
 ﻿using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FamilyCalender.Infrastructure.Services
 {
@@ -17,5 +12,28 @@ namespace FamilyCalender.Infrastructure.Services
         {
             return await _userRepository.GetAllAsync();
         }
-    }
+
+        public async Task CreateNotificationAsync(UserNotificationSetting uns)
+        {
+            await _userRepository.CreateNotificationAsync(uns);
+        }
+
+        public async Task UpdateNotificationAsync(UserNotificationSetting uns)
+        {
+            await _userRepository.UpdateNotificationAsync(uns);
+        }
+
+        public async Task<UserNotificationSetting> GetNotificationSetting(int userId)
+        {
+            return await _userRepository.GetNotificationSetting(userId);
+        }
+
+        public async Task DeleteNotificationAsync(int userId)
+        {
+            await _userRepository.DeleteNotificationAsync(userId);
+
+		}
+
+
+	}
 }

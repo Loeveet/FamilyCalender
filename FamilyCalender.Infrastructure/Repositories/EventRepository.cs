@@ -2,7 +2,6 @@
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FamilyCalender.Infrastructure.Repositories
 {
@@ -33,6 +32,15 @@ namespace FamilyCalender.Infrastructure.Repositories
 				.ToListAsync();
 		}
 
+		public async Task<List<User>> GetPushSubscribers(int calendarId, int exceptUserId)
+		{
+			return await _context.CalendarAccesses
+				.Where(x => x.CalendarId == calendarId && x.UserId != exceptUserId)
+				.Include(x => x.User)
+				.ThenInclude(x => x.NotificationSetting)
+				.Select(x => x.User)
+				.ToListAsync();
+		}
 
 
 		public async Task<Event?> GetByIdAsync(int eventId)

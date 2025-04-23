@@ -18,6 +18,7 @@ namespace FamilyCalender.Core.Models.Entities
         public DateTime? CreatedUtc { get; set; }
         public ICollection<CalendarAccess> CalendarAccesses { get; set; } = [];
         public ICollection<Calendar> OwnedCalendars { get; set; } = [];
-        public ICollection<Member> Members { get; set; } = []; 
+        public ICollection<Member> Members { get; set; } = [];
+        public UserNotificationSetting NotificationSetting { get; set; }
     }
 }

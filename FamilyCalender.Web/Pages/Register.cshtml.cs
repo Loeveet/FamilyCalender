@@ -63,5 +63,11 @@ namespace FamilyCalender.Web.Pages
             return Page();
         }
 
+
+        public IActionResult OnRegisterDevice(string payload)
+        {
+            return new JsonResult(new { Success = true });
+        }
+
     }
 }

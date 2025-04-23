@@ -11,7 +11,6 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task DeleteEventAsync(int eventId);
         Task DeleteEventMemberDateAsync(int eventId, int memberId, DateTime day);
         Task DeleteAllEventMemberDatesAsync(int eventId, int memberId);
-
-
+        Task<List<User>> GetPushSubscribers(int calendarId, int exceptUserId);
 	}
 }

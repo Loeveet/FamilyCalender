@@ -51,6 +51,11 @@ namespace FamilyCalender.Infrastructure.Services
 			return addedEvent;
 		}
 
+		public async Task<List<User>> GetPushSubscribers(int calendarId, int exceptUserId)
+		{
+			return await _eventRepository.GetPushSubscribers(calendarId, exceptUserId);
+		}
+
 		public async Task DeleteEventAsync(int eventId)
 		{
 			var eventToDelete = await _eventRepository.GetByIdAsync(eventId) ?? throw new EntryPointNotFoundException();

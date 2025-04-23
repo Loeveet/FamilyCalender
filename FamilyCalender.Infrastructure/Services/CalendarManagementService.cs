@@ -171,6 +171,9 @@ namespace FamilyCalender.Infrastructure.Services
 			return calendar.OwnerId == userId;
 		}
 
-
+		public async Task<List<User>> GetPushSubscribers(int calendarId, int exceptUserId)
+		{
+			return await _eventService.GetPushSubscribers(calendarId, exceptUserId);
+		}
 	}
 }

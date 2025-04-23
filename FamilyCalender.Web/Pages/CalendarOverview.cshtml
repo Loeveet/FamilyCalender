@@ -1,11 +1,16 @@
 ﻿@page
 @using FamilyCalender.Core.Models.Entities
+@using FamilyCalender.Web.Code
 @model FamilyCalender.Web.Pages.CalendarOverviewModel
 @{
     ViewData["Title"] = "Calendar";
     ViewData["ShowCalendarSelector"] = true;
 }
 
+@if (Model.ViewModel.ShowUserSettings)
+{
+    <a href="/UserSettings" class="btn btn-pmf">NotificationSetup</a>
+}
 
 
 @if (Model.ViewModel.SelectedCalendarId == 0)
@@ -467,7 +472,6 @@ else
     </div>
 </div>
 
-
 <script>
 
     //initialize Color picker to set correct color on Model input field
@@ -480,41 +484,8 @@ else
         window.scrollTo({ top: offsetPosition, behavior: "smooth" });
     }
 
-
-    function CopyShareLink() {
-        // Get the text field
-        var copyText = document.getElementById("ShareLinkInput");
-
-        // Select the text field
-        copyText.select();
-        copyText.setSelectionRange(0, 99999); // For mobile devices
-
-        // Copy the text inside the text field
-        navigator.clipboard.writeText(copyText.value);
-
-        ToggleShowShareLink();
-
-    }
-
-    function ToggleShowShareLink() {
-
-        if ($("#ShareLinkContainer").hasClass('visually-hidden')) {
-            $("#ShareLinkContainer").removeClass('visually-hidden');
-        }
-        else {
-            $("#ShareLinkContainer").addClass('visually-hidden');
-        }
-
-    }
+    notificationService.RegisterServiceWorker
+    
 
 
-    //ViewModel_EventDetails_EventCategoryColor
-
-    // Example 2
-    $('.pane-hScroll').scroll(function () {
-        $('.pane-vScroll').width($('.pane-hScroll').width() + $('.pane-hScroll').scrollLeft());
-    });
-
-
-   
 </script>
