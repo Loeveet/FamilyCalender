@@ -22,7 +22,10 @@ namespace FamilyCalender.Infrastructure.Services
             _calendarRepository = calendarRepository;
             _calendarAccessService = calendarAccessService;
         }
-
+        public async Task<List<Calendar>> GetAllCalendarsAsync()
+        {
+            return await _calendarRepository.GetAllAsync();
+        }
         public async Task<Calendar> CreateCalendarAsync(Calendar calendar, User user)
         {
             if (string.IsNullOrWhiteSpace(calendar.Name))
