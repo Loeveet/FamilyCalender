@@ -34,6 +34,8 @@ namespace FamilyCalender
 					options.ExpireTimeSpan = TimeSpan.FromDays(365);
 					options.Cookie.MaxAge = TimeSpan.FromDays(365);
 					options.SlidingExpiration = true;
+					options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+					options.Cookie.SameSite = SameSiteMode.None;
 
 				});
 
