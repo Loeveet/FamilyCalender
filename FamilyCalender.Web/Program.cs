@@ -37,13 +37,6 @@ namespace FamilyCalender
 
 				});
 
-			//could be used for admin page
-			//builder.Services.AddAuthorization(options =>
-			//{
-			//	options.AddPolicy("Admin", policy => policy.RequireUserName("mikael.lennander@hotmail.com").RequireUserName("robin..."));
-			//	//options.AddPolicy("Admin", policy => policy.RequireClaim("admin", "true")); // om vi har roller
-			//});
-
 			builder.Services.AddRazorPages()
 				.AddRazorPagesOptions(options =>
 				{
@@ -52,6 +45,7 @@ namespace FamilyCalender
 
 					options.Conventions.AuthorizeFolder("/CalendarOverview");
 					options.Conventions.AuthorizeFolder("/CreateCalendar");
+					options.Conventions.AuthorizePage("/SuperAdmin");
 					//options.Conventions.AuthorizeFolder("/Invite");
 					options.Conventions.AllowAnonymousToPage("/Login");
 					options.Conventions.AllowAnonymousToPage("/Register");

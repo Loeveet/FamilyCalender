@@ -1,11 +1,13 @@
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FamilyCalender.Web.Pages
 {
+    [Authorize]
     public class SuperAdminModel(IUserService userService, ICalendarService calendarService, IAuthService authService) : BasePageModel(authService)
     {
         private readonly IUserService _userService = userService;
