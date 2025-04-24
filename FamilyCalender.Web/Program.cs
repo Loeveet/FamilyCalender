@@ -1,19 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using FamilyCalender.Infrastructure.Context;
-using Microsoft.AspNetCore.Identity;
 using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Infrastructure.Repositories;
 using FamilyCalender.Infrastructure.Services;
-using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Interfaces;
 using Serilog;
-using System.Security.Claims;
-using NuGet.Packaging;
 using PublicHoliday;
 using FamilyCalender.Web.Code;
 using static FamilyCalender.Infrastructure.Services.EmailService;
-using System.Configuration;
+using FamilyCalender.Web;
 
 
 namespace FamilyCalender
@@ -27,18 +23,25 @@ namespace FamilyCalender
 
             builder.Services.AddHttpContextAccessor();
 
-			builder.Services.AddAuthentication(options =>
-			{
-				options.DefaultScheme = "Cookie";
-			})
-			.AddCookie("Cookie", options =>
-			{
-				options.LoginPath = "/Login"; 
-				options.LogoutPath = "/Logout";
-				options.ExpireTimeSpan = TimeSpan.FromDays(365);
-				options.SlidingExpiration = true;
+			builder.Services.AddAuthentication()
+			.AddCookie(GlobalSettings.AuthCookieName, 
+				options =>
+				{
+					options.LoginPath = "/Login";
+					options.AccessDeniedPath = "/"; //should be a Forbidden page
+					options.LogoutPath = "/Logout";
+					options.Cookie.Name = GlobalSettings.AuthCookieName;
+					options.ExpireTimeSpan = TimeSpan.FromDays(365);
+					options.SlidingExpiration = true;
 
-			});
+				});
+
+			//could be used for admin page
+			//builder.Services.AddAuthorization(options =>
+			//{
+			//	options.AddPolicy("Admin", policy => policy.RequireUserName("mikael.lennander@hotmail.com").RequireUserName("robin..."));
+			//	//options.AddPolicy("Admin", policy => policy.RequireClaim("admin", "true")); // om vi har roller
+			//});
 
 			builder.Services.AddRazorPages()
 				.AddRazorPagesOptions(options =>
@@ -87,12 +90,12 @@ namespace FamilyCalender
 			builder.Services.AddScoped<IEventService, EventService>();
 			builder.Services.AddScoped<ICalendarAccessService, CalendarAccessService>();
 			builder.Services.AddScoped<IMemberCalendarService, MemberCalendarService>();
-			builder.Services.AddScoped<IAuthService, AuthService>();
 			builder.Services.AddScoped<IEmailService>(c => new EmailService(emailSettings));
 			builder.Services.AddScoped<EventManagementService>();
 			builder.Services.AddScoped<CalendarManagementService>();
 			builder.Services.AddScoped<InviteService>();
-            builder.Services.AddSingleton(new EncryptionService(EncryptionService.Magic));
+			builder.Services.AddScoped<IAuthService, AuthService>();
+			builder.Services.AddSingleton(new EncryptionService(EncryptionService.Magic));
             builder.Services.AddSingleton(new PublicHolidayService(new SwedenPublicHoliday(), "SWEDEN"));
 
             var app = builder.Build();

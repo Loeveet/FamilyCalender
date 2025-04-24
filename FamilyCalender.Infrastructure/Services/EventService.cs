@@ -18,7 +18,7 @@ namespace FamilyCalender.Infrastructure.Services
             _eventRepository = eventRepository;
 		}
 
-		public async Task<Event> CreateEventAsync(string eventTitle, string text,string eventTime, EventCategoryColor categoryColor, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
+		public async Task<Event> CreateEventAsync(string eventTitle, string text, string eventTime, string eventStopTime, EventCategoryColor categoryColor, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
 		{
 			var newEvent = new Event
 			{
@@ -26,7 +26,8 @@ namespace FamilyCalender.Infrastructure.Services
 				CalendarId = calendarId,
 				Text = _encryptionService.AutoDetectEncryptStringToString(text, calendarId.ToString()),
 				EventCategoryColor = categoryColor,
-				EventTime = eventTime
+				EventTime = eventTime,
+				EventStopTime = eventStopTime
 			};
 
 			var addedEvent = await _eventRepository.AddAsync(newEvent);

@@ -11,6 +11,7 @@
 
         public EventCategoryColor EventCategoryColor { get; set; }
         public string EventTime { get; set; }
+        public string EventStopTime { get; set; }
     }
 
     public enum EventCategoryColor

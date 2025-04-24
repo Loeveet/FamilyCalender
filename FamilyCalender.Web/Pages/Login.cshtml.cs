@@ -1,13 +1,14 @@
-using FamilyCalender.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using FamilyCalender.Core.Interfaces.IServices;
 
 namespace FamilyCalender.Web.Pages
 {
     public class LoginModel(IAuthService authService) : BasePageModel(authService)
     {
-
         [BindProperty]
         public string Email { get; set; }
 
@@ -18,12 +19,11 @@ namespace FamilyCalender.Web.Pages
         public string ErrorMessage { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
-            Log.Information("Testing login page");
-            
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                return RedirectToPage("/CalendarOverview");
+	            Log.Debug($"User {Email} already logged in - redirected to /CalendarOverview");
+				return RedirectToPage("/CalendarOverview");
             }
             return Page();
 
@@ -31,18 +31,38 @@ namespace FamilyCalender.Web.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (await _authService.LoginAsync(Email, Password))
+	        Log.Debug($"User tries to login {Email}");
+			if (await _authService.IsValidUserNamePassword(Email, Password))
             {
-                string returnUrl = HttpContext.Request.Query["returnUrl"];
+	            Log.Debug($"User {Email} successfully logged in ");
+				var claims = new List<Claim>
+	            {
+		            new Claim(ClaimTypes.Name, Email)
+	            };
+	            var identity = new ClaimsIdentity(claims, Infrastructure.GlobalSettings.AuthCookieName);
+	            var principal = new ClaimsPrincipal(identity);
+
+	            var authProperties = new AuthenticationProperties
+	            {
+		            IsPersistent = true,
+		            ExpiresUtc = DateTime.UtcNow.AddDays(365)
+	            };
+
+	            await HttpContext.SignInAsync(GlobalSettings.AuthCookieName, principal, authProperties);
+
+				string returnUrl = HttpContext.Request.Query["returnUrl"].ToString() ?? "";
                 if (Url.IsLocalUrl(returnUrl))
                 {
-                    return Redirect(returnUrl);
+	                Log.Debug($"User {Email} came with redirect url {returnUrl} ");
+					return Redirect(returnUrl);
                 }
               
                 return RedirectToPage("/CalendarOverview");
             }
 
-            ErrorMessage = "Invalid login attempt.";
+            Log.Information($"Invalid credentials for user {Email}");
+
+			ErrorMessage = "Invalid login attempt.";
             return Page();
         }
     }

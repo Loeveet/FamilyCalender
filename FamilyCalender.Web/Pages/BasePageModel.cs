@@ -1,7 +1,8 @@
-﻿using FamilyCalender.Core.Interfaces;
-using FamilyCalender.Core.Models.Entities;
+﻿using FamilyCalender.Core.Models.Entities;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
+using FamilyCalender.Core.Interfaces.IServices;
+using Serilog;
 
 namespace FamilyCalender.Web.Pages
 {
@@ -16,14 +17,23 @@ namespace FamilyCalender.Web.Pages
 
 		protected async Task<User> GetCurrentUserAsync()
 		{
-			var userEmail = HttpContext.User?.FindFirst(ClaimTypes.Name)?.Value;
-			if (string.IsNullOrEmpty(userEmail))
+			try
 			{
-				return null;
+				var userEmail = HttpContext.User?.FindFirst(ClaimTypes.Name)?.Value;
+				if (string.IsNullOrEmpty(userEmail))
+				{
+					return null;
+				}
+
+				var user = await _authService.GetUserByEmailAsync(userEmail);
+				return user;
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Error GetCurrentUserAsync due to {e.Message}");
 			}
 
-			var user = await _authService.GetUserByEmailAsync(userEmail);
-			return user;
+			return null;
 		}
 	}
 }
