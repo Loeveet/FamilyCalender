@@ -15,19 +15,19 @@
             Hej 🤗 Gissar att du är en ny användare?!
         </h2>
         <h4>Du måste skapa en kalender om du vill börja planera - om du inte blir inbjuden av en vän?</h4>
-        <br/>
+        <br />
         <p>
             Att skapa en kalender går snabbt så ta det lugnt!
-            <br/>
+            <br />
             När den väl är på plats kan du bjuda in familj, vänner, sambos, kusiner eller svärmor (om du vågar) <br /> <br />
             <i>…och vips så har ni full koll på vem som gör vad, när och var! 🗓️✨</i>
         </p>
 
         <a asp-page="/CreateCalendar" class="btn btn-pmf btn-lg">Skapa kalender</a>
         <br />
-        <br/>
-        <br/>
-        <br/>
+        <br />
+        <br />
+        <br />
         <div class="info-box">
             <span class="info-icon">ℹ️</span>
             <span class="info-text">Visste du att man kan skapa flera kalendrar?</span>
@@ -43,8 +43,8 @@ else
         <i class="fa-solid fa-gear"></i> Inställningar / Dela
     </a>
 
-    <br/>
-    <br/>
+    <br />
+    <br />
 
     <a href="javascript:void(0)"
        class="floating-button d-sm-none"
@@ -115,22 +115,21 @@ else
             background-color: #b2dfdb;
         }
 
-       
     </style>
 
 
     <!-- delete this to get stick names or keep this to make table not fucking up on mobile if many names-->
     <div class="table-responsive">
         <table class="table ">
-           @* <thead>
-                <tr>
-                    <th class="fixed-day-column @(needResponsiveTable ? "sticky" : "")"></th>
-                    @foreach (var member in Model.ViewModel.Members)
-                    {
-                        <th class="expanding-column @(needResponsiveTable ? "sticky" : "")">@member.Name</th>
-                    }
-                </tr>
-            </thead>*@
+            @* <thead>
+        <tr>
+        <th class="fixed-day-column @(needResponsiveTable ? "sticky" : "")"></th>
+        @foreach (var member in Model.ViewModel.Members)
+        {
+        <th class="expanding-column @(needResponsiveTable ? "sticky" : "")">@member.Name</th>
+        }
+        </tr>
+        </thead>*@
             <tbody>
                 @foreach (var day in Model.ViewModel.DaysInMonth)
                 {
@@ -145,9 +144,9 @@ else
                             </td>
                         </tr>
                     }
-                    @if (day.ShowWeekNumber )
+                    @if (day.ShowWeekNumber)
                     {
-                        <tr class="extra-member-column-per-week" >
+                        <tr class="extra-member-column-per-week">
                             <td class="fixed-day-colum "></td>
                             @foreach (var member in Model.ViewModel.Members)
                             {
@@ -165,37 +164,37 @@ else
                             </td>
                         </tr>
                     }
-                    @if (day.PublicHoliday != null )
+                    @if (day.PublicHoliday != null)
                     {
                         var colspan = @Model.ViewModel.Members.Count + 1;
 
                         <tr style="border:none">
                             <td colspan="@colspan" class=" @(day.IsCurrentDay ? "today" : "") public-holiday" style="border:none">
-                               @day.PublicHoliday.HolidayName
+                                @day.PublicHoliday.HolidayName
                             </td>
                         </tr>
-                    } 
+                    }
 
                     <tr id="@(day.IsCurrentDay ? "today" : "")" class="@(day.IsCurrentDay ? "today" : "")">
-                        
-                      
+
+
 
                         <td class="fixed-day-column">
 
 
                             <div class="d-flex flex-column align-items-center">
-                                <span class="day-info day-info-small day-info-medium 
-                                @(day.IsCurrentDay ? "fw-bold" : "") 
+                                <span class="day-info day-info-small day-info-medium
+                                @(day.IsCurrentDay ? "fw-bold" : "")
                                 @(day.PublicHoliday != null ? "text-danger" : "")
-                                @(day is {IsPastDay: true, PublicHoliday: null} ? "text-muted" : "") 
-                             
+                                @(day is {IsPastDay: true, PublicHoliday: null} ? "text-muted" : "")
+
                                 @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")
                                 d-block d-md-none">
                                     @day.CapitalizedDayName[..2]
                                 </span>
 
-                                <span class="day-info day-info-large 
-                                            @(day.IsCurrentDay ? "fw-bold" : "") 
+                                <span class="day-info day-info-large
+                                            @(day.IsCurrentDay ? "fw-bold" : "")
                                              @(day is {IsPastDay: true, PublicHoliday: null} ? "text-muted" : "")
                                             @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")
                                             d-none d-md-block">
@@ -225,12 +224,12 @@ else
                         @foreach (var member in Model.ViewModel.Members ?? new List<Core.Models.Entities.Member>())
                         {
                             var eventMemberDates = Model.ViewModel.Events
-                                .SelectMany(e => e.EventMemberDates)
-                                .Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
-                                .ToList();
+                            .SelectMany(e => e.EventMemberDates)
+                            .Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
+                            .ToList();
                             <td class="expanding-column clickable-cell"
-                                @*                                 data-bs-toggle="modal"
-                                data-bs-target="#eventModal" *@
+                            @* data-bs-toggle="modal"
+                    data-bs-target="#eventModal" *@
                                 data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
                                 data-member-id="@member.Id"
                                 onclick="setModalValues(this)">
@@ -250,14 +249,14 @@ else
                                                     @eventMemberDate.Event?.Title
                                                     @if (!string.IsNullOrWhiteSpace(eventMemberDate.Event.EventTime))
                                                     {
-                                                        <br/>
+                                                        <br />
                                                         <span>🕒 @eventMemberDate.Event.EventTime</span>
                                                     }
                                                 </span>
                                             </a>
                                         }
 
-                                      
+
 
                                         <div class="mt-2" style="height: 20px;"></div>
 
@@ -289,19 +288,54 @@ else
                 <form method="post" asp-page-handler="AddEvent" onsubmit="return validateForm()">
                     <input type="hidden" asp-for="ViewModel.SelectedCalendarId" value="@Model.ViewModel.SelectedCalendarId" />
                     <input type="hidden" asp-for="ViewModel.SelectedCalendarName" value="@Model.ViewModel.SelectedCalendarName" />
-                   
-                    
+
+
                     <div class="mb-3">
                         <b for="eventTitle" class="form-label">Titel</b>
                         <i class="text-secondary">Titeln syns i kalender översikten</i>
                         <input type="text" class="form-control" asp-for="ViewModel.EventTitle" id="eventTitle" />
                         <small id="eventTitleError" class="text-danger d-none">Ange titel</small>
                     </div>
-                    
+
                     <div class="mb-3">
                         <b for="eventText" class="form-label">Beskrivning</b>
                         <textarea rows="4" cols="3" class="form-control" asp-for="ViewModel.EventText" id="eventText"></textarea>
                         <small id="eventTextError" class="text-danger d-none">Ange titel</small>
+                    </div>
+
+                    @*      Old color picker - not looking so good on iOS and Android since user default takes over - no colors is shown only name
+                    <div class="mb-3">
+                    <b for="SelectedCategoryColor" class="form-label">Kategorifärg</b>
+                    <select id="categoryColor" class="color-select form-control" asp-for="ViewModel.SelectedCategoryColor">
+                    <option style="background-color: #f8f9fa;" value="">Ingen kategorifärg</option>
+                    <option style="background-color: #cce5ff;" value="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</option>
+                    <option style="background-color: #d4edda;" value="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</option>
+                    <option style="background-color: #fff3cd;" value="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</option>
+                    <option style="background-color: #f8d7da;" value="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</option>
+                    <option style="background-color: #f8c1c1;" value="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</option>
+                    <option style="background-color: #e2d6f9;" value="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</option>
+                    </select>
+                    </div> *@
+                    <div class="mb-3">
+                        <div class="color-dropdown" onclick="eventColorPickerHelper.ToggleDropdown(event)">
+                            <div class="selected" id="selectedColor">
+                                Välj en kategorifärg
+                            </div>
+                            <div class="options" id="colorOptions">
+                                <div style="background-color: #f8f9fa;" data-color="@EventCategoryColor.None">Ingen kategorifärg</div>
+                                <div style="background-color: #cce5ff;" data-color="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</div>
+                                <div style="background-color: #d4edda;" data-color="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</div>
+                                <div style="background-color: #fff3cd;" data-color="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</div>
+                                <div style="background-color: #f8d7da;" data-color="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</div>
+                                <div style="background-color: #f8c1c1;" data-color="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</div>
+                                <div style="background-color: #e2d6f9;" data-color="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</div>
+                            </div>
+                            
+                            <!-- Selected color ends up here for form submit -->
+                            <input type="hidden" asp-for="ViewModel.SelectedCategoryColor" />
+                            
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
                     </div>
 
 
@@ -310,25 +344,14 @@ else
                         <input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" readonly />
                         <small id="error-selected-date" class="text-danger d-none"></small>
                     </div>
-                    
+
                     <div class="mb-3">
                         <b for="EventTime" class="form-label">Klockslag <small>(Valfritt)</small></b>
                         <input type="time" id="eventTime" class="form-control" asp-for="ViewModel.EventTime">
                     </div>
-                    
-                    
-                    <div class="mb-3">
-                        <b for="SelectedCategoryColor" class="form-label">Kategorifärg</b>
-                        <select id="categoryColor" class="color-select form-control" asp-for="ViewModel.SelectedCategoryColor">
-                            <option style="background-color: #f8f9fa;" value="">Ingen kategorifärg</option>
-                            <option style="background-color: #cce5ff;" value="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</option>
-                            <option style="background-color: #d4edda;" value="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</option>
-                            <option style="background-color: #fff3cd;" value="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</option>
-                            <option style="background-color: #f8d7da;" value="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</option>
-                            <option style="background-color: #f8c1c1;" value="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</option>
-                            <option style="background-color: #e2d6f9;" value="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</option>
-                        </select>
-                    </div>
+
+
+                 
 
                     <div class="accordion" id="eventOptionsAccordion">
                         <div class="accordion-item">
@@ -393,7 +416,7 @@ else
                             </div>
                         </div>
                     </div>
-                    <br/>
+                    <br />
                     <div class="mb-3">
                         <b class="form-label"><i class="bi bi-people"></i> Välj medlemmar</b>
                         <div id="memberList">
@@ -404,17 +427,17 @@ else
                                     <label class="form-check-label" for="member-@member.Id">@member.Name</label>
                                 </div>
 
-                               @*  <div class="form-check">
-                                    <input class="form-check-input member-checkbox" type="checkbox" id="member-@member.Id" value="@member.Id" name="SelectedMemberIds" />
-                                    <label class="form-check-label" for="member-@member.Id">@member.Name</label>
-                                </div> *@
+                                @*  <div class="form-check">
+                            <input class="form-check-input member-checkbox" type="checkbox" id="member-@member.Id" value="@member.Id" name="SelectedMemberIds" />
+                            <label class="form-check-label" for="member-@member.Id">@member.Name</label>
+                            </div> *@
                             }
                         </div>
                         <small id="memberError" class="text-danger d-none">Du måste välja minst en medlem</small>
                     </div>
 
 
-                
+
 
 
                     <input type="hidden" asp-for="ViewModel.CurrentYear" value="@Model.ViewModel.CurrentYear" />
@@ -434,7 +457,11 @@ else
     </div>
 </div>
 
+
 <script>
+
+    //initialize Color picker to set correct color on Model input field
+    eventColorPickerHelper.Init('ViewModel_SelectedCategoryColor');
 
     var today = document.getElementById('today');
     if (today !== null) {
@@ -470,9 +497,14 @@ else
 
     }
 
+
+    //ViewModel_EventDetails_EventCategoryColor
+
     // Example 2
     $('.pane-hScroll').scroll(function () {
         $('.pane-vScroll').width($('.pane-hScroll').width() + $('.pane-hScroll').scrollLeft());
     });
 
+
+   
 </script>
