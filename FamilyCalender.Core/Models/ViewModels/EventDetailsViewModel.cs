@@ -89,7 +89,7 @@ namespace FamilyCalender.Core.Models.ViewModels
 		        case EventCategoryColor.Green:
 			        return "\ud83d\udfe2";
 		        case EventCategoryColor.Yellow:
-			        return "\ud83d\udfe1t";
+			        return "\ud83d\udfe1";
 		        case EventCategoryColor.Pink:
 			        return "\ud83c\udf38";
 		        case EventCategoryColor.Red:
