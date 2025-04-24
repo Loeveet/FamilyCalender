@@ -1,0 +1,65 @@
+﻿@page
+@model FamilyCalender.Web.Pages.SuperAdminModel
+@{
+}
+@if (Model.IsAdmin)
+{
+
+	<h2>Adminöversikt</h2>
+	<ul>
+		<li>Totalt antal användare: @Model.Users.Count</li>
+		<li>Verifierade användare: @Model.VerifiedUsers</li>
+		<li>Totalt antal kalendrar: @Model.Calendars.Count</li>
+	</ul>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>E-post</th>
+				<th>Verifierad</th>
+				<th>Antal egna kalendrar</th>
+				<th>Registrerad</th>
+				<th>Tillgång till antal kalendrar</th>
+				<th></th>
+
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var user in Model.Users)
+			{
+				<tr>
+					<td>@user.Email</td>
+					<td>@(user.IsVerified ? "Ja" : "Nej")</td>
+					<td>@(user.OwnedCalendars.Count)</td>
+					<td>@user.VerificationDateUtc</td>
+					<td>@user.CalendarAccesses.Count</td>
+					<td>
+						<button class="btn btn-danger">Ta bort</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Namn</th>
+				<th>Antal event</th>
+				<th>Antal användare</th>
+				<th>Antal medlemmar</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var cal in Model.Calendars)
+			{
+				<tr>
+					<td>@cal.Name</td>
+					<td>@(cal.Events.Count)</td>
+					<td>@(cal.Accesses.Count)</td>
+					<td>@cal.MemberCalendars.Count</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}

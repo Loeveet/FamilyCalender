@@ -32,6 +32,7 @@ namespace FamilyCalender
 					options.LogoutPath = "/Logout";
 					options.Cookie.Name = GlobalSettings.AuthCookieName;
 					options.ExpireTimeSpan = TimeSpan.FromDays(365);
+					options.Cookie.MaxAge = TimeSpan.FromDays(365);
 					options.SlidingExpiration = true;
 
 				});
@@ -84,11 +85,13 @@ namespace FamilyCalender
 			builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 			builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 			builder.Services.AddScoped<IEventRepository, EventRepository>();
-			builder.Services.AddScoped<ICalendarAccessRepository, CalendarAccessRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<ICalendarAccessRepository, CalendarAccessRepository>();
 			builder.Services.AddScoped<ICalendarService, CalendarService>();
 			builder.Services.AddScoped<IMemberService, MemberService>();
 			builder.Services.AddScoped<IEventService, EventService>();
-			builder.Services.AddScoped<ICalendarAccessService, CalendarAccessService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ICalendarAccessService, CalendarAccessService>();
 			builder.Services.AddScoped<IMemberCalendarService, MemberCalendarService>();
 			builder.Services.AddScoped<IEmailService>(c => new EmailService(emailSettings));
 			builder.Services.AddScoped<EventManagementService>();

@@ -19,13 +19,23 @@ namespace FamilyCalender.Infrastructure.Repositories
 		{
 			_context = context;
 		}
-
-		public async Task<Calendar> AddAsync(Calendar calendar)
-		{
-			_context.Calendars.Add(calendar);
-			await _context.SaveChangesAsync();
-			return calendar;
-		}
+        public async Task<List<Calendar>> GetAllAsync()
+        {
+            return await _context.Calendars
+                .Include(c => c.Events)
+                .Include(c => c.Accesses)
+                .Include(c => c.MemberCalendars)
+                .ThenInclude(mc => mc.Member)
+                .ToListAsync();
+        }
+        public async Task<Calendar> AddAsync(Calendar calendar)
+        {
+            _context.Calendars.Add(calendar);
+            calendar.CreatedUtc = DateTime.UtcNow;
+            calendar.LastEditedUtc = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return calendar;
+        }
 
 
 
@@ -114,6 +124,7 @@ namespace FamilyCalender.Infrastructure.Repositories
 		public async Task UpdateAsync(Calendar calendar)
 		{
             _context.Calendars.Update(calendar);
+            calendar.LastEditedUtc = DateTime.UtcNow;
             await _context.SaveChangesAsync();
         }
 		public async Task<Calendar?> GetCalendarWithAllRelationsAsync(int calendarId)
@@ -145,12 +156,13 @@ namespace FamilyCalender.Infrastructure.Repositories
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task<Calendar> UpdateCreateAsync(Calendar calendar)
-		{
-			_context.Calendars.Update(calendar);
-			await _context.SaveChangesAsync();
-			return calendar;
-		}
+        public async Task<Calendar> UpdateCreateAsync(Calendar calendar)
+        {
+            _context.Calendars.Update(calendar);
+            calendar.LastEditedUtc = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return calendar;
+        }
 
-	}
+    }
 }
