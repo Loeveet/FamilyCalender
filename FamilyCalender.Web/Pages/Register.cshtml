@@ -96,15 +96,39 @@ button:hover {
 
             <div class="form-group">
                 <label asp-for="Input.Password">Lösenord:</label>
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Lösenord" />
-
+                <div class="position-relative">
+                    <input asp-for="Input.Password"
+                           id="Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="Lösenord"
+                           autocomplete="new-password"
+                           aria-required="true"
+                           style="padding-right: 2.5rem;" />
+                    <i class="bi bi-eye-slash"
+                       id="eye-icon-Password"
+                       onclick="togglePasswordVisibility('Password')"
+                       style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2em; z-index: 10; background: white; color: #6c757d;"></i>
+                </div>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Input.ConfirmPassword">Bekräfta lösenord:</label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Lösenordet igen"/>
-
+                <div class="position-relative">
+                    <input asp-for="Input.ConfirmPassword"
+                           id="ConfirmPassword"
+                           type="password"
+                           class="form-control"
+                           placeholder="Lösenordet igen"
+                           autocomplete="new-password"
+                           aria-required="true"
+                           style="padding-right: 2.5rem;" />
+                    <i class="bi bi-eye-slash"
+                       id="eye-icon-ConfirmPassword"
+                       onclick="togglePasswordVisibility('ConfirmPassword')"
+                       style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2em; z-index: 10; background: white; color: #6c757d;"></i>
+                </div>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
             
@@ -164,3 +188,20 @@ button:hover {
 		<div>@Model.ErrorMessage</div>
 	}
 *@
+
+<script>
+    function togglePasswordVisibility(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById("eye-icon-" + inputId);
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        } else {
+            input.type = "password";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        }
+    }
+</script>
