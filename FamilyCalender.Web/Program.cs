@@ -32,6 +32,7 @@ namespace FamilyCalender
 					options.LogoutPath = "/Logout";
 					options.Cookie.Name = GlobalSettings.AuthCookieName;
 					options.ExpireTimeSpan = TimeSpan.FromDays(365);
+					options.Cookie.MaxAge = TimeSpan.FromDays(365);
 					options.SlidingExpiration = true;
 
 				});
