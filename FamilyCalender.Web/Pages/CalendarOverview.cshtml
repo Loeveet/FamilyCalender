@@ -238,7 +238,7 @@ else
                                 <div class="d-flex flex-column gap-1 h-100">
                                     @if (eventMemberDates?.Any() ?? false)
                                     {
-                                        foreach (var eventMemberDate in eventMemberDates)
+                                        foreach (var eventMemberDate in eventMemberDates.OrderBy(x => x.Event.EventTime))
                                         {
                                             <a asp-page="./EventDetails"
                                                asp-route-eventId="@eventMemberDate.EventId"
