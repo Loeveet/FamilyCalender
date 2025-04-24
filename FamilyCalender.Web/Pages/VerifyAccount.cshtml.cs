@@ -1,7 +1,6 @@
-using FamilyCalender.Core.Interfaces;
-using FamilyCalender.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using FamilyCalender.Core.Interfaces.IServices;
 
 namespace FamilyCalender.Web.Pages
 {

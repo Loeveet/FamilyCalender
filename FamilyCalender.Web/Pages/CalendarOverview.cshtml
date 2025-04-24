@@ -247,10 +247,16 @@ else
                                                onclick="event.stopPropagation();">
                                                 <span class="event-title rounded px-0 py-1 w-100 d-block @Model.ViewModel.GetCategoryColor(eventMemberDate?.Event)">
                                                     @eventMemberDate.Event?.Title
-                                                    @if (!string.IsNullOrWhiteSpace(eventMemberDate.Event.EventTime))
+                                                    @if (!string.IsNullOrWhiteSpace(eventMemberDate.Event.EventTime) || !string.IsNullOrWhiteSpace(eventMemberDate.Event.EventStopTime))
                                                     {
                                                         <br />
-                                                        <span>🕒 @eventMemberDate.Event.EventTime</span>
+                                                        <span>🕓</span>
+                                                        <span>@eventMemberDate.Event.EventTime</span>
+                                                        @if (!string.IsNullOrWhiteSpace(eventMemberDate.Event.EventTime) && !string.IsNullOrWhiteSpace(eventMemberDate.Event.EventStopTime))
+                                                        {
+                                                            <span> - </span>
+                                                        }
+                                                        <span>@eventMemberDate.Event.EventStopTime</span>
                                                     }
                                                 </span>
                                             </a>
@@ -346,8 +352,12 @@ else
                     </div>
 
                     <div class="mb-3">
-                        <b for="EventTime" class="form-label">Klockslag <small>(Valfritt)</small></b>
+                        <b for="EventTime" class="form-label">Starttid <small>(Valfritt)</small></b>
                         <input type="time" id="eventTime" class="form-control" asp-for="ViewModel.EventTime">
+                    </div>
+                    <div class="mb-3">
+                        <b for="EventTime" class="form-label">Sluttid <small>(Valfritt)</small></b>
+                        <input type="time" id="eventStopTime" class="form-control" asp-for="ViewModel.EventStopTime">
                     </div>
 
 

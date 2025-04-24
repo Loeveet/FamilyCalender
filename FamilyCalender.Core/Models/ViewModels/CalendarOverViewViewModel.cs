@@ -67,5 +67,6 @@ namespace FamilyCalender.Core.Models.ViewModels
         public string EventText { get; set; }
         public EventCategoryColor SelectedCategoryColor { get; set; }
         public string EventTime { get; set; }
+        public string EventStopTime { get; set; }
     }
 }

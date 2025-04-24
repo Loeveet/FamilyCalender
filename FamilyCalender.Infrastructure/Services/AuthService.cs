@@ -1,61 +1,39 @@
 ﻿using FamilyCalender.Core.Interfaces;
+using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
-using System.Globalization;
-
 
 namespace FamilyCalender.Infrastructure.Services
 {
 	public class AuthService : IAuthService
 	{
 		private readonly ApplicationDbContext _context;
-		private readonly IHttpContextAccessor _httpContextAccessor;
 		private readonly IEmailService _emailService;
 
-
-		public AuthService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IEmailService emailService)
+		public AuthService(ApplicationDbContext context,  IEmailService emailService)
 		{
 			_context = context;
-			_httpContextAccessor = httpContextAccessor;
 			_emailService = emailService;
 		}
-		public async Task<bool> LoginAsync(string email, string password)
+		public async Task<bool> IsValidUserNamePassword(string email, string password)
 		{
 			var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
 			if (user == null)
+			{
 				return false;
+			}
 
 			var isValidPassword = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
 			if (!isValidPassword)
+			{
 				return false;
+			}
 
 			var isVerified = user.IsVerified;
 			if (!isVerified)
 			{
 				return false;
-			}
-
-			var claims = new List<Claim>
-		{
-			new Claim(ClaimTypes.Name, user.Email)
-		};
-			var identity = new ClaimsIdentity(claims, "Cookie");
-			var principal = new ClaimsPrincipal(identity);
-
-			var authProperties = new AuthenticationProperties
-			{
-				IsPersistent = true,
-				ExpiresUtc = DateTime.UtcNow.AddDays(365)
-			};
-
-			if (_httpContextAccessor.HttpContext != null)
-			{
-				await _httpContextAccessor.HttpContext.SignInAsync("Cookie", principal, authProperties);
 			}
 
 			return true;
@@ -77,7 +55,6 @@ namespace FamilyCalender.Infrastructure.Services
 					PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
 					IsVerified = false,
 					VerificationToken = Guid.NewGuid().ToString(),
-
 				};
 
 				await _context.Users.AddAsync(user);
@@ -96,13 +73,7 @@ namespace FamilyCalender.Infrastructure.Services
 
 
 
-		public async Task LogoutAsync()
-		{
-			if (_httpContextAccessor.HttpContext != null)
-			{
-				await _httpContextAccessor.HttpContext.SignOutAsync("Cookie");
-			}
-		}
+	
 
 		public async Task<User> GetUserByEmailAsync(string email)
 		{

@@ -47,9 +47,14 @@
 			{
 				<strong> När:</strong> 
                 @Model.ViewModel.FormattedDate 
-                @if(!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
+                @if(!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) || !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
                 {
-					<Span> <i class="bi bi-clock"></i> @Model.ViewModel.EventDetails?.EventTime</Span>
+                    <Span> <i class="bi bi-clock"></i> @Model.ViewModel.EventDetails?.EventTime</Span>
+					@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) && !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+                    {
+                        <span> - </span>
+                    }
+					<span>@Model.ViewModel.EventDetails?.EventStopTime</span>
 				}
 			}
 			else
@@ -379,8 +384,12 @@
                     }
 					
                     <div class="mb-3">
-                        <b for="EventTime" class="form-label">Nytt Klockslag?</b>
-                        <input type="time" id="eventTime" class="form-control" asp-for="@Model.ViewModel.EventDetails.EventTime">
+                        <b for="EventTime" class="form-label">Starttid</b>
+						<input type="time" id="eventTime" class="form-control" asp-for="@Model.ViewModel.EventDetails.EventTime">
+                    </div>
+                    <div class="mb-3">
+                        <b for="EventTime" class="form-label">Sluttid</b>
+						<input type="time" id="eventStopTime" class="form-control" asp-for="@Model.ViewModel.EventDetails.EventStopTime">
                     </div>
 
                     <div id="editMemberList">

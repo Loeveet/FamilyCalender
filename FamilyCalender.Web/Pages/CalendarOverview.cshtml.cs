@@ -2,10 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using FamilyCalender.Infrastructure.Services;
 using FamilyCalender.Core.Models.ViewModels;
 using FamilyCalender.Core.Models.Entities;
-using FamilyCalender.Core.Interfaces;
+using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Web.Code;
-using Serilog;
-using Newtonsoft.Json;
+
 
 namespace FamilyCalender.Web.Pages
 {
@@ -70,6 +69,7 @@ namespace FamilyCalender.Web.Pages
 				ViewModel.EventTitle,
 				ViewModel.EventText ?? "",
 				ViewModel.EventTime ?? "",
+				ViewModel.EventStopTime ?? "",
 				ViewModel.SelectedCategoryColor,
 				eventMemberDates,
 				ViewModel.SelectedCalendarId,

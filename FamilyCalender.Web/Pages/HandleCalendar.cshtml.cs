@@ -1,16 +1,7 @@
-using FamilyCalender.Core.Interfaces;
 using FamilyCalender.Core.Interfaces.IServices;
-using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Globalization;
 
 namespace FamilyCalender.Web.Pages
 {
