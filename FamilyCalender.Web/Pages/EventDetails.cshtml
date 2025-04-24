@@ -43,32 +43,36 @@
 		       
 
         <div class="mb-2">
-			@if (Model.ViewModel.IsSingleEvent)
-			{
-				<strong> När:</strong> 
-                @Model.ViewModel.FormattedDate 
-                @if(!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) || !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+            <strong> När:</strong>
+            @if (Model.ViewModel.IsSingleEvent)
+            {
+                <span>@Model.ViewModel.FormattedDate</span>
+            }
+            else
+            {
+                <span>@Model.ViewModel.FormattedInterval</span>
+               
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) || !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+            {
+                <Span> <i class="bi bi-clock"></i> @Model.ViewModel.EventDetails?.EventTime</Span>
+                @if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) && !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
                 {
-                    <Span> <i class="bi bi-clock"></i> @Model.ViewModel.EventDetails?.EventTime</Span>
-					@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) && !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
-                    {
-                        <span> - </span>
-                    }
-					<span>@Model.ViewModel.EventDetails?.EventStopTime</span>
-				}
-			}
-			else
-			{
-				<strong><i class="bi bi-calendar-range"></i> När:</strong> 
-                @Model.ViewModel.FormattedInterval
-                @if(!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
-                {
-                    <Span> <i class="bi bi-clock"></i> @Model.ViewModel.EventDetails?.EventTime</Span>
+                    <span> - </span>
                 }
-				<br />
-				<strong><i class="bi bi-calendar-day"></i> Veckodagar:</strong> @string.Join(", ", Model.ViewModel.SortedDaysInSwedish)
-			}
-		</div>
+
+                <span>@Model.ViewModel.EventDetails?.EventStopTime</span>
+            }
+            
+            @if (!Model.ViewModel.IsSingleEvent)
+            {
+                <br/>
+                <strong><i class="bi bi-calendar-day"></i> Veckodagar:</strong>
+                @string.Join(", ", Model.ViewModel.SortedDaysInSwedish)
+            }
+
+        </div>
 
 		<div class="mb-2">
 			@if (Model.ViewModel.IsSingleMember)
