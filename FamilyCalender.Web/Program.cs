@@ -31,13 +31,12 @@ namespace FamilyCalender
 					options.AccessDeniedPath = "/"; //should be a Forbidden page
 					options.LogoutPath = "/Logout";
 					options.Cookie.Name = GlobalSettings.AuthCookieName;
-					options.ExpireTimeSpan = TimeSpan.FromDays(365);
-					options.Cookie.MaxAge = TimeSpan.FromDays(365);
+					options.ExpireTimeSpan = TimeSpan.FromDays(180);
+					options.Cookie.MaxAge = TimeSpan.FromDays(180);
 					options.SlidingExpiration = true;
 					options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-					options.Cookie.SameSite = SameSiteMode.None;
-
-				});
+                    options.Cookie.SameSite = SameSiteMode.Lax;
+                });
 
 			builder.Services.AddRazorPages()
 				.AddRazorPagesOptions(options =>
