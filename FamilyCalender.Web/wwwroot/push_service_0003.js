@@ -2,6 +2,15 @@
 /* Notiserna registreras av notification.service.js där vi frågar användfaren om behörighet
 samt registrera enheten till backend. Denna service har hand om att ta emot notiserna och presentera dom*/
 
+self.addEventListener('install', function (event) {
+    console.log('Service Worker installerad.');
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', function (event) {
+    console.log('Service Worker aktiverad.');
+});
+
 
   self.addEventListener("push", function(event) {
     if (event.data) {
