@@ -13,7 +13,8 @@
     }
 
     function registerServiceWorker() {
-        navigator.serviceWorker.register("push_service_0003.js", { scope: '/' }).then(function (reg) {
+        
+        navigator.serviceWorker.register("push_service_0004.js", { scope: '/' }).then(function (reg) {
             window.Notification.requestPermission().then(function (perm) {
                 if (perm !== "granted") {
                     console.log("Permission not granted for Notification");
@@ -32,7 +33,7 @@
                 //});
 
                 navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
-
+                    console.log("ServiceWorkerRegistrátion ready");
                     var applicationServerKey = _urlBase64ToUint8Array(
                         vapidPublicKey
                     );
@@ -42,7 +43,7 @@
                         userVisibleOnly: true
                     };
                     serviceWorkerRegistration.pushManager.subscribe(options).then(function (subscription) {
-
+                        console.log("Subscribe to push - saving to backend");
 
                         var body = {
                             payload: subscription
@@ -58,7 +59,7 @@
                         }).then(function (res) {
                             if (res.status === 200) {
                                 Swal.fire({
-                                    title: 'Push notser aktiverade!',
+                                    title: 'Push notiser aktiverade!',
                                     text: 'Sidan laddas om för ytterligare inställningar',
                                     icon: 'success',
                                     confirmButtonText: 'OK'

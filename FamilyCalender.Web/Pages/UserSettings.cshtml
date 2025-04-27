@@ -103,7 +103,11 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-pmf">Spara inställningarna</button>
+        @if(Model.NotificationSettings.IsRegistered)
+        {
+            <button type="submit" class="btn btn-pmf">Spara inställningarna</button>
+        }
+        
     </form>
 </div>
 
@@ -213,7 +217,7 @@
 
       function checkNotificationPermissionWithTimeout() {
       let timer = 0;
-      const maxWaitTime = 30; // Maximal väntetid i sekunder
+      const maxWaitTime = 15; // Maximal väntetid i sekunder
       const interval = 2000; // Kontrollintervall i millisekunder (2 sekunder)
 
       const permissionCheck = setInterval(() => {
