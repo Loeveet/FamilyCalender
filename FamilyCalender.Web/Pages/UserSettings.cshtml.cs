@@ -16,8 +16,9 @@ namespace FamilyCalender.Web.Pages
 		private static readonly string[] AllowedEmails = new[]
         {
             "loeveet@gmail.com",
-            "mikael.lennander@hotmail.com"
-        };
+            "mikael.lennander@hotmail.com",
+			"carolinaguevara@hotmail.com"
+		};
 
         public async Task<IActionResult> OnGetAsync()
         {
