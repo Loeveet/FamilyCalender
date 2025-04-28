@@ -495,60 +495,60 @@ updateDayNames();
 window.addEventListener("resize", updateDayNames);
 
 
-// #region swipe-monthchange
-document.addEventListener("DOMContentLoaded", function () {
-    let touchStartX = 0;
-    let touchEndX = 0;
+// #region swipe-for-change-month
+//document.addEventListener("DOMContentLoaded", function () {
+//    let touchStartX = 0;
+//    let touchEndX = 0;
 
-    function startSwipe(event) {
-        touchStartX = event.touches ? event.touches[0].clientX : event.clientX;
-    }
+//    function startSwipe(event) {
+//        touchStartX = event.touches ? event.touches[0].clientX : event.clientX;
+//    }
 
-    function endSwipe(event) {
-        touchEndX = event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
-        handleSwipe();
-    }
+//    function endSwipe(event) {
+//        touchEndX = event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
+//        handleSwipe();
+//    }
 
-    function handleSwipe() {
-        let swipeDistance = touchEndX - touchStartX;
-        let threshold = window.innerWidth <= 500 ? window.innerWidth * 0.33 : window.innerWidth * 0.1; // krävs svep 33% på liten skärm, 10% på stor skärm
+//    function handleSwipe() {
+//        let swipeDistance = touchEndX - touchStartX;
+//        let threshold = window.innerWidth <= 500 ? window.innerWidth * 0.33 : window.innerWidth * 0.1; // krävs svep 33% på liten skärm, 10% på stor skärm
 
 
-        if (swipeDistance > threshold) {
-            changeMonth(-1);
-        } else if (swipeDistance < -threshold) {
-            changeMonth(1);
-        }
-    }
+//        if (swipeDistance > threshold) {
+//            changeMonth(-1);
+//        } else if (swipeDistance < -threshold) {
+//            changeMonth(1);
+//        }
+//    }
 
-    function changeMonth(delta) {
-        let url = new URL(window.location.href);
-        let month = parseInt(url.searchParams.get("month")) || new Date().getMonth() + 1;
-        let year = parseInt(url.searchParams.get("year")) || new Date().getFullYear();
-        let calendarId = url.searchParams.get("calendarId");
+//    function changeMonth(delta) {
+//        let url = new URL(window.location.href);
+//        let month = parseInt(url.searchParams.get("month")) || new Date().getMonth() + 1;
+//        let year = parseInt(url.searchParams.get("year")) || new Date().getFullYear();
+//        let calendarId = url.searchParams.get("calendarId");
 
-        month += delta;
-        if (month < 1) {
-            month = 12;
-            year--;
-        } else if (month > 12) {
-            month = 1;
-            year++;
-        }
+//        month += delta;
+//        if (month < 1) {
+//            month = 12;
+//            year--;
+//        } else if (month > 12) {
+//            month = 1;
+//            year++;
+//        }
 
-        url.searchParams.set("month", month);
-        url.searchParams.set("year", year);
-        if (calendarId) {
-            url.searchParams.set("calendarId", calendarId);
-        }
+//        url.searchParams.set("month", month);
+//        url.searchParams.set("year", year);
+//        if (calendarId) {
+//            url.searchParams.set("calendarId", calendarId);
+//        }
 
-        window.location.href = url.toString();
-    }
+//        window.location.href = url.toString();
+//    }
 
-    document.addEventListener("touchstart", startSwipe);
-    document.addEventListener("touchend", endSwipe);
+//    document.addEventListener("touchstart", startSwipe);
+//    document.addEventListener("touchend", endSwipe);
 
-});
+//});
 
 // #endregion
 
