@@ -101,12 +101,12 @@ function validateDateField(dateFieldId, errorFieldId) {
         return true;
     }
 
-    if (dateValue < today) {
-        dateError.textContent = "Datum kan inte vara bakåt i tiden.";
-        dateError.classList.remove("d-none");
-        document.getElementById(dateFieldId).classList.add("is-invalid");
-        return false;
-    }
+    //if (dateValue < today) {
+    //    dateError.textContent = "Datum kan inte vara bakåt i tiden.";
+    //    dateError.classList.remove("d-none");
+    //    document.getElementById(dateFieldId).classList.add("is-invalid");
+    //    return false;
+    //}
 
     dateError.classList.add("d-none");
     document.getElementById(dateFieldId).classList.remove("is-invalid");
