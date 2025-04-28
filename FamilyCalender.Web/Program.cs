@@ -11,6 +11,7 @@ using FamilyCalender.Web.Code;
 using static FamilyCalender.Infrastructure.Services.EmailService;
 using FamilyCalender.Web;
 using FamilyCalender.Infrastructure;
+using Microsoft.AspNetCore.DataProtection;
 
 
 namespace FamilyCalender
@@ -24,7 +25,19 @@ namespace FamilyCalender
 
             builder.Services.AddHttpContextAccessor();
 
-			builder.Services.AddAuthentication()
+
+            var keyPath = Path.Combine(AppContext.BaseDirectory, "DataProtectionKeys");
+
+            if (!Directory.Exists(keyPath))
+            {
+                Directory.CreateDirectory(keyPath);
+            }
+
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(keyPath))
+                .SetApplicationName("FamilyCalendarApp"); //Blir tokigt om det ändras
+
+            builder.Services.AddAuthentication()
 			.AddCookie(GlobalSettings.AuthCookieName, 
 				options =>
 				{

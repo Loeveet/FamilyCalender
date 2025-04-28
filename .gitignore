@@ -370,3 +370,8 @@ MigrationBackup/
 FodyWeavers.xsd
 /FamilyCalender.Infrastructure/FamilyCalender.db
 /FamilyCalender.Web/LogFiles/*.txt
+
+
+# Data Protection keys
+/DataProtectionKeys/
+
