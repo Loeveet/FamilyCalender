@@ -60,7 +60,7 @@ namespace FamilyCalender.Web.Pages
 			return Page();
 		}
 
-		public async Task<IActionResult> OnPostAddEventAsync(List<int> selectedMemberIds, List<string> selectedDays)
+		public async Task<IActionResult> OnPostAddEventAsync(List<int> selectedMemberIds, List<string> selectedDays, int intervalInWeeks = 1)
 		{
 			if (!IsValidInput(selectedMemberIds))
 			{
@@ -68,7 +68,7 @@ namespace FamilyCalender.Web.Pages
 				return Page();
 			}
 
-			var eventMemberDates = ValidateAndGenerateEventMemberDates(selectedDays);
+			var eventMemberDates = ValidateAndGenerateEventMemberDates(selectedDays, intervalInWeeks);
 			if (eventMemberDates == null)
 			{
 				ModelState.AddModelError(string.Empty, "Ange ett giltigt datum eller intervall.");
@@ -157,14 +157,15 @@ namespace FamilyCalender.Web.Pages
 				   ViewModel.SelectedCalendarId > 0;
 		}
 
-		private List<EventMemberDate>? ValidateAndGenerateEventMemberDates(List<string> selectedDays)
+		private List<EventMemberDate>? ValidateAndGenerateEventMemberDates(List<string> selectedDays, int intervalInWeeks)
 		{
 			if (ViewModel.StartDate.HasValue && ViewModel.EndDate.HasValue && selectedDays != null)
 			{
 				return CalendarManagementService.GenerateEventMemberDatesInRangeWithWeekdays(
 					ViewModel.StartDate.Value,
 					ViewModel.EndDate.Value,
-					selectedDays);
+					selectedDays,
+					intervalInWeeks);
 			}
 
 			if (ViewModel.SelectedDate.HasValue)
