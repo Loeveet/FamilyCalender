@@ -20,7 +20,8 @@ namespace FamilyCalender.Web.Pages
 				"loeveet@gmail.com",
 				"mikael.lennander@hotmail.com",
 				"carolinaguevara@hotmail.com",
-			};
+                "jenny.liliegren@outlook.com",
+            };
 
 		[BindProperty]
 		public CalendarOverViewViewModel ViewModel { get; set; } = new CalendarOverViewViewModel();
@@ -151,7 +152,6 @@ namespace FamilyCalender.Web.Pages
 		{
 			return !string.IsNullOrEmpty(ViewModel.EventTitle) &&
 				   ViewModel.SelectedDate.HasValue &&
-				   ViewModel.SelectedDate.Value.Date >= DateTime.Now.Date &&
 				   selectedMemberIds != null &&
 				   selectedMemberIds.Count != 0 &&
 				   ViewModel.SelectedCalendarId > 0;
