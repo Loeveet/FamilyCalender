@@ -88,23 +88,32 @@ namespace FamilyCalender.Infrastructure.Services
 			return days;
 		}
 
-		public static List<EventMemberDate> GenerateEventMemberDatesInRangeWithWeekdays(DateTime start, DateTime end, List<string> selectedDays)
+		public static List<EventMemberDate> GenerateEventMemberDatesInRangeWithWeekdays(DateTime start, DateTime end, List<string> selectedDays, int intervalInWeeks)
 		{
 			var dates = new List<EventMemberDate>();
 			var culture = new CultureInfo("sv-SE");
 
-			for (var date = start; date <= end; date = date.AddDays(1))
-			{
-				var dayOfWeek = culture.DateTimeFormat.GetDayName(date.DayOfWeek);
+			var selectedDaysLower = selectedDays.Select(day => day.ToLower()).ToList();
 
-				if (selectedDays.Any(day => day.Equals(dayOfWeek, StringComparison.OrdinalIgnoreCase)))
+			int totalDays = (end - start).Days;
+			int startWeekNumber = GetIso8601WeekOfYear(start);
+
+			for (int i = 0; i <= totalDays; i++)
+			{
+				var currentDate = start.AddDays(i);
+				var dayName = culture.DateTimeFormat.GetDayName(currentDate.DayOfWeek).ToLower();
+				int currentWeekNumber = GetIso8601WeekOfYear(currentDate);
+				int weekDifference = currentWeekNumber - startWeekNumber;
+
+				if (weekDifference % intervalInWeeks == 0 && selectedDaysLower.Contains(dayName))
 				{
-					dates.Add(new EventMemberDate { Date = date });
+					dates.Add(new EventMemberDate { Date = currentDate });
 				}
 			}
 
 			return dates;
 		}
+
 
 		public static int GetIso8601WeekOfYear(DateTime date)
 		{
