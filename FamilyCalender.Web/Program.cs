@@ -1,16 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using FamilyCalender.Infrastructure.Context;
-using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
-using FamilyCalender.Infrastructure.Repositories;
 using FamilyCalender.Infrastructure.Services;
 using FamilyCalender.Core.Interfaces;
 using Serilog;
 using PublicHoliday;
 using FamilyCalender.Web.Code;
 using static FamilyCalender.Infrastructure.Services.EmailService;
-using FamilyCalender.Web;
-using FamilyCalender.Infrastructure;
 using Microsoft.AspNetCore.DataProtection;
 
 
@@ -91,11 +87,11 @@ namespace FamilyCalender
 
 			var emailSettings = builder.Configuration.GetSection("Email").Get<EmailSettings>() ?? new EmailSettings();
 
-			builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
-			builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-			builder.Services.AddScoped<IEventRepository, EventRepository>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<ICalendarAccessRepository, CalendarAccessRepository>();
+			//builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
+			//builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+			//builder.Services.AddScoped<IEventRepository, EventRepository>();
+            //builder.Services.AddScoped<IUserRepository, UserRepository>();
+            //builder.Services.AddScoped<ICalendarAccessRepository, CalendarAccessRepository>();
 			builder.Services.AddScoped<ICalendarService, CalendarService>();
 			builder.Services.AddScoped<IMemberService, MemberService>();
 			builder.Services.AddScoped<IEventService, EventService>();

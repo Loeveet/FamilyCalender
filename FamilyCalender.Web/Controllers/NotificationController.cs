@@ -1,13 +1,10 @@
 ﻿using FamilyCalender.Web.Code;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Security.Claims;
-using FamilyCalender.Core.Interfaces.IRepositories;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
 using Serilog;
-using WebPush;
 
 namespace FamilyCalender.Web.Controllers
 {

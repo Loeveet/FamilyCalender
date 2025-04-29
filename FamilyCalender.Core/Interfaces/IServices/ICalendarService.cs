@@ -1,17 +1,10 @@
-﻿using FamilyCalender.Core.Interfaces.IRepositories;
-using FamilyCalender.Core.Models.Dto;
+﻿using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Calendar = FamilyCalender.Core.Models.Entities.Calendar;
 
 namespace FamilyCalender.Core.Interfaces.IServices
 {
-    public interface ICalendarService
+	public interface ICalendarService
     {
         Task<Calendar> CreateCalendarAsync(Calendar calendar, User user);
         Task<List<int>> GetCalendarIdsForUserAsync(int id);

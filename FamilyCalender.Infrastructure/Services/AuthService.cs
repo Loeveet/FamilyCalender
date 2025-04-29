@@ -6,16 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamilyCalender.Infrastructure.Services
 {
-	public class AuthService : IAuthService
+	public class AuthService(ApplicationDbContext context, IEmailService emailService) : IAuthService
 	{
-		private readonly ApplicationDbContext _context;
-		private readonly IEmailService _emailService;
+		private readonly ApplicationDbContext _context = context;
+		private readonly IEmailService _emailService = emailService;
 
-		public AuthService(ApplicationDbContext context,  IEmailService emailService)
-		{
-			_context = context;
-			_emailService = emailService;
-		}
 		public async Task<bool> IsValidUserNamePassword(string email, string password)
 		{
 			var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
