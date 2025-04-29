@@ -13,11 +13,13 @@ namespace FamilyCalender.Web.Controllers
 	{
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
+        private readonly PushNotificationService _pushNotificationService;
 
-        public NotificationController(IAuthService authService, IUserService userService)
+        public NotificationController(IAuthService authService, IUserService userService, PushNotificationService pushNotificationService)
         {
             _authService = authService;
             _userService = userService;
+            _pushNotificationService = pushNotificationService;
         }
 		public string Index()
 		{
@@ -69,7 +71,7 @@ namespace FamilyCalender.Web.Controllers
                         await _userService.UpdateNotificationAsync(notificationSettings);
                     }
                     
-                    new PushNotificationService().SendPush(new PushData { Title = "Välkommen till Push", Body = "Du kommer nu ta del av pushnotiser från PMF" },
+                    _pushNotificationService.SendPush(new PushData { Title = "Välkommen till Push", Body = "Nu kan du ta del av pushnotiser från PlaneraMedFlera" },
                         userEmail, data.Payload.Endpoint, data.Payload.Keys.P256dh, data.Payload.Keys.Auth);
 
                     return new JsonResult(new { success = true});
@@ -77,13 +79,13 @@ namespace FamilyCalender.Web.Controllers
                 catch (Exception e)
                 {
 					Log.Error("Error when saving or sending first notification", e);
-                    return new JsonResult(new {success = false, message = "Sorry! Något gick fel vid registreringen av Push! Vänligen kontakta oss så kan vi flesöka närmare"});
+                    return new JsonResult(new {success = false, message = "Sorry! Något gick fel vid registreringen av Push! Vänligen kontakta oss så kan vi felsöka närmare"});
                 }
 			}
 			catch (System.Exception e)
 			{
                 Log.Error("Error when saving or sending first notification. Probelby invalid user", e);
-                return new JsonResult(new { success = false, message = "Sorry! Något gick fel vid registreringen av Push! Vänligen kontakta oss så kan vi flesöka närmare" });
+                return new JsonResult(new { success = false, message = "Sorry! Något gick fel vid registreringen av Push! Vänligen kontakta oss så kan vi felsöka närmare" });
             }
 		}
 

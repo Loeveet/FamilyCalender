@@ -96,12 +96,13 @@ namespace FamilyCalender
 			builder.Services.AddScoped<IMemberService, MemberService>();
 			builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<EmailSettings>(c => emailSettings);
             builder.Services.AddScoped<ICalendarAccessService, CalendarAccessService>();
 			builder.Services.AddScoped<IMemberCalendarService, MemberCalendarService>();
 			builder.Services.AddScoped<IEmailService>(c => new EmailService(emailSettings));
 			builder.Services.AddScoped<EventManagementService>();
 			builder.Services.AddScoped<CalendarManagementService>();
-			builder.Services.AddScoped<InviteService>();
+			builder.Services.AddScoped<PushNotificationService>();
 			builder.Services.AddScoped<IAuthService, AuthService>();
 			builder.Services.AddSingleton(new EncryptionService(EncryptionService.Magic));
             builder.Services.AddSingleton(new PublicHolidayService(new SwedenPublicHoliday(), "SWEDEN"));

@@ -5,28 +5,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamilyCalender.Infrastructure.Services
 {
+
+    
 	public class EventService(ApplicationDbContext context, EncryptionService encryptionService) : IEventService
     {
 		private readonly ApplicationDbContext _context = context;
 		private readonly EncryptionService _encryptionService = encryptionService;
 
-		public async Task<Event> CreateEventAsync(string eventTitle, string text, string eventTime, string eventStopTime, EventCategoryColor categoryColor, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
+		public async Task<Event> CreateEventAsync(NewCalendarEventSaveModel evt)
 		{
 			var newEvent = new Event
 			{
-				Title = _encryptionService.AutoDetectEncryptStringToString(eventTitle, calendarId.ToString()),
-				CalendarId = calendarId,
-				Text = _encryptionService.AutoDetectEncryptStringToString(text, calendarId.ToString()),
-				EventCategoryColor = categoryColor,
-				EventTime = eventTime,
-				EventStopTime = eventStopTime
+				Title = _encryptionService.AutoDetectEncryptStringToString(evt.Title, evt.CalendarId.ToString()),
+				CalendarId = evt.CalendarId,
+				Text = _encryptionService.AutoDetectEncryptStringToString(evt.Text ?? "", evt.CalendarId.ToString()),
+				EventCategoryColor = evt.CategoryColor,
+				EventTime = evt.EventStartTime ?? "",
+				EventStopTime = evt.EventStopTime ?? ""
 			};
 
 			var addedEvent = await AddAsync(newEvent);
 
-			foreach (var memberId in memberIds)
+			foreach (var memberId in evt.MemberIds)
 			{
-				foreach (var eventMemberDate in eventMemberDates)
+				foreach (var eventMemberDate in evt.EventMemberDates)
 				{
 					var memberEventDate = new EventMemberDate
 					{
