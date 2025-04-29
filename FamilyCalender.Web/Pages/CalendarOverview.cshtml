@@ -5,13 +5,8 @@
 @{
 	ViewData["Title"] = "Calendar";
 	ViewData["ShowCalendarSelector"] = true;
+    ViewData[GlobalSettings.ShowCalendarMenu] = false; 
 }
-
-@if (Model.ViewModel.ShowUserSettings)
-{
-	<a href="/UserSettings" class="btn btn-pmf">NotificationSetup</a>
-}
-
 
 @if (Model.ViewModel.SelectedCalendarId == 0)
 {

@@ -12,19 +12,12 @@ namespace FamilyCalender.Web.Pages
     public class CalendarOverviewModel(
 			CalendarManagementService calendarManagementService,
             PublicHolidayService publicHolidayService,
+			PushNotificationService pushNotificationService,
             IAuthService authService) : BasePageModel(authService)
 	{
 		private readonly CalendarManagementService _calendarManagementService = calendarManagementService;
 
-		private static readonly string[] AllowedEmails = new[]
-	 {
-				"loeveet@gmail.com",
-				"mikael.lennander@hotmail.com",
-				"carolinaguevara@hotmail.com",
-                "jenny.liliegren@outlook.com",
-            };
-
-		[BindProperty]
+        [BindProperty]
 		public CalendarOverViewViewModel ViewModel { get; set; } = new CalendarOverViewViewModel();
 
 		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
@@ -35,7 +28,6 @@ namespace FamilyCalender.Web.Pages
 				return RedirectToPage("/Login");
 			}
 
-			ViewModel.ShowUserSettings = AllowedEmails.Contains(user.Email);
 			SetCurrentYearAndMonth(year, month);
 
             var publicHolidays = publicHolidayService.GetHolidays(ViewModel.CurrentYear);
@@ -76,37 +68,34 @@ namespace FamilyCalender.Web.Pages
 				return Page();
 			}
 
-			await _calendarManagementService.CreateEventAsync(
-				ViewModel.EventTitle,
-				ViewModel.EventText ?? "",
-				ViewModel.EventTime ?? "",
-				ViewModel.EventStopTime ?? "",
-				ViewModel.SelectedCategoryColor,
-				eventMemberDates,
-				ViewModel.SelectedCalendarId,
-				selectedMemberIds);
+            var evt = new NewCalendarEventSaveModel()
+            {
+                Title = ViewModel.EventTitle,
+                Text = ViewModel.EventText,
+                EventStartTime = ViewModel.EventTime,
+                EventStopTime = ViewModel.EventStopTime,
+                CategoryColor = ViewModel.SelectedCategoryColor,
+                EventMemberDates = eventMemberDates,
+                CalendarId = ViewModel.SelectedCalendarId,
+                MemberIds = selectedMemberIds
+            };
+            await _calendarManagementService.CreateEventAsync(evt);
+			//await _calendarManagementService.CreateEventAsync(
+			//	ViewModel.EventTitle,
+			//	ViewModel.EventText ?? "",
+			//	ViewModel.EventTime ?? "",
+			//	ViewModel.EventStopTime ?? "",
+			//	ViewModel.SelectedCategoryColor,
+			//	eventMemberDates,
+			//	ViewModel.SelectedCalendarId,
+			//	selectedMemberIds);
 
 			var user = await GetCurrentUserAsync();
 
-			//var users = await _calendarManagementService.GetPushSubscribers(ViewModel.SelectedCalendarId, user.Id);
-			var users = await _calendarManagementService.GetPushSubscribers(ViewModel.SelectedCalendarId, -1); // so we always get push during beta
-			foreach (var pushUser in users)
-			{
-				if (pushUser.NotificationSetting != null)
-				{
-					new PushNotificationService().SendPush(new PushData()
-					{
-						Title = $"{user.Email} Skapade {ViewModel.EventTitle}",
-						Body = $"{eventMemberDates.FirstOrDefault().Date.ToString("yyyy-MM-dd")} {ViewModel.EventTime ?? ""} {ViewModel.EventText ?? ""}"
-					},
-					pushUser.Email,
-					pushUser.NotificationSetting.Endpoint, pushUser.NotificationSetting.P256dh, pushUser.NotificationSetting.Auth);
-				}
-				
-			}
-			
-				
-			return RedirectToPage("./CalendarOverview", new
+            //var users = await _calendarManagementService.GetPushSubscribers(ViewModel.SelectedCalendarId, user.Id);
+            await pushNotificationService.SendPush(evt, user);
+
+            return RedirectToPage("./CalendarOverview", new
 			{
 				year = ViewModel.CurrentYear,
 				month = ViewModel.CurrentMonth,

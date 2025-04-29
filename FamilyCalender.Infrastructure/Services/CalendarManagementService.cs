@@ -49,9 +49,9 @@ namespace FamilyCalender.Infrastructure.Services
 			return await _memberService.GetMembersForCalendarAsync(calendarId);
 		}
 
-		public async Task CreateEventAsync(string eventTitle, string text, string eventTime, string eventStopTime, EventCategoryColor categoryColor, List<EventMemberDate> eventMemberDates, int calendarId, List<int> memberIds)
+		public async Task CreateEventAsync(NewCalendarEventSaveModel model)
 		{
-			await _eventService.CreateEventAsync(eventTitle, text, eventTime, eventStopTime, categoryColor, eventMemberDates, calendarId, memberIds);
+			await _eventService.CreateEventAsync(model);
 		}
 
 		//public static List<DayViewModel> GenerateMonthDays(int year, int month, CultureInfo cultureInfo, List<PublicHoliday> publicHolidays)

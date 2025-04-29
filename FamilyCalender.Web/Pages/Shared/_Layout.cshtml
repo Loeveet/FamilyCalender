@@ -1,4 +1,5 @@
 ﻿@using System.Security.Claims
+@using FamilyCalender.Web.Code
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,7 +53,14 @@
                                 <a class="nav-link text-dark" asp-area="" asp-page="/CreateCalendar">Skapa kalender</a>
                             </li>
 
-                            @if (ViewData["ShowCalendarSelector"] as bool? == true && Model?.ViewModel?.CalendarDtos?.Count > 1)
+                            @if (ViewData[GlobalSettings.ShowCalendarMenu] as bool? == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-page="/CalendarOverview">Kalender</a>
+                                </li>
+                            }
+
+                             @if (ViewData["ShowCalendarSelector"] as bool? == true && Model?.ViewModel?.CalendarDtos?.Count > 1)
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="calendarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -69,6 +77,20 @@
                                             </li>
                                         }
                                     </ul>
+                                </li>
+                            }
+
+                            @if (ViewData[GlobalSettings.ShowBetaTesterMenu] as bool? == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-page="/UserSettings">Min Profil</a>
+                                </li>
+                            }
+
+                            @if (ViewData[GlobalSettings.ShowSuperAdminMenu] as bool? == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-page="/SuperAdmin">SuperAdmin</a>
                                 </li>
                             }
                         }

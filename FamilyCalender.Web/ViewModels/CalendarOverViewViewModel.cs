@@ -26,7 +26,6 @@ namespace FamilyCalender.Web.ViewModels
         public DateTime? EndDate { get; set; }
         public ICollection<string> SelectedDays { get; set; } = [];
 
-		public bool ShowUserSettings { get; set; }
 		public string CapitalizedMonthName
 		{
 			get
