@@ -565,7 +565,7 @@ function CopyShareLink()
     navigator.clipboard.writeText(copyText.value).then(function () {
         // Optional: Add a feedback mechanism for the user that the link was copied.
         Swal.fire({
-            title: "Lönken kopierad",
+            title: "Länken kopierad",
             text: "Du kan nu enkelt dela den via ett sms eller mail genom att klistra in den från minnet",
             icon: "info"
         });

@@ -3,10 +3,102 @@
 @{
     string returnUrl = HttpContext.Request.Query["returnUrl"];
     bool isInviteRequest = !string.IsNullOrWhiteSpace(returnUrl) && returnUrl.Contains("invite", StringComparison.CurrentCultureIgnoreCase);
+    Layout = "Shared/_LayoutPublic";
 }
 
+<style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .btn-primary {
+            background-color: #1e3a8a;
+            border-color: #1e3a8a;
+        }
 
+    .btn-secondary {
+        background-color: #ff6f61;
+        border-color: #ff6f61;
+    }
 
+    .btn-primary:hover {
+            background-color: #ff6f61;
+            border-color: #ff6f61;
+    }
+        .form-check-label {
+            font-size: 0.9rem;
+        }
+        .form-text a {
+            text-decoration: none;
+        }
+    </style>
+
+<div class="login-container">
+    <div class="login-header">
+        <img src="/images/favicon-32x32.png" alt="logo" class="mb-2" />
+        <h2>Logga in</h2>
+        <p class="text-muted">Välkommen tillbaka!</p>
+    </div>
+    
+    <form id="loginForm" method="post">
+        <h2>Logga in</h2>
+        <hr/>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        @if (isInviteRequest)
+        {
+
+            <div class="text-info" role="alert">Logga först in för att kunna ansluta till kalendern</div>
+        }
+
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <div class="form-floating mb-3">
+            <input asp-for="Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com"/>
+            <label asp-for="Email">E-post</label>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-floating mb-3">
+            <label asp-for="Password">Lösenord</label>
+            <div class="position-relative">
+                <input asp-for="Password"
+                       id="LoginPassword"
+                       type="password"
+                       class="form-control"
+                       placeholder="Lösenord"
+                       autocomplete="new-password"
+                       aria-required="true"
+                       style="padding-right: 2.5rem; height:58px;" />
+                <i class="bi bi-eye-slash"
+                   id="eye-icon-LoginPassword"
+                   onclick="togglePasswordVisibilityLogin('LoginPassword')"
+                   style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2em; z-index: 10; background: white; color: #6c757d;"></i>
+            </div>                <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="w-100 btn btn-lg btn-primary">Logga in</button>
+        <br/>
+        <br/>
+        <a class="w-100 btn btn-lg btn-secondary" href="/">Tillbaka</a>
+    </form>
+</div>
+@*
 <div class="row">
     <div class="col-md-4">
         <form id="loginForm" method="post">
@@ -59,6 +151,7 @@
 
     </div>
 </div>
+*@
 
 <script>
     function togglePasswordVisibilityLogin(inputId) {
