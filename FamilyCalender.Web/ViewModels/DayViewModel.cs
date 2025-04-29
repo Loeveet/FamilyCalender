@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FamilyCalender.Core.Models.Entities;
+using FamilyCalender.Web.Code;
 
-namespace FamilyCalender.Core.Models.ViewModels
+namespace FamilyCalender.Web.ViewModels
 {
     public class DayViewModel
     {
@@ -16,7 +17,7 @@ namespace FamilyCalender.Core.Models.ViewModels
         public int WeekOfYear { get; set; }
         public bool ShowWeekNumber { get; set; }
         public ICollection<EventMemberDate> Events { get; set; } = [];
-        public PublicHoliday? PublicHoliday { get; set; } = null;
+        public PublicHolidayInfo? PublicHoliday { get; set; } = null;
     }
 
 }

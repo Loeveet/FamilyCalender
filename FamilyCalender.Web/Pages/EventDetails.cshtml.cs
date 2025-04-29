@@ -1,4 +1,4 @@
-using FamilyCalender.Core.Models.ViewModels;
+using FamilyCalender.Web.ViewModels;
 using FamilyCalender.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

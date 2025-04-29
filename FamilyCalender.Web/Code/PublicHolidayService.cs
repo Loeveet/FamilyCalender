@@ -3,7 +3,7 @@ using PublicHoliday;
 
 namespace FamilyCalender.Web.Code
 {
-    public class PublicHolidayService
+	public class PublicHolidayService
     {
         private readonly PublicHolidayBase _publicHoliday;
         private string _uniqueKey;
@@ -20,13 +20,13 @@ namespace FamilyCalender.Web.Code
            
         }
 
-        public List<Core.Models.PublicHoliday> GetHolidays(int year)
+        public List<PublicHolidayInfo> GetHolidays(int year)
         {
-            var fromCache = GetFromCache<List<Core.Models.PublicHoliday>>(year);
+            var fromCache = GetFromCache<List<PublicHolidayInfo>>(year);
             if (fromCache == null || !fromCache.Any())
             {
                 var result = _publicHoliday.PublicHolidayNames(year)
-                    .Select(c => new Core.Models.PublicHoliday
+                    .Select(c => new PublicHolidayInfo
                     {
                         DateTime = c.Key,
                         HolidayName = c.Value

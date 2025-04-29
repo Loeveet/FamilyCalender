@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FamilyCalender.Core.Models.Entities;
 
-namespace FamilyCalender.Core.Models.ViewModels
+namespace FamilyCalender.Web.ViewModels
 {
     public class EventDetailsViewModel
     {
