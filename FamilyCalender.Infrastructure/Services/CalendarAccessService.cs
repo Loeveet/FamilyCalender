@@ -1,31 +1,33 @@
-﻿using FamilyCalender.Core.Interfaces.IRepositories;
-using FamilyCalender.Core.Interfaces.IServices;
+﻿using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
-using FamilyCalender.Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FamilyCalender.Infrastructure.Context;
 
 namespace FamilyCalender.Infrastructure.Services
 {
-    public class CalendarAccessService : ICalendarAccessService
+	public class CalendarAccessService(ApplicationDbContext context) : ICalendarAccessService
     {
-        private readonly ICalendarAccessRepository _calendarAccessRepository;
+		private readonly ApplicationDbContext _context = context;
 
-        public CalendarAccessService(ICalendarAccessRepository calendarAccessRepository)
+		public async Task CreateCalendarAccessAsync(CalendarAccess access)
         {
-            _calendarAccessRepository = calendarAccessRepository;
-        }
-        public async Task CreateCalendarAccessAsync(CalendarAccess access)
-        {
-            await _calendarAccessRepository.AddAsync(access);
+			_context.CalendarAccesses.Add(access);
+			await _context.SaveChangesAsync();
 		}
-        public async Task RemoveUserFromCalendarAccessAsync(int currentUserId, int calendarId)
+        public async Task RemoveUserFromCalendarAccessAsync(int userId, int calendarId)
         {
-            await _calendarAccessRepository.RemoveAsync(currentUserId, calendarId);
-        }
+			var calendarAccess = _context.CalendarAccesses
+				.Where(ca => ca.UserId == userId && ca.CalendarId == calendarId)
+				.FirstOrDefault();
+
+			if (calendarAccess != null)
+			{
+				_context.CalendarAccesses.Remove(calendarAccess);
+				await _context.SaveChangesAsync();
+			}
+			else
+			{
+				throw new InvalidOperationException("Användaren är inte kopplad till denna kalender.");
+			}
+		}
 	}
 }

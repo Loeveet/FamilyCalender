@@ -13,24 +13,17 @@ using FamilyCalender.Core.Models;
 
 namespace FamilyCalender.Infrastructure.Services
 {
-    public class CalendarManagementService
-	{
-		private readonly ICalendarService _calendarService;
-		private readonly IEventService _eventService;
-		private readonly IMemberService _memberService;
-		private readonly ICalendarAccessService _calendarAccessService;
-
-		public CalendarManagementService(
+    public class CalendarManagementService(
 			ICalendarService calendarService,
 			IEventService eventService,
 			IMemberService memberService,
 			ICalendarAccessService calendarAccessService)
-		{
-			_calendarService = calendarService;
-			_eventService = eventService;
-			_memberService = memberService;
-			_calendarAccessService = calendarAccessService;
-		}
+	{
+		private readonly ICalendarService _calendarService = calendarService;
+		private readonly IEventService _eventService = eventService;
+		private readonly IMemberService _memberService = memberService;
+		private readonly ICalendarAccessService _calendarAccessService = calendarAccessService;
+
 		public async Task<List<int>> GetCalendarIdsForUserAsync(int userId)
 		{
 			return await _calendarService.GetCalendarIdsForUserAsync(userId);

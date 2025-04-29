@@ -9,16 +9,10 @@ using System.Threading.Tasks;
 
 namespace FamilyCalender.Infrastructure.Services
 {
-	public class EventManagementService
+	public class EventManagementService(IEventService eventService, IMemberService memberService)
 	{
-		private readonly IEventService _eventService;
-		private readonly IMemberService _memberService;
-
-		public EventManagementService(IEventService eventService, IMemberService memberService)
-		{
-			_eventService = eventService;
-			_memberService = memberService;
-		}
+		private readonly IEventService _eventService = eventService;
+		private readonly IMemberService _memberService = memberService;
 
 		public async Task<Event?> GetEventDetailsAsync(int eventId)
 		{
