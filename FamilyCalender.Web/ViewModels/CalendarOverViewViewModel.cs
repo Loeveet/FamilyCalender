@@ -4,7 +4,7 @@ using FamilyCalender.Core.Models.Dto;
 using FamilyCalender.Core.Models.Entities;
 using Calendar = FamilyCalender.Core.Models.Entities.Calendar;
 
-namespace FamilyCalender.Core.Models.ViewModels
+namespace FamilyCalender.Web.ViewModels
 {
     public class CalendarOverViewViewModel
     {

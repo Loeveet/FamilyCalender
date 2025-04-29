@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using FamilyCalender.Infrastructure.Services;
-using FamilyCalender.Core.Models.ViewModels;
+using FamilyCalender.Web.ViewModels;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Web.Code;
+using System.Globalization;
 
 
 namespace FamilyCalender.Web.Pages
@@ -39,7 +40,7 @@ namespace FamilyCalender.Web.Pages
 
             var publicHolidays = publicHolidayService.GetHolidays(ViewModel.CurrentYear);
 
-			ViewModel.DaysInMonth = CalendarManagementService.GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo, publicHolidays);
+			ViewModel.DaysInMonth = GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo, publicHolidays);
 
             var calendarDtos = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
 			ViewModel.CalendarDtos = calendarDtos;
@@ -161,7 +162,7 @@ namespace FamilyCalender.Web.Pages
 		{
 			if (ViewModel.StartDate.HasValue && ViewModel.EndDate.HasValue && selectedDays != null)
 			{
-				return CalendarManagementService.GenerateEventMemberDatesInRangeWithWeekdays(
+				return GenerateEventMemberDatesInRangeWithWeekdays(
 					ViewModel.StartDate.Value,
 					ViewModel.EndDate.Value,
 					selectedDays,
@@ -177,6 +178,79 @@ namespace FamilyCalender.Web.Pages
 			}
 
 			return null;
+		}
+
+		public static List<DayViewModel> GenerateMonthDays(int year, int month, CultureInfo cultureInfo, List<PublicHolidayInfo> publicHolidays)
+		{
+			var daysCount = DateTime.DaysInMonth(year, month);
+			var days = new List<DayViewModel>();
+
+			for (var day = 1; day <= daysCount; day++)
+			{
+				var date = new DateTime(year, month, day);
+				var weekOfYear = GetIso8601WeekOfYear(date);
+				string dayName = date.ToString("dddd", cultureInfo);
+
+				days.Add(new DayViewModel
+				{
+					Date = date,
+					IsCurrentDay = date.Date == DateTime.Today,
+					IsPastDay = date.Date < DateTime.Today,
+					WeekOfYear = weekOfYear,
+					ShowWeekNumber = date.DayOfWeek == DayOfWeek.Monday || date.Day == 1,
+					CapitalizedDayName = char.ToUpper(dayName[0]) + dayName.Substring(1),
+					PublicHoliday = publicHolidays.FirstOrDefault(x => x.DateTime.Year == year && x.DateTime.Month == month && x.DateTime.Day == day)
+				});
+			}
+
+			return days;
+		}
+		public static List<EventMemberDate> GenerateEventMemberDatesInRangeWithWeekdays(DateTime start, DateTime end, List<string> selectedDays, int intervalInWeeks)
+		{
+			var dates = new List<EventMemberDate>();
+			var culture = new CultureInfo("sv-SE");
+
+			var selectedDaysLower = selectedDays.Select(day => day.ToLower()).ToList();
+
+			int totalDays = (end - start).Days;
+			int startWeekNumber = GetIso8601WeekOfYear(start);
+
+			for (int i = 0; i <= totalDays; i++)
+			{
+				var currentDate = start.AddDays(i);
+				var dayName = culture.DateTimeFormat.GetDayName(currentDate.DayOfWeek).ToLower();
+				int currentWeekNumber = GetIso8601WeekOfYear(currentDate);
+				int weekDifference = currentWeekNumber - startWeekNumber;
+
+				if (weekDifference % intervalInWeeks == 0 && selectedDaysLower.Contains(dayName))
+				{
+					dates.Add(new EventMemberDate { Date = currentDate });
+				}
+			}
+
+			return dates;
+		}
+
+
+		public static int GetIso8601WeekOfYear(DateTime date)
+		{
+			var day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(date);
+
+			if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+			{
+				date = date.AddDays(3);
+			}
+
+			int weekNumber = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+				date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday
+			);
+
+			if (weekNumber == 1 && date.Month == 12)
+			{
+				return 53;
+			}
+
+			return weekNumber;
 		}
 	}
 }
