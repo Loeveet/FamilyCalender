@@ -14,6 +14,8 @@
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: #6c757d;
     --bs-btn-disabled-border-color: #6c757d;
+    --bs-border-radius-pill: 50rem;
+    border-radius:50rem;
 }
 
 .btn-pmf-outline {
@@ -30,7 +32,9 @@
     --bs-btn-disabled-color: var(--pmf-blue);
     --bs-btn-disabled-bg: transparent;
     --bs-btn-disabled-border-color: var(--pmf-blue);
-    --bs-gradient: none
+    --bs-gradient: none; 
+    --bs-border-radius-pill: 50rem;
+    border-radius: 50rem;
 }
 
 .btn-pmf-inverted {
@@ -40,6 +44,8 @@
     --bs-btn-hover-color: var(--pmf-blue);
     --bs-btn-hover-bg: #FFF;
     --bs-btn-hover-border-color: var(--pmf-blue);
+    --bs-border-radius-pill: 50rem;
+    border-radius: 50rem;
     /*--bs-btn-focus-shadow-rgb: 130,138,145;
     --bs-btn-active-color: #fff;
     --bs-btn-active-bg: #565e64;

@@ -95,11 +95,11 @@
 
 	<!-- Action Buttons -->
 	<div class="d-flex justify-content-between mt-3">
-		<button class="btn btn-secondary btn-lg flex-fill me-2" data-bs-toggle="modal" data-bs-target="#editEventModal">
+		<button class="btn btn-pmf btn-lg flex-fill me-2" data-bs-toggle="modal" data-bs-target="#editEventModal">
 			<i class="bi bi-pencil-square"></i>
 			Redigera
 		</button>
-		<button class="btn btn-danger btn-lg flex-fill ms-2" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
+		<button class="btn btn-pmf-inverted btn-lg flex-fill ms-2" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
 			<i class="bi bi-trash"></i>
 			Radera
 		</button>
@@ -222,8 +222,8 @@
 					<input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
 					<input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
 					<input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
-					<button type="submit" class="btn btn-danger">Radera</button>
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+					<button type="submit" class="btn btn-pmf-inverted">Radera</button>
+                    <button type="button" class="btn btn-pmf" data-bs-dismiss="modal">Avbryt</button>
 				</div>
 			</form>
 		</div>
@@ -232,7 +232,7 @@
 
 <!-- Modal för att redigera eventet -->
 <div class="modal fade" id="editEventModal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -409,12 +409,12 @@
                         <input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
                         <input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
 
-                        <button type="submit" class="btn btn-primary">Spara ändringar</button>
+                        <button type="submit" class="btn btn-pmf">Spara ändringar</button>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
+                <button type="button" class="btn btn-pmf-inverted" data-bs-dismiss="modal">Stäng</button>
             </div>
         </div>
     </div>

@@ -2,64 +2,98 @@
 @model FamilyCalender.Web.Pages.SuperAdminModel
 @{
 }
+
+<link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.2.2/datatables.min.css" rel="stylesheet" integrity="sha384-WMi+Ec+QE8hxW/3qKvuefShIddYjwMalSgy0MR4FZnl285C4HGYfISceaagw0Am3" crossorigin="anonymous">
+
+<script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.2.2/datatables.min.js" integrity="sha384-WcZXtPeSp12Ybwm08R/IL8F3bMhrj0WW6jKsqKXTqJSwCSkISe4unYVY8Vzc1RZc" crossorigin="anonymous"></script>
 @if (Model.IsAdmin)
 {
 
-	<h2>Adminöversikt</h2>
-	<ul>
-		<li>Totalt antal användare: @Model.Users.Count</li>
-		<li>Verifierade användare: @Model.VerifiedUsers</li>
-		<li>Totalt antal kalendrar: @Model.Calendars.Count</li>
-	</ul>
+    <h2>Adminöversikt</h2>
+    <ul>
+        <li>Totalt antal användare: @Model.Users.Count</li>
+        <li>Verifierade användare: @Model.VerifiedUsers</li>
+        <li>Totalt antal kalendrar: @Model.Calendars.Count</li>
+    </ul>
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th>E-post</th>
-				<th>Verifierad</th>
-				<th>Antal egna kalendrar</th>
-				<th>Registrerad</th>
-				<th>Tillgång till antal kalendrar</th>
-				<th></th>
+    <div class="table-responsive">
+        <table class="table" id="user-table">
+            <thead>
+                <tr>
+                    <th>E-post</th>
+                    <th>Verifierad</th>
+                    <th>Antal egna kalendrar</th>
+                    <th>Registrerad</th>
+                    <th>Tillgång till antal kalendrar</th>
+                    <th></th>
 
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var user in Model.Users)
-			{
-				<tr>
-					<td>@user.Email</td>
-					<td>@(user.IsVerified ? "Ja" : "Nej")</td>
-					<td>@(user.OwnedCalendars.Count)</td>
-					<td>@user.VerificationDateUtc</td>
-					<td>@user.CalendarAccesses.Count</td>
-					<td>
-						<button class="btn btn-danger">Ta bort</button>
-					</td>
-				</tr>
-			}
-		</tbody>
-	</table>
-
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Namn</th>
-				<th>Antal event</th>
-				<th>Antal användare</th>
-				<th>Antal medlemmar</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var cal in Model.Calendars)
-			{
-				<tr>
-					<td>@cal.Name</td>
-					<td>@(cal.Events.Count)</td>
-					<td>@(cal.Accesses.Count)</td>
-					<td>@cal.MemberCalendars.Count</td>
-				</tr>
-			}
-		</tbody>
-	</table>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.Email</td>
+                        <td>@(user.IsVerified ? "Ja" : "Nej")</td>
+                        <td>@(user.OwnedCalendars.Count)</td>
+                        <td>@user.VerificationDateUtc</td>
+                        <td>@user.CalendarAccesses.Count</td>
+                        <td>
+                            <button class="btn btn-danger">Ta bort</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive">
+        <table class="table" id="calendar-table">
+            <thead>
+                <tr>
+                    <th>Namn</th>
+                    <th>Antal event</th>
+                    <th>Antal användare</th>
+                    <th>Antal medlemmar</th>
+                    <th>Senast använd (utc)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cal in Model.Calendars)
+                {
+                    <tr>
+                        <td>@cal.Name <small>(@cal.Owner.Email)</small></td>
+                        <td>@(cal.Events.Count)</td>
+                        <td>@(cal.Accesses.Count)</td>
+                        <td>@cal.MemberCalendars.Count</td>
+                        <td>
+                            @if (cal.Events.Any() && cal.Events.LastOrDefault().LastEditedUtc.HasValue)
+                            {
+                                <span>@cal.Events.LastOrDefault().LastEditedUtc.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                            }
+                            else
+                            {
+                                <span></span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
+
+
+<script>
+    new DataTable('#user-table', {
+        lengthMenu: [
+            [50, 100, -1],
+            [50, 100, 'All']
+        ]
+    });
+    new DataTable('#calendar-table', {
+        lengthMenu: [
+            [50, 100, -1],
+            [50, 100, 'All']
+        ]
+    });
+</script>

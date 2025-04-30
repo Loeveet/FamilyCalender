@@ -44,28 +44,10 @@
         font-weight: 500;
     }
 
-    button {
-        display: block;
-        width: 100%;
-        padding: 0.75rem;
-        font-size: 1rem;
-        border: none;
-        background-color: #3b82f6;
-        color: white;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        margin-top: 1rem;
-    }
-
-        button:hover {
-            background-color: #2563eb;
-        }
 </style>
 
 <div class="notification-container">
-    @*  <div class="logo">
-        <img src="/images/kalender-logo.png" alt="PlaneraMedFlera Logotyp">
-    </div> *@
+  
     <h1>Pushnotiser</h1>
 
 
@@ -105,7 +87,7 @@
 
         @if(Model.NotificationSettings.IsRegistered)
         {
-            <button type="submit" class="btn btn-pmf">Spara inställningarna</button>
+            <button type="submit" class="btn btn-pmf" style="width:100%;">Spara inställningarna</button>
         }
         
     </form>
