@@ -11,18 +11,16 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task DeleteEventAsync(int eventId);
         Task DeleteEventMemberDateAsync(int eventId, int memberId, DateTime day);
         Task DeleteAllEventMemberDatesAsync(int eventId, int memberId);
-        Task<List<User>> GetPushSubscribers(int calendarId, int exceptUserId);
+        Task<List<User>> GetPushSubscribersNewEvent(int calendarId, int exceptUserId);
+		Task<List<User>> GetPushSubscribersUpdateEvent(int calendarId, int exceptUserId);
+		Task<List<User>> GetPushSubscribersDeleteEvent(int calendarId, int exceptUserId);
+        Task<List<User>> GetPushSubscribersInviteAcceptEvents(int calendarId, int exceptUserId);
 	}
+        
 
-    public class NewCalendarEventSaveModel
+
+	public class NewCalendarEventSaveModel : Event
     {
-        public string Title { get; set; }
-        public string Text { get; set; }
-        public string EventStartTime { get; set; }
-        public string EventStopTime { get; set; }
-        public EventCategoryColor CategoryColor { get; set; }
-        public List<EventMemberDate> EventMemberDates { get; set; } = new();
-        public int CalendarId { get; set; }
         public List<int> MemberIds { get; set; } = new();
 
     }

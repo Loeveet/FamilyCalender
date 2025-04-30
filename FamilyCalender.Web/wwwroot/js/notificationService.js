@@ -14,7 +14,7 @@
 
     function registerServiceWorker() {
         
-        navigator.serviceWorker.register("push_service_0004.js", { scope: '/' }).then(function (reg) {
+        navigator.serviceWorker.register("push_service_0005.js", { scope: '/' }).then(function (reg) {
             window.Notification.requestPermission().then(function (perm) {
                 if (perm !== "granted") {
                     console.log("Permission not granted for Notification");

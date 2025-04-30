@@ -51,8 +51,8 @@ namespace FamilyCalender.Web.Pages
             {
 				await userService.UpdateNotificationAsync(NotificationSettings.UserNotificationSetting);
 			}
-             
-			return Page();
+
+			return RedirectToPage("./UserSettings");
 		}
 
 

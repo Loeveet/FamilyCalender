@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Globalization;
 using FamilyCalender.Core.Models.Entities;
+using FamilyCalender.Web.Code;
+using FamilyCalender.Core.Interfaces.IServices;
 
 namespace FamilyCalender.Web.Pages
 {
-	public class EventDetailsModel(EventManagementService eventManagementService) : PageModel
+	public class EventDetailsModel(EventManagementService eventManagementService, PushNotificationService pushNotificationService, IAuthService authService) : BasePageModel(authService)
 	{
 		private readonly EventManagementService _eventManagementService = eventManagementService;
 
@@ -88,6 +90,8 @@ namespace FamilyCalender.Web.Pages
 			await _eventManagementService.UpdateEventAsync(eventToUpdate, selectedMemberIds, editOption, ViewModel.StartDate, ViewModel.EndDate, ViewModel.NewDate, selectedDays);
 			ViewModel.SelectedDays = selectedDays;
 
+			
+			await pushNotificationService.SendPush(eventToUpdate, false, await GetCurrentUserAsync()); 
 
 			if (!eventToUpdate.EventMemberDates.Any(e => e.Date == ViewModel.Day) && editOption == "all")
 			{
@@ -105,6 +109,7 @@ namespace FamilyCalender.Web.Pages
 			}
 
 			await _eventManagementService.DeleteEventAsync(ViewModel.EventId, ViewModel.MemberId, ViewModel.Day, selectedMemberIds, deleteOption);
+			await pushNotificationService.SendPush(ViewModel.EventDetails, true, await GetCurrentUserAsync());
 
 			return RedirectToPage("./CalendarOverview", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
 		}
