@@ -72,9 +72,9 @@ namespace FamilyCalender.Web.Pages
             {
                 Title = ViewModel.EventTitle,
                 Text = ViewModel.EventText,
-                EventStartTime = ViewModel.EventTime,
+                EventTime = ViewModel.EventTime,
                 EventStopTime = ViewModel.EventStopTime,
-                CategoryColor = ViewModel.SelectedCategoryColor,
+                EventCategoryColor = ViewModel.SelectedCategoryColor,
                 EventMemberDates = eventMemberDates,
                 CalendarId = ViewModel.SelectedCalendarId,
                 MemberIds = selectedMemberIds

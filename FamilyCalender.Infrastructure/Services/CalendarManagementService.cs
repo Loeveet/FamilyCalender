@@ -172,9 +172,33 @@ namespace FamilyCalender.Infrastructure.Services
 			return calendar.OwnerId == userId;
 		}
 
-		public async Task<List<User>> GetPushSubscribers(int calendarId, int exceptUserId)
+		public async Task<List<User>> GetPushSubscribers(int calendarId, int exceptUserId, SubscriberType type)
 		{
-			return await _eventService.GetPushSubscribers(calendarId, exceptUserId);
+			switch (type)
+			{
+				case SubscriberType.NewCalendarEvent:
+					return await _eventService.GetPushSubscribersNewEvent(calendarId, exceptUserId);
+				case SubscriberType.UpdateCalendarEvent:
+					return await _eventService.GetPushSubscribersUpdateEvent(calendarId, exceptUserId);
+				case SubscriberType.DeleteCalendarEvent:
+					return await _eventService.GetPushSubscribersDeleteEvent(calendarId, exceptUserId);
+			
+
+				default:
+					return new List<User>();
+			}
 		}
+
+		public async Task<User> GetOwnerPushSettings(int calendarId)
+		{
+			return await _calendarService.GetOwnerForCalendar(calendarId);
+		}
+	}
+
+	public enum SubscriberType
+	{
+		NewCalendarEvent,
+		UpdateCalendarEvent,
+		DeleteCalendarEvent,
 	}
 }

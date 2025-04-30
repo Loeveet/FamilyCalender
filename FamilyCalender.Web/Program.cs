@@ -103,6 +103,7 @@ namespace FamilyCalender
 			builder.Services.AddScoped<EventManagementService>();
 			builder.Services.AddScoped<CalendarManagementService>();
 			builder.Services.AddScoped<PushNotificationService>();
+			builder.Services.AddScoped<InviteService>();
 			builder.Services.AddScoped<IAuthService, AuthService>();
 			builder.Services.AddSingleton(new EncryptionService(EncryptionService.Magic));
             builder.Services.AddSingleton(new PublicHolidayService(new SwedenPublicHoliday(), "SWEDEN"));

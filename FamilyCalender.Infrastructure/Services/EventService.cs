@@ -19,8 +19,8 @@ namespace FamilyCalender.Infrastructure.Services
 				Title = _encryptionService.AutoDetectEncryptStringToString(evt.Title, evt.CalendarId.ToString()),
 				CalendarId = evt.CalendarId,
 				Text = _encryptionService.AutoDetectEncryptStringToString(evt.Text ?? "", evt.CalendarId.ToString()),
-				EventCategoryColor = evt.CategoryColor,
-				EventTime = evt.EventStartTime ?? "",
+				EventCategoryColor = evt.EventCategoryColor,
+				EventTime = evt.EventTime ?? "",
 				EventStopTime = evt.EventStopTime ?? ""
 			};
 
@@ -55,6 +55,54 @@ namespace FamilyCalender.Infrastructure.Services
 							.ToListAsync();
 
 			return pushSubcriders;
+		}
+
+		public async Task<List<User>> GetPushSubscribersNewEvent(int calendarId, int exceptUserId)
+		{
+			var subscribers = await _context.CalendarAccesses
+							.Where(x => x.CalendarId == calendarId && x.UserId != exceptUserId)
+							.Include(x => x.User)
+							.ThenInclude(x => x.NotificationSetting)
+							.Select(x => x.User)
+							.ToListAsync();
+
+			return [.. subscribers.Where(x => x.NotificationSetting?.AllowOnNewCalendarEvents == true)];
+		}
+
+		public async Task<List<User>> GetPushSubscribersUpdateEvent(int calendarId, int exceptUserId)
+		{
+			var subscribers = await _context.CalendarAccesses
+							.Where(x => x.CalendarId == calendarId && x.UserId != exceptUserId)
+							.Include(x => x.User)
+							.ThenInclude(x => x.NotificationSetting)
+							.Select(x => x.User)
+							.ToListAsync();
+
+			return [.. subscribers.Where(x => x.NotificationSetting?.AllowOnEditCalendarEvents == true)];
+		}
+
+		public async Task<List<User>> GetPushSubscribersDeleteEvent(int calendarId, int exceptUserId)
+		{
+			var subscribers = await _context.CalendarAccesses
+							.Where(x => x.CalendarId == calendarId && x.UserId != exceptUserId)
+							.Include(x => x.User)
+							.ThenInclude(x => x.NotificationSetting)
+							.Select(x => x.User)
+							.ToListAsync();
+
+			return [.. subscribers.Where(x => x.NotificationSetting?.AllowOnDeleteCalendarEvents == true)];
+		}
+
+		public async Task<List<User>> GetPushSubscribersInviteAcceptEvents(int calendarId, int exceptUserId)
+		{
+			var subscribers = await _context.CalendarAccesses
+							.Where(x => x.CalendarId == calendarId && x.UserId != exceptUserId)
+							.Include(x => x.User)
+							.ThenInclude(x => x.NotificationSetting)
+							.Select(x => x.User)
+							.ToListAsync();
+
+			return [.. subscribers.Where(x => x.NotificationSetting?.AllowOnCalendarInviteAcceptEvents == true)];
 		}
 
 		public async Task DeleteEventAsync(int eventId)

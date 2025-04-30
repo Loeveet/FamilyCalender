@@ -20,7 +20,18 @@ namespace FamilyCalender.Infrastructure.Services
 				.ThenInclude(mc => mc.Member)
 				.ToListAsync();
 		}
-        public async Task<Calendar> CreateCalendarAsync(Calendar calendar, User user)
+
+		public async Task<User> GetOwnerForCalendar(int calendarId)
+		{
+			return await _context.Calendars
+				.Include(c => c.Owner)
+				.ThenInclude(c => c.NotificationSetting)
+				.Where(x => x.Id == calendarId)
+				.Select(x => x.Owner)
+				.FirstOrDefaultAsync();
+		}
+
+		public async Task<Calendar> CreateCalendarAsync(Calendar calendar, User user)
         {
             if (string.IsNullOrWhiteSpace(calendar.Name))
             {

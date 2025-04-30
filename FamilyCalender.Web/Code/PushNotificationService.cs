@@ -3,6 +3,8 @@ using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Services;
 using Newtonsoft.Json;
 using Serilog;
+using System.Security.Claims;
+using System.Security.Policy;
 using WebPush;
 using static FamilyCalender.Infrastructure.Services.EmailService;
 
@@ -12,40 +14,75 @@ namespace FamilyCalender.Web.Code
 	{
         private readonly CalendarManagementService _calendarManagementService;
         private readonly EmailSettings _emailSettings;
-        private readonly WebPushClient _client;
+		private readonly EncryptionService _encryptionService;
+		private readonly WebPushClient _client;
 
-        public PushNotificationService(CalendarManagementService calendarManagementService, EmailSettings emailSettings)
+        public PushNotificationService(CalendarManagementService calendarManagementService, EmailSettings emailSettings, EncryptionService encryptionService)
         {
             _calendarManagementService = calendarManagementService;
             _emailSettings = emailSettings;
-            _client = new WebPushClient();
+			_encryptionService = encryptionService;
+			_client = new WebPushClient();
         }
 
         public async Task SendPush(NewCalendarEventSaveModel model, User currentUser)
         {
-            var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, -1); // so we always get push during beta
-            foreach (var pushUser in users)
-            {
-                if (pushUser.NotificationSetting != null)
-                {
-                    var pushData = new PushData()
-                    {
-                        Title = $"Nytt event '{model.Title}'",
-                        Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {model.Text}\n\nSkapad av användare {currentUser.Email}",
-                        Url = $"{_emailSettings.HostingDomain}/CalendarOverview"
-                    };
+			if (model != null) 
+			{
+				var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, -1, SubscriberType.NewCalendarEvent); // so we always get push during beta
+				foreach (var pushUser in users)
+				{
+					if (pushUser.NotificationSetting != null)
+					{
+						var pushData = new PushData()
+						{
+							Title = $"Nytt event '{model.Title}'",
+							Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {model.Text}\n\nSkapad av användare {currentUser.Email}",
+							Url = $"{_emailSettings.HostingDomain}/CalendarOverview"
+						};
 
-                    SendPush(pushData, pushUser.Email, pushUser.NotificationSetting.Endpoint, pushUser.NotificationSetting.P256dh, pushUser.NotificationSetting.Auth);
-                    
-                }
+						SendPush(pushData, pushUser.Email, pushUser.NotificationSetting.Endpoint, pushUser.NotificationSetting.P256dh, pushUser.NotificationSetting.Auth);
+					}
+				}
+			}
+        }
 
-            }
-        }		
-        
-        public void SendPush(PushData data, string userEmail, string endpoint, string p256dh, string auth)
+		public async Task SendPush(Event model, bool delete, User currentUser)
+		{
+			if (model != null)
+			{
+				var title = _encryptionService.AutoDetectDecryptStringToString(model.Title, model.CalendarId.ToString());
+				var text = _encryptionService.AutoDetectDecryptStringToString(model.Text, model.CalendarId.ToString());
+				var heading = delete ? "Raderat" : "Uppdaterat";
+				var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, -1, delete ? SubscriberType.DeleteCalendarEvent : SubscriberType.UpdateCalendarEvent); // so we always get push during beta
+				foreach (var pushUser in users)
+				{
+					if (pushUser.NotificationSetting != null)
+					{
+						var pushData = new PushData()
+						{
+							Title = $"{heading} event '{title}'",
+							Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {text}\n\nSkapad av användare {currentUser.Email}",
+							Url = $"{_emailSettings.HostingDomain}/CalendarOverview"
+						};
+
+						SendPush(pushData, pushUser.Email, pushUser.NotificationSetting.Endpoint, pushUser.NotificationSetting.P256dh, pushUser.NotificationSetting.Auth);
+
+					}
+				}
+			}
+		}
+
+		public void SendPush(PushData data, string userEmail, string endpoint, string p256dh, string auth)
 		{
 			var vapidDetails = new VapidDetails($"mailto:{userEmail}", GlobalSettings.VapidPublicKey, GlobalSettings.VapidPrivateKey);
 			var subscription = new PushSubscription(endpoint, p256dh, auth);
+
+			if (string.IsNullOrWhiteSpace(data.Url))
+			{
+				data.Url = $"{_emailSettings.HostingDomain}/CalendarOverview";
+			}
+			
 
 			try
 			{
@@ -54,6 +91,23 @@ namespace FamilyCalender.Web.Code
 			catch (Exception e)
 			{
 				Log.Error($"Error sending push notification to User {userEmail}", e);
+			}
+		}
+
+		public async Task SendAcceptCalendarInvitePush(int? calendarId, string calendarName, string joiningUserEmail)
+		{
+			if (calendarId != null)
+			{
+				var user = await _calendarManagementService.GetOwnerPushSettings(calendarId.Value);
+				if (user != null && user.NotificationSetting != null)
+				{
+					SendPush(new PushData
+					{
+						Title = "Accepterat kalenderinbjudan",
+						Body = $"{joiningUserEmail} har anslutit till din kalender {calendarName}",
+						Url = $"{_emailSettings.HostingDomain}/CalendarOverview"
+					}, user.Email, user.NotificationSetting.Endpoint, user.NotificationSetting.P256dh, user.NotificationSetting.Auth);
+				}
 			}
 		}
 	}

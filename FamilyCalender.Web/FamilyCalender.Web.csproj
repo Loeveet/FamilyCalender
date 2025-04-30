@@ -14,10 +14,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\push_service_0005.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="FamilyCalender.msbuild" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\push_service_0005.js" />
     <None Include="wwwroot\push_service_0004.js" />
   </ItemGroup>
 
