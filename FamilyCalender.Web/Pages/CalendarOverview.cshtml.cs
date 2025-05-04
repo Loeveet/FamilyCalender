@@ -149,10 +149,10 @@ namespace FamilyCalender.Web.Pages
 
 		private List<EventMemberDate>? ValidateAndGenerateEventMemberDates(List<string> selectedDays, int intervalInWeeks)
 		{
-			if (ViewModel.StartDate.HasValue && ViewModel.EndDate.HasValue && selectedDays != null)
+			if (ViewModel.EndDate.HasValue && selectedDays != null)
 			{
 				return GenerateEventMemberDatesInRangeWithWeekdays(
-					ViewModel.StartDate.Value,
+					ViewModel.SelectedDate.Value,
 					ViewModel.EndDate.Value,
 					selectedDays,
 					intervalInWeeks);

@@ -14,7 +14,7 @@ function setModalValues(button) {
 
     //dateInput.readOnly = !isEditable;
 
-    document.querySelectorAll('.form-check-input').forEach(checkbox => {
+    document.querySelectorAll('.member-checkbox').forEach(checkbox => {
         checkbox.checked = checkbox.value === memberId;
     });
 
