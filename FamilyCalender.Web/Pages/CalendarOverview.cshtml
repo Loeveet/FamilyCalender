@@ -46,7 +46,7 @@ else
 	<br />
 	<br />
 
-	<a href="javascript:void(0)"
+@* 	<a href="javascript:void(0)"
 	   class="floating-button d-sm-none"
 	   data-bs-toggle="modal"
 	   data-bs-target="#eventModal"
@@ -54,7 +54,7 @@ else
 	   data-editable="true"
 	   onclick="setModalValues(this)">
 		<i class="bi bi-plus-circle" title="Lägg till händelse"></i>
-	</a>
+	</a> *@
     <h3 class="d-flex justify-content-center align-items-center sticky-header">
 
         <a asp-page="./CalendarOverview" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
@@ -208,7 +208,7 @@ else
 								</span>
 							</div>
 
-
+@* 
 							@if (!day.IsPastDay)
 							{
 								<a href="javascript:void(0)"
@@ -220,7 +220,7 @@ else
 								   onclick="setModalValues(this)">
 									<i class="bi bi-plus-circle event-icon" title="Lägg till händelse"></i>
 								</a>
-							}
+							} *@
 						</td>
 
 						@foreach (var member in Model.ViewModel.Members ?? new List<Core.Models.Entities.Member>())
@@ -349,7 +349,7 @@ else
 
 					<div class="mb-3">
 						<b for="modalSelectedDate" class="form-label">Datum</b>
-						<input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" readonly />
+						<input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate"/>
 						<small id="error-selected-date" class="text-danger d-none"></small>
 					</div>
 
