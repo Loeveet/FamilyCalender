@@ -374,13 +374,6 @@ else
 							</h2>
 							<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#eventOptionsAccordion">
 								<div class="accordion-body">
-									<div class="mb-3">
-										<b for="startDate" class="form-label">Startdatum</b>
-										<input type="date" class="form-control" id="modalStartDate" asp-for="ViewModel.StartDate" />
-										<small id="error-start-date" class="text-danger d-none"></small>
-
-
-									</div>
 
 									<div class="mb-3">
 										<b for="endDate" class="form-label">Slutdatum</b>
@@ -425,8 +418,8 @@ else
 
 									<hr />
 									<div class="form-check">
-										<input class="form-check-input" type="checkbox" id="everyOtherWeek" name="IntervalInWeeks" value="2" />
-										<label class="form-check-label" for="everyOtherWeek">Varannan vecka</label>
+										<input class="form-check-input interval-checkbox" type="checkbox" id="everyOtherWeek" name="IntervalInWeeks" value="2" />
+										<label class="form-check-label interval-checkbox" for="everyOtherWeek">Varannan vecka</label>
 									</div>
 								</div>
 
@@ -453,13 +446,10 @@ else
 						<small id="memberError" class="text-danger d-none">Du måste välja minst en medlem</small>
 					</div>
 
-
-
-
-
 					<input type="hidden" asp-for="ViewModel.CurrentYear" value="@Model.ViewModel.CurrentYear" />
 					<input type="hidden" asp-for="ViewModel.CurrentMonth" value="@Model.ViewModel.CurrentMonth" />
 					<input type="hidden" asp-for="ViewModel.ShareLink" value="@Model.ViewModel.ShareLink" />
+					<input type="hidden" asp-for="ViewModel.StartDate" value="@Model.ViewModel.SelectedDate" />
 
 
 					<button type="submit" class="btn btn-pmf">Skapa händelse</button>
@@ -490,6 +480,4 @@ else
 		var offsetPosition = elementPosition - 100;
 		window.scrollTo({ top: offsetPosition, behavior: "smooth" });
 	}
-
-
 </script>
