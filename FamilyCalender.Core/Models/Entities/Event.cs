@@ -1,4 +1,6 @@
-﻿namespace FamilyCalender.Core.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FamilyCalender.Core.Models.Entities
 {
     public class Event
     {
@@ -9,7 +11,9 @@
         public Calendar? Calendar { get; set; }
         public ICollection<EventMemberDate> EventMemberDates { get; set; } = [];
         public EventCategoryColor EventCategoryColor { get; set; }
-        public string EventTime { get; set; }
+		public RepeatType? RepeatIntervalType { get; set; }
+		public int? CustomIntervalInWeeks { get; set; }      // Endast relevant om RepeatType == Custom
+		public string EventTime { get; set; }
         public string EventStopTime { get; set; }
         public DateTime? LastEditedUtc { get; set; }
         public DateTime? CreatedUtc { get; set; }
@@ -25,4 +29,27 @@
         Red = 50,
         Purple = 60
     }
+	public enum RepeatType
+	{
+		[Display(Name = "Upprepas inte")]
+		None = 0,
+
+		[Display(Name = "Varje dag")]
+		Daily = 10,
+
+		[Display(Name = "Varje vecka")]
+		Weekly = 20,
+
+		[Display(Name = "Varannan vecka")]
+		BiWeekly = 30,
+
+		[Display(Name = "Varje månad")]
+		Monthly = 40,
+
+		[Display(Name = "Varje år")]
+		Yearly = 50,
+
+		[Display(Name = "Anpassad")]
+		Custom = 60
+	}
 }

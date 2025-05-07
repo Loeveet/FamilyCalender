@@ -9,15 +9,15 @@ using System.Globalization;
 
 namespace FamilyCalender.Web.Pages
 {
-    public class CalendarOverviewModel(
+	public class CalendarOverviewModel(
 			CalendarManagementService calendarManagementService,
-            PublicHolidayService publicHolidayService,
+			PublicHolidayService publicHolidayService,
 			PushNotificationService pushNotificationService,
-            IAuthService authService) : BasePageModel(authService)
+			IAuthService authService) : BasePageModel(authService)
 	{
 		private readonly CalendarManagementService _calendarManagementService = calendarManagementService;
 
-        [BindProperty]
+		[BindProperty]
 		public CalendarOverViewViewModel ViewModel { get; set; } = new CalendarOverViewViewModel();
 
 		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
@@ -30,16 +30,16 @@ namespace FamilyCalender.Web.Pages
 
 			SetCurrentYearAndMonth(year, month);
 
-            var publicHolidays = publicHolidayService.GetHolidays(ViewModel.CurrentYear);
+			var publicHolidays = publicHolidayService.GetHolidays(ViewModel.CurrentYear);
 
 			ViewModel.DaysInMonth = GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo, publicHolidays);
 
-            var calendarDtos = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
+			var calendarDtos = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
 			ViewModel.CalendarDtos = calendarDtos;
-            var calendarIds = calendarDtos.Select(c => c.Id).ToList();
+			var calendarIds = calendarDtos.Select(c => c.Id).ToList();
 
 
-            if (calendarIds != null)
+			if (calendarIds != null)
 			{
 				await LoadSelectedCalendarData(calendarId, calendarIds);
 			}
@@ -62,24 +62,26 @@ namespace FamilyCalender.Web.Pages
 			}
 
 			var eventMemberDates = ValidateAndGenerateEventMemberDates(selectedDays, intervalInWeeks);
-			if (eventMemberDates == null)
+			if (eventMemberDates == null || eventMemberDates.Count == 0)
 			{
 				ModelState.AddModelError(string.Empty, "Ange ett giltigt datum eller intervall.");
 				return Page();
 			}
 
-            var evt = new NewCalendarEventSaveModel()
-            {
-                Title = ViewModel.EventTitle,
-                Text = ViewModel.EventText,
-                EventTime = ViewModel.EventTime,
-                EventStopTime = ViewModel.EventStopTime,
-                EventCategoryColor = ViewModel.SelectedCategoryColor,
-                EventMemberDates = eventMemberDates,
-                CalendarId = ViewModel.SelectedCalendarId,
-                MemberIds = selectedMemberIds
-            };
-            await _calendarManagementService.CreateEventAsync(evt);
+			var evt = new NewCalendarEventSaveModel()
+			{
+				Title = ViewModel.EventTitle,
+				Text = ViewModel.EventText,
+				EventTime = ViewModel.EventTime,
+				EventStopTime = ViewModel.EventStopTime,
+				EventCategoryColor = ViewModel.SelectedCategoryColor,
+				EventMemberDates = eventMemberDates,
+				CalendarId = ViewModel.SelectedCalendarId,
+				MemberIds = selectedMemberIds,
+				RepeatIntervalType = ViewModel.RepetitionType,
+				CustomIntervalInWeeks = ViewModel.RepetitionType == RepeatType.Custom ? intervalInWeeks : null
+			};
+			await _calendarManagementService.CreateEventAsync(evt);
 			//await _calendarManagementService.CreateEventAsync(
 			//	ViewModel.EventTitle,
 			//	ViewModel.EventText ?? "",
@@ -92,10 +94,10 @@ namespace FamilyCalender.Web.Pages
 
 			var user = await GetCurrentUserAsync();
 
-            //var users = await _calendarManagementService.GetPushSubscribers(ViewModel.SelectedCalendarId, user.Id);
-            await pushNotificationService.SendPush(evt, user);
+			//var users = await _calendarManagementService.GetPushSubscribers(ViewModel.SelectedCalendarId, user.Id);
+			await pushNotificationService.SendPush(evt, user);
 
-            return RedirectToPage("./CalendarOverview", new
+			return RedirectToPage("./CalendarOverview", new
 			{
 				year = ViewModel.CurrentYear,
 				month = ViewModel.CurrentMonth,
@@ -146,28 +148,81 @@ namespace FamilyCalender.Web.Pages
 				   selectedMemberIds.Count != 0 &&
 				   ViewModel.SelectedCalendarId > 0;
 		}
-
 		private List<EventMemberDate>? ValidateAndGenerateEventMemberDates(List<string> selectedDays, int intervalInWeeks)
 		{
-			if (ViewModel.EndDate.HasValue && selectedDays != null)
+			if (!ViewModel.SelectedDate.HasValue)
+				return null;
+
+			var startDate = ViewModel.SelectedDate.Value;
+
+			if (ViewModel.RepetitionType == RepeatType.None)
 			{
-				return GenerateEventMemberDatesInRangeWithWeekdays(
-					ViewModel.SelectedDate.Value,
-					ViewModel.EndDate.Value,
-					selectedDays,
-					intervalInWeeks);
+				return new List<EventMemberDate>
+				{
+					new() { Date = startDate }
+				};
 			}
 
-			if (ViewModel.SelectedDate.HasValue)
-			{
-				return
-				[
-					new() { Date = ViewModel.SelectedDate.Value }
-				];
-			}
+			if (!ViewModel.EndDate.HasValue)
+				return null;
 
-			return null;
+			var endDate = ViewModel.EndDate.Value;
+
+			return ViewModel.RepetitionType switch
+			{
+				RepeatType.Daily => GenerateDailyEventDates(startDate, endDate),
+				RepeatType.Weekly => GenerateWeeklyEventDates(startDate, endDate, 1),
+				RepeatType.BiWeekly => GenerateWeeklyEventDates(startDate, endDate, 2),
+				RepeatType.Monthly => GenerateMonthlyEventDates(startDate, endDate),
+				RepeatType.Yearly => GenerateYearlyEventDates(startDate, endDate),
+				RepeatType.Custom => GenerateEventMemberDatesInRangeWithWeekdays(startDate, endDate, selectedDays, intervalInWeeks),
+				_ => null
+			};
 		}
+		private List<EventMemberDate> GenerateDailyEventDates(DateTime startDate, DateTime endDate)
+		{
+			var dates = new List<EventMemberDate>();
+			for (var current = startDate; current <= endDate; current = current.AddDays(1))
+			{
+				dates.Add(new EventMemberDate { Date = current });
+			}
+			return dates;
+		}
+		private List<EventMemberDate> GenerateWeeklyEventDates(DateTime start, DateTime end, int intervalInWeeks)
+		{
+			var result = new List<EventMemberDate>();
+
+			for (var date = start; date <= end; date = date.AddDays(7 * intervalInWeeks))
+			{
+				result.Add(new EventMemberDate { Date = date });
+			}
+
+			return result;
+		}
+		private List<EventMemberDate> GenerateMonthlyEventDates(DateTime startDate, DateTime endDate)
+		{
+			var dates = new List<EventMemberDate>();
+
+			for (var current = startDate; current <= endDate; current = current.AddMonths(1))
+			{
+				dates.Add(new EventMemberDate { Date = current });
+			}
+
+			return dates;
+		}
+
+		private List<EventMemberDate> GenerateYearlyEventDates(DateTime startDate, DateTime endDate)
+		{
+			var dates = new List<EventMemberDate>();
+
+			for (var current = startDate; current <= endDate; current = current.AddYears(1))
+			{
+				dates.Add(new EventMemberDate { Date = current });
+			}
+
+			return dates;
+		}
+
 
 		public static List<DayViewModel> GenerateMonthDays(int year, int month, CultureInfo cultureInfo, List<PublicHolidayInfo> publicHolidays)
 		{
