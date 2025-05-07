@@ -97,7 +97,6 @@
             <p style="text-align:center" class="text-success">Tack, dina inställningar är sparade!</p>
             <br/>
            
-            <p style="text-align:center">Laddar om sidan...</p>
         }
         
     </form>
@@ -116,7 +115,7 @@
     if(saved === 'True'){
         setTimeout(function(){
             location.href = '/UserSettings';
-        },1500)
+        }, 1500)
         
     }
 
@@ -207,7 +206,12 @@
                 cancelButtonText: 'Nej, tack'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    notificationService.RegisterDevice('@GlobalSettings.VapidPublicKey');
+                    notificationService.RegisterServiceWorker();
+                    setTimeout(function(){
+                        notificationService.RegisterDevice('@GlobalSettings.VapidPublicKey');
+                        console.log('@GlobalSettings.VapidPublicKey');
+                    },1000);
+                    
                 }
             });
        // }

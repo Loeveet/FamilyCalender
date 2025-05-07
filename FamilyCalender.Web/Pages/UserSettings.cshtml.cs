@@ -13,13 +13,13 @@ namespace FamilyCalender.Web.Pages
         public NotificationSettings NotificationSettings { get; set; } = new NotificationSettings();
 
 
-        //private static readonly string[] AllowedEmails = new[]
-        //{
-        //    "loeveet@gmail.com",
-        //    "mikael.lennander@hotmail.com",
-        //    "carolinaguevara@hotmail.com",
-        //    "jenny.liliegren@outlook.com",
-        //};
+        private static readonly string[] AllowedEmails = new[]
+        {
+            "loeveet@gmail.com",
+            "mikael.lennander@hotmail.com",
+            "carolinaguevara@hotmail.com",
+            "jenny.liliegren@outlook.com",
+		};
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -42,6 +42,7 @@ namespace FamilyCalender.Web.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var user = await GetCurrentUserAsync();
             if (!NotificationSettings.UserNotificationSetting.AllowNotifications)
             {
                 NotificationSettings.HasTurndOff = true;
