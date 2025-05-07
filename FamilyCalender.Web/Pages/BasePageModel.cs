@@ -22,7 +22,8 @@ namespace FamilyCalender.Web.Pages
             "mikael.lennander@hotmail.com",
             "carolinaguevara@hotmail.com",
             "jenny.liliegren@outlook.com",
-        };
+			"demokonto86@gmail.com",
+		};
 
         protected readonly string[] SuperAdminEmails = new[]
         {
