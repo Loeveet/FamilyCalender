@@ -21,7 +21,9 @@ namespace FamilyCalender.Infrastructure.Services
 				Text = _encryptionService.AutoDetectEncryptStringToString(evt.Text ?? "", evt.CalendarId.ToString()),
 				EventCategoryColor = evt.EventCategoryColor,
 				EventTime = evt.EventTime ?? "",
-				EventStopTime = evt.EventStopTime ?? ""
+				EventStopTime = evt.EventStopTime ?? "",
+				RepeatIntervalType = evt.RepeatIntervalType,
+				CustomIntervalInWeeks = evt.CustomIntervalInWeeks
 			};
 
 			var addedEvent = await AddAsync(newEvent);
