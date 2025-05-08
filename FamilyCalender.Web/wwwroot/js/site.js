@@ -23,7 +23,7 @@ function setModalValues(button) {
 }
 
 $('#eventModal').on('hidden.bs.modal', function () {
-    document.getElementById("modalStartDate").value = '';
+    document.getElementById("modalSelectedDate").value = '';
     document.getElementById("modalEndDate").value = '';
     document.getElementById("eventTitle").value = '';
 
@@ -54,10 +54,41 @@ function validateForm() {
 
     const isInterval = isIntervalSelected();
     const areDatesValid = validateDates(isInterval);
+    const isRepetitionValid = validateRepetition();
     const isIntervalValid = isInterval ? validateInterval() : true;
     const areWeekdaysValid = isInterval ? validateWeekdaysWithinInterval() : true;
 
-    return isTitleValid && areMembersValid && areDatesValid && isIntervalValid && areWeekdaysValid;
+    if (!(isTitleValid && areMembersValid && areDatesValid && isIntervalValid && areWeekdaysValid && isRepetitionValid)) {
+        return false;
+    }
+
+    return true;
+}
+function validateRepetition() {
+    const repetitionType = document.getElementById("repetitionSelect").value;
+    const endDate = document.getElementById("modalEndDate").value;
+    const selectedDays = document.querySelectorAll(".day-checkbox:checked");
+
+    let isValid = true;
+
+    document.getElementById("error-end-date").classList.add("d-none");
+    document.getElementById("error-right-weekdays").classList.add("d-none");
+
+    if (repetitionType !== "None") {
+        if (!endDate) {
+            document.getElementById("error-end-date").textContent = "Du måste ange ett slutdatum.";
+            document.getElementById("error-end-date").classList.remove("d-none");
+            isValid = false;
+        }
+
+        if (repetitionType === "Custom" && selectedDays.length === 0) {
+            document.getElementById("error-right-weekdays").textContent = "Välj minst en veckodag.";
+            document.getElementById("error-right-weekdays").classList.remove("d-none");
+            isValid = false;
+        }
+    }
+
+    return isValid;
 }
 function resetValidation() {
     document.querySelectorAll('.text-danger').forEach(error => {
@@ -69,51 +100,47 @@ function resetValidation() {
     });
 }
 function isIntervalSelected() {
-    const startDateValue = document.getElementById("modalStartDate").value;
-    const endDateValue = document.getElementById("modalEndDate").value;
-    const selectedDays = Array.from(document.querySelectorAll(".day-checkbox:checked")).map(checkbox => checkbox.value);
+    const repetitionSelect = document.getElementById("repetitionSelect");
+    const selectedValue = repetitionSelect.value;
 
-    return startDateValue || endDateValue || selectedDays.length > 0;
+    return selectedValue !== "None";
 }
 function validateDates(isInterval) {
     let isValid = true;
 
     if (isInterval) {
-        const isStartDateValid = validateDateField('modalStartDate', 'error-start-date');
+        const isStartDateValid = validateDateField('modalSelectedDate', 'error-selected-date');
         const isEndDateValid = validateDateField('modalEndDate', 'error-end-date');
-        const isDateRangeValid = validateDateRange('modalStartDate', 'modalEndDate', 'error-end-date');
+        const isDateRangeValid = validateDateRange('modalSelectedDate', 'modalEndDate', 'error-end-date');
 
         isValid = isStartDateValid && isEndDateValid && isDateRangeValid;
     } else {
-        isValid = validateDateField('modalSelectedDate', 'error-selected-date');
+        const isStartDateValid = validateDateField('modalSelectedDate', 'error-selected-date');
+        if (!isStartDateValid) {
+            isValid = false;
+        }
     }
 
     return isValid;
 }
+
+
 function validateDateField(dateFieldId, errorFieldId) {
     const dateValue = document.getElementById(dateFieldId).value;
-    const today = new Date().toISOString().split("T")[0];
     const dateError = document.getElementById(errorFieldId);
 
-    if (!dateValue) {
-        dateError.classList.add("d-none");
-        document.getElementById(dateFieldId).classList.remove("is-invalid");
-        return true;
+    if (dateValue === "") {
+        dateError.classList.remove("d-none");
+        document.getElementById(dateFieldId).classList.add("is-invalid");
+        return false;
     }
-
-    //if (dateValue < today) {
-    //    dateError.textContent = "Datum kan inte vara bakåt i tiden.";
-    //    dateError.classList.remove("d-none");
-    //    document.getElementById(dateFieldId).classList.add("is-invalid");
-    //    return false;
-    //}
 
     dateError.classList.add("d-none");
     document.getElementById(dateFieldId).classList.remove("is-invalid");
     return true;
 }
 function validateInterval() {
-    const startDate = document.getElementById("modalStartDate");
+    const startDate = document.getElementById("modalSelectedDate");
     const endDate = document.getElementById("modalEndDate");
     const selectedDays = document.querySelectorAll('.day-checkbox:checked');
 
@@ -121,7 +148,7 @@ function validateInterval() {
     const endDateValue = endDate.value;
     const today = new Date().toISOString().split("T")[0];
 
-    const startDateError = document.getElementById("error-start-date");
+    const startDateError = document.getElementById("error-selected-date");
     const endDateError = document.getElementById("error-end-date");
     const selectedDaysError = document.getElementById('error-interval-weekdays');
 
@@ -132,11 +159,7 @@ function validateInterval() {
         startDateError.textContent = "Startdatum krävs.";
         startDateError.classList.remove("d-none");
         isValid = false;
-    }// else if (startDateValue < today) {
-    //    startDateError.textContent = "Startdatum kan inte vara bakåt i tiden.";
-    //    startDateError.classList.remove("d-none");
-    //    isValid = false;
-    //}
+    }
 
     if (!endDateValue) {
         endDateError.textContent = "Slutdatum krävs.";
@@ -157,7 +180,7 @@ function validateInterval() {
     return isValid;
 }
 function validateWeekdaysWithinInterval() {
-    const startDateValue = document.getElementById("modalStartDate").value;
+    const startDateValue = document.getElementById("modalSelectedDate").value;
     const endDateValue = document.getElementById("modalEndDate").value;
     const selectedDaysError = document.getElementById("error-right-weekdays");
 
@@ -168,7 +191,7 @@ function validateWeekdaysWithinInterval() {
 
     const validWeekdaysSet = new Set(["MÅNDAG", "TISDAG", "ONSDAG", "TORSDAG", "FREDAG", "LÖRDAG", "SÖNDAG"]);
     const selectedDays = Array.from(document.querySelectorAll(".day-checkbox:checked"))
-        .map(checkbox => checkbox.value.toUpperCase())
+        .map(checkbox => checkbox.value.trim().toUpperCase())
         .filter(day => validWeekdaysSet.has(day));
 
     const startDate = new Date(startDateValue);
