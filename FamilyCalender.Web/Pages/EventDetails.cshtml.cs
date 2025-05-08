@@ -68,7 +68,7 @@ namespace FamilyCalender.Web.Pages
 			return Page();
 		}
 
-		public async Task<IActionResult> OnPostUpdateEventAsync(List<int> selectedMemberIds, string? editOption, List<string> selectedDays)
+		public async Task<IActionResult> OnPostUpdateEventAsync()
 		{
 			//if (!ModelState.IsValid)
 			//{
@@ -87,18 +87,15 @@ namespace FamilyCalender.Web.Pages
             eventToUpdate.EventStopTime = ViewModel?.EventDetails?.EventStopTime ?? "";
 			eventToUpdate.EventCategoryColor = ViewModel?.EventDetails?.EventCategoryColor ?? EventCategoryColor.None;
 
-			await _eventManagementService.UpdateEventAsync(eventToUpdate, selectedMemberIds, editOption, ViewModel.StartDate, ViewModel.EndDate, ViewModel.NewDate, selectedDays);
-			ViewModel.SelectedDays = selectedDays;
+			await _eventManagementService.UpdateEventAsync(eventToUpdate);
 
-			
 			await pushNotificationService.SendPush(eventToUpdate, false, await GetCurrentUserAsync()); 
 
-			if (!eventToUpdate.EventMemberDates.Any(e => e.Date == ViewModel.Day) && editOption == "all")
-			{
-				return RedirectToPage("./CalendarOverview", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
-			}
-
-			return RedirectToPage("./EventDetails", new { eventId = eventToUpdate.Id, memberId = ViewModel.MemberId, day = ViewModel.NewDate.Year != 1 ? ViewModel.NewDate : ViewModel.Day });
+			return RedirectToPage("./EventDetails", new { 
+				eventId = eventToUpdate.Id, 
+				memberId = ViewModel.MemberId, 
+				day = ViewModel.Day 
+			});
 		}
 
 		public async Task<IActionResult> OnPostDeleteEventAsync(List<int> selectedMemberIds, string? deleteOption)

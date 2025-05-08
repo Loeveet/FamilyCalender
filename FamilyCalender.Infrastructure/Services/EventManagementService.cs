@@ -29,46 +29,9 @@ namespace FamilyCalender.Infrastructure.Services
 			return await _memberService.GetMembersForCalendarAsync(calendarId);
 		}
 
-		public async Task UpdateEventAsync(Event eventToUpdate, List<int> selectedMemberIds, string? editOption, DateTime startDate, DateTime endDate, DateTime newDate, List<string> selectedDays)
+		public async Task UpdateEventAsync(Event eventToUpdate)
 		{
-			eventToUpdate.EventMemberDates.Clear();
-
-			if (editOption == "all")
-			{
-				var selectedDaysLower = selectedDays
-					.Select(d => d.ToLower())
-					.ToHashSet();
-				for (var date = startDate; date <= endDate; date = date.AddDays(1))
-				{
-					var dayName = new CultureInfo("sv-SE").DateTimeFormat.GetDayName(date.DayOfWeek).ToLower();
-
-					if (selectedDaysLower.Contains(dayName))
-					{
-						foreach (var memberId in selectedMemberIds)
-						{
-							eventToUpdate.EventMemberDates.Add(new EventMemberDate
-							{
-								Date = date,
-								MemberId = memberId,
-								EventId = eventToUpdate.Id
-							});
-						}
-					}
-				}
-			}
-			else
-			{
-				foreach (var memberId in selectedMemberIds)
-				{
-					eventToUpdate.EventMemberDates.Add(new EventMemberDate
-					{
-						Date = newDate,
-						MemberId = memberId,
-						EventId = eventToUpdate.Id
-					});
-				}
-			}
-
+			ArgumentNullException.ThrowIfNull(eventToUpdate);
 			await _eventService.UpdateEventAsync(eventToUpdate);
 		}
 

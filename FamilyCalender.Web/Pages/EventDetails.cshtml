@@ -25,54 +25,54 @@
 		<div class="mb-2">
 			<strong><i class="bi bi-calendar-event"></i> Kalender:</strong> @Model.ViewModel.EventDetails.Calendar.Name
 		</div>
-        <div class="mb-2">
-            <strong>Titel:</strong> @Model.ViewModel.EventDetails.Title
-        </div>
-		
-        <div class="mb-2">
-            <strong>Beskrivning:</strong> 
-            <div>
-                @Html.Raw(Model.ViewModel.EventDetails.Text.ReplaceLineEndings("<br/>"))
-            </div>
-        </div>
-		
-        <div class="mb-2">
+		<div class="mb-2">
+			<strong>Titel:</strong> @Model.ViewModel.EventDetails.Title
+		</div>
+
+		<div class="mb-2">
+			<strong>Beskrivning:</strong>
+			<div>
+				@Html.Raw(Model.ViewModel.EventDetails.Text.ReplaceLineEndings("<br/>"))
+			</div>
+		</div>
+
+		<div class="mb-2">
 			<strong>Kategorifärg:</strong> @Html.Raw(Model.ViewModel.GetCategoryColorDiamond()) @Model.ViewModel.GetCategoryColorName()
-        </div>
-		
-		       
+		</div>
 
-        <div class="mb-2">
-            <strong> När:</strong>
-            @if (Model.ViewModel.IsSingleEvent)
-            {
-                <span>@Model.ViewModel.FormattedDate</span>
-            }
-            else
-            {
-                <span>@Model.ViewModel.FormattedInterval</span>
-               
-            }
 
-            @if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) || !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
-            {
-                <Span> <i class="bi bi-clock"></i> @Model.ViewModel.EventDetails?.EventTime</Span>
-                @if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) && !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
-                {
-                    <span> - </span>
-                }
 
-                <span>@Model.ViewModel.EventDetails?.EventStopTime</span>
-            }
-            
-            @if (!Model.ViewModel.IsSingleEvent)
-            {
-                <br/>
-                <strong><i class="bi bi-calendar-day"></i> Veckodagar:</strong>
-                @string.Join(", ", Model.ViewModel.SortedDaysInSwedish)
-            }
+		<div class="mb-2">
+			<strong> När:</strong>
+			@if (Model.ViewModel.IsSingleEvent)
+			{
+				<span>@Model.ViewModel.FormattedDate</span>
+			}
+			else
+			{
+				<span>@Model.ViewModel.FormattedInterval</span>
 
-        </div>
+			}
+
+			@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) || !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+			{
+				<Span> <i class="bi bi-clock"></i> @Model.ViewModel.EventDetails?.EventTime</Span>
+				@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) && !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+				{
+					<span> - </span>
+				}
+
+				<span>@Model.ViewModel.EventDetails?.EventStopTime</span>
+			}
+
+			@if (!Model.ViewModel.IsSingleEvent)
+			{
+				<br />
+				<strong><i class="bi bi-calendar-day"></i> Veckodagar:</strong>
+				@string.Join(", ", Model.ViewModel.SortedDaysInSwedish)
+			}
+
+		</div>
 
 		<div class="mb-2">
 			@if (Model.ViewModel.IsSingleMember)
@@ -223,7 +223,7 @@
 					<input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
 					<input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
 					<button type="submit" class="btn btn-pmf-inverted">Radera</button>
-                    <button type="button" class="btn btn-pmf" data-bs-dismiss="modal">Avbryt</button>
+					<button type="button" class="btn btn-pmf" data-bs-dismiss="modal">Avbryt</button>
 				</div>
 			</form>
 		</div>
@@ -232,195 +232,136 @@
 
 <!-- Modal för att redigera eventet -->
 <div class="modal fade" id="editEventModal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title" id="editEventModalLabel">Redigera händelse</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
-            </div>
+			<div class="modal-header">
+				<h5 class="modal-title" id="editEventModalLabel">Redigera händelse</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+			</div>
 
-            <div class="modal-body">
-                <form method="post" asp-page-handler="UpdateEvent" onsubmit="return validateEditForm()">
+			<div class="modal-body">
+				<form method="post" asp-page-handler="UpdateEvent" onsubmit="return validateEditForm()">
 
-                    <div class="mb-3">
-                        <b for="editEventTitle" class="form-label">Titel</b>
-                        <input type="text" class="form-control" value="@Model.ViewModel.EventDetails.Title" asp-for=ViewModel.NewTitle id="editEventTitle" />
-                        <small id="editEventTitleError" class="text-danger d-none">Titel måste finnas</small>
-                    </div>
-					
-                    <div class="mb-3">
-                        <b for="eventText" class="form-label">Beskrivning</b>
-                        <textarea rows="10" cols="3" class="form-control" asp-for="@Model.ViewModel.EventDetails.Text" id="eventText">
+					<div class="mb-3">
+						<b for="editEventTitle" class="form-label">Titel</b>
+						<input type="text" class="form-control" value="@Model.ViewModel.EventDetails.Title" asp-for=ViewModel.NewTitle id="editEventTitle" />
+						<small id="editEventTitleError" class="text-danger d-none">Titel måste finnas</small>
+					</div>
+
+					<div class="mb-3">
+						<b for="eventText" class="form-label">Beskrivning</b>
+						<textarea rows="10" cols="3" class="form-control" asp-for="@Model.ViewModel.EventDetails.Text" id="eventText">
 						 </textarea>
-                        <small id="eventTextError" class="text-danger d-none">Ange titel</small>
-                    </div>
-					
-                    @*
-						Old color picker - not looking so good on iOS and Android since user default takes over - no colors is shown only name
-                       <div class="mb-3">
-   						<b for="SelectedCategoryColor" class="form-label">Kategorifärg</b>
-   						<select id="categoryColor" class="color-select form-control" asp-for="@Model.ViewModel.EventDetails.EventCategoryColor">
-   							<option style="background-color: #f8f9fa;" value="">Ingen kategorifärg</option>
-   							<option style="background-color: #cce5ff;" value="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</option>
-   							<option style="background-color: #d4edda;" value="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</option>
-   							<option style="background-color: #fff3cd;" value="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</option>
-   							<option style="background-color: #f8d7da;" value="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</option>
-   							<option style="background-color: #f8c1c1;" value="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</option>
-   							<option style="background-color: #e2d6f9;" value="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</option>
-   						</select>
-   					</div>
+						<small id="eventTextError" class="text-danger d-none">Ange titel</small>
+					</div>
+
+					@*
+					Old color picker - not looking so good on iOS and Android since user default takes over - no colors is shown only name
+					<div class="mb-3">
+					<b for="SelectedCategoryColor" class="form-label">Kategorifärg</b>
+					<select id="categoryColor" class="color-select form-control" asp-for="@Model.ViewModel.EventDetails.EventCategoryColor">
+					<option style="background-color: #f8f9fa;" value="">Ingen kategorifärg</option>
+					<option style="background-color: #cce5ff;" value="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</option>
+					<option style="background-color: #d4edda;" value="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</option>
+					<option style="background-color: #fff3cd;" value="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</option>
+					<option style="background-color: #f8d7da;" value="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</option>
+					<option style="background-color: #f8c1c1;" value="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</option>
+					<option style="background-color: #e2d6f9;" value="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</option>
+					</select>
+					</div>
 					*@
-					
-                    <div class="mb-3">
-                        <div class="color-dropdown" onclick="eventColorPickerHelper.ToggleDropdown(event)">
-                            
-                            @switch (Model.ViewModel.EventDetails.EventCategoryColor)
-                                {
-									case EventCategoryColor.None:
-                                        <div class="selected" id="selectedColor">
-                                            Välj en kategorifärg
-                                        </div>
-                                        break;
-                                    case EventCategoryColor.Blue:
-                                        <div class="selected" id="selectedColor">
-											Blå (t.ex. för skola/arbete)
-                                        </div>
-                                        break;
-                                    case EventCategoryColor.Green:
-                                        <div class="selected" id="selectedColor">
-											Grön (t.ex. för träning/hälsa)
-                                        </div>
-                                        break;
-                                    case EventCategoryColor.Yellow:
-                                        <div class="selected" id="selectedColor">
-											Gul (t.ex. för familjeaktivitet)
-                                        </div>
-                                        break;
-                                    case EventCategoryColor.Pink:
-                                        <div class="selected" id="selectedColor">
-											Rosa (t.ex. för vård/egentid)
-                                        </div>
-                                        break;
-                                    case EventCategoryColor.Red:
-                                        <div class="selected" id="selectedColor">
-											Röd (t.ex. för viktigt/påminnelse)
-                                        </div>
-                                        break;
-                                    case EventCategoryColor.Purple:
-                                        <div class="selected" id="selectedColor">
-											Lila (t.ex. för fritid/kreativitet)
-                                        </div>
-                                        break;
 
-										default:
-                                            <div class="selected" id="selectedColor">
-                                                Välj en kategorifärg
-                                            </div>
-                                            break;
-                                }
-                                
-                            
-                            <div class="options" id="colorOptions">
-                                <div style="background-color: #f8f9fa;" data-color="@EventCategoryColor.None">Ingen kategorifärg</div>
-                                <div style="background-color: #cce5ff;" data-color="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</div>
-                                <div style="background-color: #d4edda;" data-color="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</div>
-                                <div style="background-color: #fff3cd;" data-color="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</div>
-                                <div style="background-color: #f8d7da;" data-color="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</div>
-                                <div style="background-color: #f8c1c1;" data-color="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</div>
-                                <div style="background-color: #e2d6f9;" data-color="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</div>
-                            </div>
-                            
-                            <!-- Selected color ends up here for form submit -->
-                            <input type="hidden" asp-for="@Model.ViewModel.EventDetails.EventCategoryColor" />
-                            
-                            <i class="bi bi-chevron-down"></i>
-                        </div>
-                    </div>
-				
+					<div class="mb-3">
+						<div class="color-dropdown" onclick="eventColorPickerHelper.ToggleDropdown(event)">
 
-                    @if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1)
-                    {
-                        var minEventDate = Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date); 
-                        //< DateTime.Today ? DateTime.Today : Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date);
-                        var maxEventDate = Model.ViewModel.EventDetails.EventMemberDates.Max(x => x.Date);
+							@switch (Model.ViewModel.EventDetails.EventCategoryColor)
+							{
+								case EventCategoryColor.None:
+									<div class="selected" id="selectedColor">
+										Välj en kategorifärg
+									</div>
+									break;
+								case EventCategoryColor.Blue:
+									<div class="selected" id="selectedColor">
+										Blå (t.ex. för skola/arbete)
+									</div>
+									break;
+								case EventCategoryColor.Green:
+									<div class="selected" id="selectedColor">
+										Grön (t.ex. för träning/hälsa)
+									</div>
+									break;
+								case EventCategoryColor.Yellow:
+									<div class="selected" id="selectedColor">
+										Gul (t.ex. för familjeaktivitet)
+									</div>
+									break;
+								case EventCategoryColor.Pink:
+									<div class="selected" id="selectedColor">
+										Rosa (t.ex. för vård/egentid)
+									</div>
+									break;
+								case EventCategoryColor.Red:
+									<div class="selected" id="selectedColor">
+										Röd (t.ex. för viktigt/påminnelse)
+									</div>
+									break;
+								case EventCategoryColor.Purple:
+									<div class="selected" id="selectedColor">
+										Lila (t.ex. för fritid/kreativitet)
+									</div>
+									break;
 
-                        <div class="mb-3">
-                            <b for="editStartDate" class="form-label">Välj nytt startdatum</b>
-                            <input type="date" class="form-control" asp-for="ViewModel.StartDate" value="@minEventDate.ToString("yyyy-MM-dd")" id="editStartDate" />
-                            <small id="edit-error-start-date" class="text-danger d-none"></small>
-                        </div>
+								default:
+									<div class="selected" id="selectedColor">
+										Välj en kategorifärg
+									</div>
+									break;
+							}
 
-                        <div class="mb-3">
-                            <b for="editEndDate" class="form-label">Välj nytt slutdatum</b>
-                            <input type="date" class="form-control" asp-for="ViewModel.EndDate" value="@maxEventDate.ToString("yyyy-MM-dd")" id="editEndDate" />
-                            <small id="edit-error-end-date" class="text-danger d-none"></small>
-                        </div>
-                        <div class="mb-3">
-                            <b class="form-label">Välj dagar</b>
-                            <div>
-                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Måndag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Monday)) ? "checked" : "") /> Måndag <br />
-                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Tisdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Tuesday)) ? "checked" : "") /> Tisdag <br />
-                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Onsdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Wednesday)) ? "checked" : "") /> Onsdag <br />
-                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Torsdag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Thursday)) ? "checked" : "") /> Torsdag <br />
-                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Fredag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Friday)) ? "checked" : "") /> Fredag <br />
-                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Lördag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Saturday)) ? "checked" : "") /> Lördag <br />
-                                <input type="checkbox" class="edit-day-checkbox" name="SelectedDays" value="Söndag" @(Model.ViewModel.SelectedDays.Contains(culture.DateTimeFormat.GetDayName(DayOfWeek.Sunday)) ? "checked" : "") /> Söndag
-                            </div>
-                        </div>
 
-                      
-                        <input type="hidden" name="editOption" value="all" />
+							<div class="options" id="colorOptions">
+								<div style="background-color: #f8f9fa;" data-color="@EventCategoryColor.None">Ingen kategorifärg</div>
+								<div style="background-color: #cce5ff;" data-color="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</div>
+								<div style="background-color: #d4edda;" data-color="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</div>
+								<div style="background-color: #fff3cd;" data-color="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</div>
+								<div style="background-color: #f8d7da;" data-color="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</div>
+								<div style="background-color: #f8c1c1;" data-color="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</div>
+								<div style="background-color: #e2d6f9;" data-color="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</div>
+							</div>
 
-                        <small id="edit-error-right-weekdays" class="text-danger d-none"></small>
-                        <small id="edit-error-interval-weekdays" class="text-danger d-none"></small>
-                    }
-                    else
-                    {
-                        <div class="mb-3">
-                            <b for="editEventDates" class="form-label">Ändra datum för vald händelse</b>
-                            <input type="date" class="form-control" value="@Model.ViewModel.Day.ToString("yyyy-MM-dd")" asp-for="ViewModel.NewDate" id="editEventDates" />
-                            <small id="edit-error-selected-date" class="text-danger d-none"></small>
-                        </div>
+							<!-- Selected color ends up here for form submit -->
+							<input type="hidden" asp-for="@Model.ViewModel.EventDetails.EventCategoryColor" />
 
-                        <input type="hidden" name="editOption" value="single" />
+							<i class="bi bi-chevron-down"></i>
+						</div>
+					</div>
 
-                    }
-					
-                    <div class="mb-3">
-                        <b for="EventTime" class="form-label">Starttid</b>
+					<div class="mb-3">
+						<b for="EventTime" class="form-label">Starttid</b>
 						<input type="time" id="eventTime" class="form-control" asp-for="@Model.ViewModel.EventDetails.EventTime">
-                    </div>
-                    <div class="mb-3">
-                        <b for="EventTime" class="form-label">Sluttid</b>
+					</div>
+					<div class="mb-3">
+						<b for="EventTime" class="form-label">Sluttid</b>
 						<input type="time" id="eventStopTime" class="form-control" asp-for="@Model.ViewModel.EventDetails.EventStopTime">
-                    </div>
+					</div>
+					<input type="hidden" asp-for="ViewModel.EventId" value="@Model.ViewModel.EventDetails.Id" />
+					<input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
+					<input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
+					<input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
 
-                    <div id="editMemberList">
-                        @foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
-                        {
-                            <input type="hidden" name="selectedMemberIds" value="@member?.Id" />
-                        }
-                    </div>
-                    <small id="memberError" class="text-danger d-none">Du måste välja minst en medlem</small>
-                    <div class="modal-footer">
-                        <input type="hidden" asp-for="ViewModel.EventId" value="@Model.ViewModel.EventDetails.Id" />
-                        <input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
-                        <input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
-                        <input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
-
-                        <button type="submit" class="btn btn-pmf">Spara ändringar</button>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-pmf-inverted" data-bs-dismiss="modal">Stäng</button>
-            </div>
-        </div>
-    </div>
+					<button type="submit" class="btn btn-pmf">Spara ändringar</button>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-pmf-inverted" data-bs-dismiss="modal">Stäng</button>
+			</div>
+		</div>
+	</div>
 </div>
 <script>
-	
+
 	//initialize Color picker to set correct color on Model input field
 	eventColorPickerHelper.Init('ViewModel_EventDetails_EventCategoryColor');
 </script>
