@@ -12,26 +12,25 @@
         return outputArray;
     }
 
-    function registerServiceWorker() {
+    function registerServiceWorker(vapidPublicKey) {
+        console.log("trying to register");
         
-        navigator.serviceWorker.register("push_service_0005.js", { scope: '/' }).then(function (reg) {
+        navigator.serviceWorker.register("push_service_0007.js", { scope: '/' }).then(function (reg) {
+            
             window.Notification.requestPermission().then(function (perm) {
                 if (perm !== "granted") {
                     console.log("Permission not granted for Notification");
+                }
+                else {
+                    registerDevice(vapidPublicKey);
                 }
             });
         });
     }
 
+    var firstAttempt = 1;
     function registerDevice(vapidPublicKey) {
         try {
-            //navigator.serviceWorker.register("push_service_0003.js", { scope: '/' }).then(function (reg) {
-             //   window.Notification.requestPermission().then(function (perm) {
-              //      if (perm !== "granted") {
-               //         console.log("Permission not granted for Notification");
-                //    }
-                //});
-
                 navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
                     console.log("ServiceWorkerRegistrátion ready");
                     var applicationServerKey = _urlBase64ToUint8Array(
@@ -65,18 +64,30 @@
                                     confirmButtonText: 'OK'
                                 }).then((result) => {
                                     location.reload();
-                                    
+
                                 });
                             } else {
-                                alert('Det gick inte att registrera dig för pushnotiser, vänligen försöka kadda om sidan igen')
+                                if (firstAttempt == 1) {
+                                    setTimeout(function () {
+                                        firstAttempt = 2;
+                                        registerDevice(vapidPublicKey);
+                                    }, 500);
+                                }
+                                else
+                                    alert('Det gick inte att registrera dig för pushnotiser, vänligen försöka kadda om sidan igen')
                             }
 
+                        }).catch(function (err) {
+                            if (firstAttempt == 1) {
+                                setTimeout(function () {
+                                    firstAttempt = 2;
+                                    registerDevice(vapidPublicKey);
+                                }, 500);
+                            }
                         });
 
                     });
                 });
-           // });
-
         }
         catch (err) {
 
@@ -112,7 +123,6 @@
 
 
     return {
-        RegisterDevice: registerDevice,
         UnregisterPush: unregisterPush,
         RegisterServiceWorker: registerServiceWorker
     };
