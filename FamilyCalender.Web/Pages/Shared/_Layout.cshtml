@@ -85,13 +85,10 @@
                             }
                           
 
-                            @if (ViewData[GlobalSettings.ShowBetaTesterMenu] as bool? == true)
-                            {
-
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-page="/UserSettings">👤 Min Profil</a>
-                                </li>
-                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/UserSettings">👤 Min Profil</a>
+                            </li>
+                           
 
                             @if (ViewData[GlobalSettings.ShowSuperAdminMenu] as bool? == true)
                             {

@@ -16,13 +16,12 @@ namespace FamilyCalender.Web.Pages
 			_authService = authService;
 		}
 
-        protected readonly string[] AllowedEmails = new[]
+        protected readonly string[] BetaTesterEmails = new[]
         {
             "loeveet@gmail.com",
             "mikael.lennander@hotmail.com",
             "carolinaguevara@hotmail.com",
             "jenny.liliegren@outlook.com",
-			"demokonto86@gmail.com",
 		};
 
         protected readonly string[] SuperAdminEmails = new[]
@@ -43,7 +42,7 @@ namespace FamilyCalender.Web.Pages
 
 				var user = await _authService.GetUserByEmailAsync(userEmail);
 
-                ViewData[GlobalSettings.ShowBetaTesterMenu] = AllowedEmails.Contains(user.Email);
+                ViewData[GlobalSettings.ShowBetaTesterMenu] = BetaTesterEmails.Contains(user.Email);
                 ViewData[GlobalSettings.ShowSuperAdminMenu] = SuperAdminEmails.Contains(user.Email);
                 ViewData[GlobalSettings.ShowCalendarMenu] = true;
                 return user;
