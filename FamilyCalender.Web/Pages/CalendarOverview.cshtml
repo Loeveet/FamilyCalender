@@ -305,7 +305,7 @@ else
 					</div>
 
 					<div class="mb-3">
-						<b for="eventText" class="form-label">Beskrivning</b>
+						<b for="eventText" class="form-label">Beskrivning</b> <small>(Valfritt)</small>
 						<textarea rows="4" cols="3" class="form-control" asp-for="ViewModel.EventText" id="eventText"></textarea>
 						<small id="eventTextError" class="text-danger d-none">Ange titel</small>
 					</div>
@@ -326,7 +326,7 @@ else
 					<div class="mb-3">
 						<div class="color-dropdown" onclick="eventColorPickerHelper.ToggleDropdown(event)">
 							<div class="selected" id="selectedColor">
-								Välj en kategorifärg
+								Välj en kategorifärg  <small>(Valfritt)</small>
 							</div>
 							<div class="options" id="colorOptions">
 								<div style="background-color: #f8f9fa;" data-color="@EventCategoryColor.None">Ingen kategorifärg</div>
@@ -349,15 +349,15 @@ else
 					<div class="mb-3">
 						<b for="modalSelectedDate" class="form-label">Datum</b>
 						<input type="date" class="form-control" asp-for="ViewModel.SelectedDate" id="modalSelectedDate" />
-						<small id="error-selected-date" class="text-danger d-none"></small>
+						<small id="error-selected-date" class="text-danger d-none">Detta fält är obligatoriskt</small>
 					</div>
 
 					<div class="mb-3">
-						<b for="EventTime" class="form-label">Starttid <small>(Valfritt)</small></b>
+						<b for="EventTime" class="form-label">Starttid</b> <small>(Valfritt)</small>
 						<input type="time" id="eventTime" class="form-control" asp-for="ViewModel.EventTime">
 					</div>
 					<div class="mb-3">
-						<b for="EventTime" class="form-label">Sluttid <small>(Valfritt)</small></b>
+						<b for="EventTime" class="form-label">Sluttid</b> <small>(Valfritt)</small>
 						<input type="time" id="eventStopTime" class="form-control" asp-for="ViewModel.EventStopTime">
 					</div>
 
