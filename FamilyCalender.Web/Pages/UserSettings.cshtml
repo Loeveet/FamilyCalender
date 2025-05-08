@@ -192,31 +192,20 @@
     }
 
     function registerDevice() {
-        // var hasRegistreredEarlier = '@Model.NotificationSettings.IsRegistered';
-
-        // if(hasRegistreredEarlier === "False") {
-            Swal.fire({
-                title: 'Aktivera pushnotiser?',
-                text: "Vill du få aviseringar när något händer i din kalender?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#1e3a8a',
-                cancelButtonColor: '#ff6f61',
-                confirmButtonText: 'Ja, aktivera',
-                cancelButtonText: 'Nej, tack'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    notificationService.RegisterServiceWorker();
-                    setTimeout(function(){
-                        notificationService.RegisterDevice('@GlobalSettings.VapidPublicKey');
-                        console.log('@GlobalSettings.VapidPublicKey');
-                    },1000);
-                    
-                }
-            });
-       // }
-
-      // TODO: Lägg in befintlig JS push-kod här
+        Swal.fire({
+            title: 'Aktivera pushnotiser?',
+            text: "Vill du få aviseringar när något händer i din kalender?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#1e3a8a',
+            cancelButtonColor: '#ff6f61',
+            confirmButtonText: 'Ja, aktivera',
+            cancelButtonText: 'Nej, tack'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                notificationService.RegisterServiceWorker('@GlobalSettings.VapidPublicKey');
+            }
+        });
     }
 
       function checkNotificationPermissionWithTimeout() {

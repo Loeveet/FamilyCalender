@@ -12,7 +12,7 @@
         return outputArray;
     }
 
-    function registerServiceWorker() {
+    function registerServiceWorker(vapidPublicKey) {
         console.log("trying to register");
         
         navigator.serviceWorker.register("push_service_0007.js", { scope: '/' }).then(function (reg) {
@@ -21,6 +21,9 @@
                 if (perm !== "granted") {
                     console.log("Permission not granted for Notification");
                 }
+                else {
+                    registerDevice(vapidPublicKey);
+                }
             });
         });
     }
@@ -28,15 +31,6 @@
     var firstAttempt = 1;
     function registerDevice(vapidPublicKey) {
         try {
-            //navigator.serviceWorker.register("push_service_0007.js", { scope: '/' }).then(function (reg) {
-            //    window.Notification.requestPermission().then(function (perm) {
-            //        if (perm !== "granted") {
-            //            console.log("Permission not granted for Notification");
-            //        }
-            //    });
-
-            
-
                 navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
                     console.log("ServiceWorkerRegistrátion ready");
                     var applicationServerKey = _urlBase64ToUint8Array(
@@ -94,8 +88,6 @@
 
                     });
                 });
-           // });
-
         }
         catch (err) {
 
@@ -131,7 +123,6 @@
 
 
     return {
-        RegisterDevice: registerDevice,
         UnregisterPush: unregisterPush,
         RegisterServiceWorker: registerServiceWorker
     };
