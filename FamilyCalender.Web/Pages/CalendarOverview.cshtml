@@ -55,28 +55,35 @@ else
 	   onclick="setModalValues(this)">
 		<i class="bi bi-plus-circle" title="Lägg till händelse"></i>
 	</a> *@
-	<h3 class="d-flex justify-content-center align-items-center sticky-header">
+    <h3 class="d-flex justify-content-center align-items-center sticky-header">
 
-		<a asp-page="./CalendarOverview" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
-		   asp-route-month="@(Model.ViewModel.CurrentMonth == 1 ? 12 : Model.ViewModel.CurrentMonth - 1)"
-		   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
-		   class="btn btn-secondary btn-block mb-2">
-			<i class="bi bi-chevron-left"></i>
-		</a>
+        <a asp-page="./CalendarOverview" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
+           asp-route-month="@(Model.ViewModel.CurrentMonth == 1 ? 12 : Model.ViewModel.CurrentMonth - 1)"
+           asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
+           class="btn btn-secondary btn-block mb-2">
+            <i class="bi bi-chevron-left"></i>
+        </a>
 
-		<span class="d-flex align-items-center justify-content-center text-center month-and-year">
-			@Model.ViewModel.CapitalizedMonthName @Model.ViewModel.CurrentYear
-		</span>
+        <span class="d-flex align-items-center justify-content-center text-center month-and-year">
+            @Model.ViewModel.CapitalizedMonthName @Model.ViewModel.CurrentYear
+        </span>
 
-		<a asp-page="./CalendarOverview" asp-route-year="@(Model.ViewModel.CurrentMonth == 12 ? Model.ViewModel.CurrentYear + 1 : Model.ViewModel.CurrentYear)"
-		   asp-route-month="@(Model.ViewModel.CurrentMonth == 12 ? 1 : Model.ViewModel.CurrentMonth + 1)"
-		   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
-		   class="btn btn-secondary btn-block mb-2">
-			<i class="bi bi-chevron-right"></i>
-		</a>
+        <a asp-page="./CalendarOverview" asp-route-year="@(Model.ViewModel.CurrentMonth == 12 ? Model.ViewModel.CurrentYear + 1 : Model.ViewModel.CurrentYear)"
+           asp-route-month="@(Model.ViewModel.CurrentMonth == 12 ? 1 : Model.ViewModel.CurrentMonth + 1)"
+           asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
+           class="btn btn-secondary btn-block mb-2">
+            <i class="bi bi-chevron-right"></i>
+        </a>
 
 
-	</h3>
+    </h3>
+
+	@if (Model.ViewModel.CurrentUserAllowsPush == false)
+    {
+        <div class="alert alert-info text-center" role="alert">
+			<i class="bi bi-bell-fill"></i> Hej! Nu finns det stöd för push, gå till <a href="/UserSettings" class="btn btn-pmf">Min Profil</a> för att aktivera det
+        </div>
+    }
 
 	<style>
 
@@ -467,12 +474,61 @@ else
 
 
 <script>
-	if ('@Model.ViewModel.CurrentUserAllowsPush' === 'True'){
+
+	var pushNotificationInfoCookieName = "pushnewscookie";
+
+	if ('@Model.ViewModel.CurrentUserAllowsPush' === 'True') {
 		//lets just make sure the service worker for push is activated so push can be processed
 		console.log("activating service worker since user allows push")
 		notificationService.RegisterForPush('@GlobalSettings.VapidPublicKey');
 	}
-	
+	else {
+		var cookie = getCookie(pushNotificationInfoCookieName);
+		if (cookie === void 0) {
+			//show alert
+			Swal.fire({
+				title: 'Aktivera pushnotiser?',
+				text: "Vill du få aviseringar när något händer i din kalender?",
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonColor: '#1e3a8a',
+				cancelButtonColor: '#ff6f61',
+				confirmButtonText: 'Ja tack!',
+				cancelButtonText: 'Nej tack'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					setCookie(pushNotificationInfoCookieName, true, 360);
+					location.href = "/UserSettings";
+				}
+				else{
+					setCookie(pushNotificationInfoCookieName, true, 360);
+				}
+			});
+		}
+	}
+
+	function setCookie(cname, cvalue, exdays) {
+		const d = new Date();
+		d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+		let expires = "expires=" + d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
+	function getCookie(cname) {
+		let name = cname + "=";
+		let decodedCookie = decodeURIComponent(document.cookie);
+		let ca = decodedCookie.split(';');
+		for (let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return void 0;
+	}
 </script>
 
 <script>

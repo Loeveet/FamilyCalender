@@ -25,6 +25,7 @@
                     <th>Antal egna kalendrar</th>
                     <th>Registrerad</th>
                     <th>Tillgång till antal kalendrar</th>
+                    <th>Pushnotiser</th>
                     <th></th>
 
                 </tr>
@@ -38,6 +39,17 @@
                         <td>@(user.OwnedCalendars.Count)</td>
                         <td>@user.VerificationDateUtc</td>
                         <td>@user.CalendarAccesses.Count</td>
+                        <td>
+
+                            @if (user.NotificationSetting != null)
+                            {
+                                <span>Ja</span>
+                            }
+                            else
+                            {
+                                <span>Nej</span>
+                            }
+                        </td>
                         <td>
                             <button class="btn btn-danger">Ta bort</button>
                         </td>
