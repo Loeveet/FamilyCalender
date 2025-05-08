@@ -215,7 +215,7 @@ footer {
 
 
 table.table tr.today td {
-    background-color: #a5c0ee;
+    background-color: var(--pmf-yellow); /*#a5c0ee;*/
 }
 
 
@@ -244,7 +244,8 @@ table.table .public-holiday {
 
 table.table .today {
     text-align: center;
-    background-color: #a5c0ee;
+    /*background-color: #a5c0ee;*/
+    background-color: var(--pmf-blue); /*#a5c0ee;*/
     color: #FFF;
 }
 

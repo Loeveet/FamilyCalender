@@ -176,7 +176,7 @@ else
 						</tr>
 					}
 
-					<tr id="@(day.IsCurrentDay ? "today" : "")" class="@(day.IsCurrentDay ? "today" : "")">
+					<tr id="@(day.IsCurrentDay ? "" : "")" class="@(day.IsCurrentDay ? "" : "")">
 
 
 
@@ -467,7 +467,12 @@ else
 
 
 <script>
-	notificationService.RegisterServiceWorker();
+	if ('@Model.ViewModel.CurrentUserAllowsPush' === 'True'){
+		//lets just make sure the service worker for push is activated so push can be processed
+		console.log("activating service worker since user allows push")
+		notificationService.RegisterForPush('@GlobalSettings.VapidPublicKey');
+	}
+	
 </script>
 
 <script>

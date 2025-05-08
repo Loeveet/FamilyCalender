@@ -2,18 +2,34 @@
 
     function _urlBase64ToUint8Array(base64String) {
 
-        var padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-        var base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
-        var rawData = atob(base64);
-        var outputArray = new Uint8Array(rawData.length);
-        for (var i = 0; i < rawData.length; ++i) {
-            outputArray[i] = rawData.charCodeAt(i);
+        if (base64String !== void 0) {
+            var padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+            var base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
+            var rawData = atob(base64);
+            var outputArray = new Uint8Array(rawData.length);
+            for (var i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
         }
-        return outputArray;
+        return '';
     }
 
+    //When user has allowed push, lets just register the service worker
+    function registerForPush(vapidPublicKey) {
+
+        navigator.serviceWorker.register("push_service_0007.js", { scope: '/' }).then(function (reg) {
+
+            window.Notification.requestPermission().then(function (perm) {
+                if (perm !== "granted") {
+                    console.log("Permission not granted for Notification");
+                }
+            });
+        });
+    }
+
+    //register serviceworker for push, that user must allow and then register the device
     function registerServiceWorker(vapidPublicKey) {
-        console.log("trying to register");
         
         navigator.serviceWorker.register("push_service_0007.js", { scope: '/' }).then(function (reg) {
             
@@ -36,6 +52,11 @@
                     var applicationServerKey = _urlBase64ToUint8Array(
                         vapidPublicKey
                     );
+
+                    if (applicationServerKey === '') {
+                        console.log('Missing vapidPublicKey - push not working');
+                        return;
+                    }
 
                     var options = {
                         applicationServerKey: applicationServerKey,
@@ -124,6 +145,7 @@
 
     return {
         UnregisterPush: unregisterPush,
-        RegisterServiceWorker: registerServiceWorker
+        RegisterServiceWorker: registerServiceWorker,
+        RegisterForPush: registerForPush
     };
 }();
