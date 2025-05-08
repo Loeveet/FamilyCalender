@@ -12,19 +12,10 @@ namespace FamilyCalender.Web.Pages
         [BindProperty]
         public NotificationSettings NotificationSettings { get; set; } = new NotificationSettings();
 
-
-        private static readonly string[] AllowedEmails = new[]
-        {
-            "loeveet@gmail.com",
-            "mikael.lennander@hotmail.com",
-            "carolinaguevara@hotmail.com",
-            "jenny.liliegren@outlook.com",
-        };
-
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await GetCurrentUserAsync();
-            if (user == null || !AllowedEmails.Contains(user.Email))
+            if (user == null)
             {
                 return RedirectToPage("/CalendarOverview");
             }
@@ -42,6 +33,7 @@ namespace FamilyCalender.Web.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var user = await GetCurrentUserAsync();
             if (!NotificationSettings.UserNotificationSetting.AllowNotifications)
             {
                 NotificationSettings.HasTurndOff = true;
@@ -52,7 +44,9 @@ namespace FamilyCalender.Web.Pages
 				await userService.UpdateNotificationAsync(NotificationSettings.UserNotificationSetting);
 			}
 
-			return RedirectToPage("./UserSettings");
+            NotificationSettings.SavedSuccess = true;
+            return Page();
+			//return RedirectToPage("./UserSettings"); //hm, tanken är ju att komma till turn off så det avreggas, men så blir väl inte fallet nu?
 		}
 
 
@@ -64,5 +58,6 @@ namespace FamilyCalender.Web.Pages
         public bool IsRegistered => !string.IsNullOrEmpty(UserNotificationSetting?.Endpoint);
 
 		public bool HasTurndOff { get; set; }
+		public bool SavedSuccess { get; internal set; }
 	}
 }

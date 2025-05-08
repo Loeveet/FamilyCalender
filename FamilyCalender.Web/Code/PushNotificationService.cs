@@ -3,8 +3,6 @@ using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Services;
 using Newtonsoft.Json;
 using Serilog;
-using System.Security.Claims;
-using System.Security.Policy;
 using WebPush;
 using static FamilyCalender.Infrastructure.Services.EmailService;
 
@@ -29,15 +27,15 @@ namespace FamilyCalender.Web.Code
         {
 			if (model != null) 
 			{
-				var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, -1, SubscriberType.NewCalendarEvent); // so we always get push during beta
+				var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, currentUser.Id, SubscriberType.NewCalendarEvent); 
 				foreach (var pushUser in users)
 				{
 					if (pushUser.NotificationSetting != null)
 					{
 						var pushData = new PushData()
 						{
-							Title = $"Nytt event '{model.Title}'",
-							Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {model.Text}\n\nSkapad av användare {currentUser.Email}",
+							Title = $"Nytt event '{model.Title}' - {model.Calendar?.Name}",
+							Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {model.Text}\nSkapad av användare {currentUser.Email}",
 							Url = $"{_emailSettings.HostingDomain}/CalendarOverview"
 						};
 
@@ -54,15 +52,15 @@ namespace FamilyCalender.Web.Code
 				var title = _encryptionService.AutoDetectDecryptStringToString(model.Title, model.CalendarId.ToString());
 				var text = _encryptionService.AutoDetectDecryptStringToString(model.Text, model.CalendarId.ToString());
 				var heading = delete ? "Raderat" : "Uppdaterat";
-				var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, -1, delete ? SubscriberType.DeleteCalendarEvent : SubscriberType.UpdateCalendarEvent); // so we always get push during beta
+				var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, currentUser.Id, delete ? SubscriberType.DeleteCalendarEvent : SubscriberType.UpdateCalendarEvent); // so we always get push during beta
 				foreach (var pushUser in users)
 				{
 					if (pushUser.NotificationSetting != null)
 					{
 						var pushData = new PushData()
 						{
-							Title = $"{heading} event '{title}'",
-							Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {text}\n\nSkapad av användare {currentUser.Email}",
+							Title = $"{heading} event '{title}' - {model.Calendar?.Name}",
+							Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {text}\nSkapad av användare {currentUser.Email}",
 							Url = $"{_emailSettings.HostingDomain}/CalendarOverview"
 						};
 

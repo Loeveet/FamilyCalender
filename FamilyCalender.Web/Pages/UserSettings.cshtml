@@ -50,6 +50,7 @@
   
     <h1>Pushnotiser</h1>
 
+    <p>Om du använder en mobil måste du först spara ner PlaneraMedFlera som en app för att kunna aktivera push och få det att fungera.</p>
 
     <form method="post" id="NotificationSettingsForm" asp-page-handler="OnPostAsync">
         <div class="form-check form-switch">
@@ -89,6 +90,14 @@
         {
             <button type="submit" class="btn btn-pmf" style="width:100%;">Spara inställningarna</button>
         }
+        @if (Model.NotificationSettings.SavedSuccess)
+        {
+            <br />
+            <br />
+            <p style="text-align:center" class="text-success">Tack, dina inställningar är sparade!</p>
+            <br/>
+           
+        }
         
     </form>
 </div>
@@ -100,6 +109,14 @@
     var unregister = '@Model.NotificationSettings.HasTurndOff';
     if(unregister === 'True'){
         notificationService.UnregisterPush();
+    }
+
+      var saved = '@Model.NotificationSettings.SavedSuccess';
+    if(saved === 'True'){
+        setTimeout(function(){
+            location.href = '/UserSettings';
+        }, 1500)
+        
     }
 
    
@@ -175,26 +192,20 @@
     }
 
     function registerDevice() {
-        // var hasRegistreredEarlier = '@Model.NotificationSettings.IsRegistered';
-
-        // if(hasRegistreredEarlier === "False") {
-            Swal.fire({
-                title: 'Aktivera pushnotiser?',
-                text: "Vill du få aviseringar när något händer i din kalender?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#1e3a8a',
-                cancelButtonColor: '#ff6f61',
-                confirmButtonText: 'Ja, aktivera',
-                cancelButtonText: 'Nej, tack'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    notificationService.RegisterDevice('@GlobalSettings.VapidPublicKey');
-                }
-            });
-       // }
-
-      // TODO: Lägg in befintlig JS push-kod här
+        Swal.fire({
+            title: 'Aktivera pushnotiser?',
+            text: "Vill du få aviseringar när något händer i din kalender?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#1e3a8a',
+            cancelButtonColor: '#ff6f61',
+            confirmButtonText: 'Ja, aktivera',
+            cancelButtonText: 'Nej, tack'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                notificationService.RegisterServiceWorker('@GlobalSettings.VapidPublicKey');
+            }
+        });
     }
 
       function checkNotificationPermissionWithTimeout() {
