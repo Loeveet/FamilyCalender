@@ -28,6 +28,7 @@ namespace FamilyCalender.Web.Pages
 				return RedirectToPage("/Login");
 			}
 
+			ViewModel.CurrentUserAllowsPush = user.NotificationSetting is {AllowNotifications: true};
 			SetCurrentYearAndMonth(year, month);
 
 			var publicHolidays = publicHolidayService.GetHolidays(ViewModel.CurrentYear);

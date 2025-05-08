@@ -27,6 +27,8 @@ namespace FamilyCalender.Web.ViewModels
         public ICollection<string> SelectedDays { get; set; } = [];
 		public RepeatType RepetitionType { get; set; }
 
+		public bool CurrentUserAllowsPush { get; set; }
+
 
 		public string CapitalizedMonthName
 		{
