@@ -37,7 +37,16 @@
                         <td>@user.Email</td>
                         <td>@(user.IsVerified ? "Ja" : "Nej")</td>
                         <td>@(user.OwnedCalendars.Count)</td>
-                        <td>@user.VerificationDateUtc</td>
+                        <td>
+                            @if (user.VerificationDateUtc.HasValue)
+                            {
+                                <span>@user.VerificationDateUtc.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                            }
+                            else
+                            {
+                                <span></span>
+                            }
+                        </td>
                         <td>@user.CalendarAccesses.Count</td>
                         <td>
 
