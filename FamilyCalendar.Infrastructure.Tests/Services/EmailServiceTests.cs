@@ -25,7 +25,8 @@ namespace FamilyCalendar.Infrastructure.Tests.Services
 			});
 
 			emailService.SendVerificationEmail("robin.liliegren@outlook.com", "test");
-			
-		}
+            emailService.SendPasswordResetEmail("robin.liliegren@outlook.com", "test");
+
+        }
 	}
 }
