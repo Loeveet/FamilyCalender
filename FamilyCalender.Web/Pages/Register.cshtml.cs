@@ -50,9 +50,10 @@ namespace FamilyCalender.Web.Pages
 
                 if (Succeeded)
                 {
-					TempData["VerificationMessage"] = "Vi har skickat ett e-postmeddelande för att bekräfta ditt konto. Kolla din inkorg!";
-				}
-				ErrorMessage = Error;
+                    TempData["VerificationMessage"] = "Vi har skickat ett e-postmeddelande för att bekräfta ditt konto. Kontrollera din inkorg. Om du inte hittar meddelandet, vänligen titta även i skräppostmappen.";
+
+                }
+                ErrorMessage = Error;
 
 				foreach (var error in Error)
                 {

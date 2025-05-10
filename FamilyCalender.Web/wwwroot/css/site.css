@@ -529,3 +529,47 @@ h4 {
         background-color: #f0f0f0;
     }
 
+
+
+/* Generell stil för sidan */
+.account-verified-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Rubrik för bekräftelse */
+.account-verified-heading {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* Undertitel med beskrivning */
+.account-verified-subheading {
+    color: #6c757d;
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+}
+
+/* Stil för knappen */
+.account-verified-btn {
+    width: 100%;
+    background-color: #4a90e2;
+    color: white;
+    border-radius: 4px;
+    padding: 1rem;
+    text-align: center;
+    display: inline-block;
+    margin-top: 1rem;
+    text-decoration: none;
+}
+
+    .account-verified-btn:hover {
+        background-color: #357ab7;
+    }

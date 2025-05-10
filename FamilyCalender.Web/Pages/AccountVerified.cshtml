@@ -1,7 +1,67 @@
 ﻿@page
 @model FamilyCalender.Web.Pages.AccountVerifiedModel
 @{
+    Layout = null;
 }
-<h1>Ditt konto är nu verifierat</h1>
-<h3>Tryck på knappen för att logga in och skapa din första kalender!</h3>
-<a class="btn btn-primary" asp-page="/Login">Logga in</a>
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Konto Verifierat</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/images/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/images/favicon-180x180.png" />
+
+    <link rel="stylesheet" href="~/css/bootstrap-overrides.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/css-variables.css" asp-append-version="true" />
+    <link rel="manifest" href="~/site.webmanifest" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .account-verified-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .account-verified-heading {
+            font-size: 2rem;
+            color: #333;
+        }
+
+        .account-verified-subheading {
+            font-size: 1.25rem;
+            color: #555;
+            margin-top: 0.5rem;
+        }
+
+    </style>
+</head>
+<body class="account-verified-page">
+    <div class="account-verified-container">
+        <h1 class="account-verified-heading">Ditt konto är nu verifierat</h1>
+        <h3 class="account-verified-subheading">Tryck på knappen för att logga in och skapa din första kalender!</h3>
+        <a class="btn btn-pmf" asp-page="/Login">Logga in</a>
+    </div>
+</body>
+</html>
