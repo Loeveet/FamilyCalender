@@ -105,8 +105,8 @@ namespace FamilyCalender.Infrastructure.Services
 
 		public async Task<Calendar> UpdateCalendarAsync(Calendar calendar)
         {
-			_context.Calendars.Update(calendar);
 			calendar.LastEditedUtc = DateTime.UtcNow;
+			_context.Calendars.Update(calendar);
 			await _context.SaveChangesAsync();
 			return calendar;
 		}
@@ -180,9 +180,9 @@ namespace FamilyCalender.Infrastructure.Services
 
 		private async Task<Calendar> AddAsync(Calendar calendar)
 		{
-			_context.Calendars.Add(calendar);
 			calendar.CreatedUtc = DateTime.UtcNow;
 			calendar.LastEditedUtc = DateTime.UtcNow;
+			_context.Calendars.Add(calendar);
 			await _context.SaveChangesAsync();
 			return calendar;
 		}
@@ -217,8 +217,8 @@ namespace FamilyCalender.Infrastructure.Services
 		}
 		private async Task UpdateAsync(Calendar calendar)
 		{
-			_context.Calendars.Update(calendar);
 			calendar.LastEditedUtc = DateTime.UtcNow;
+			_context.Calendars.Update(calendar);
 			await _context.SaveChangesAsync();
 		}
 	}
