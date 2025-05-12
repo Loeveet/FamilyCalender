@@ -59,25 +59,14 @@ namespace FamilyCalender.Web.Code
                 {
                     if (pushUser.NotificationSetting != null)
                     {
-                        var firstMemberDate = model.EventMemberDates?.FirstOrDefault();
-                        if (firstMemberDate != null)
+                        var pushData = new PushData()
                         {
-                            var eventId = model.Id; // Här får du det faktiska EventId
-                            var memberId = firstMemberDate.MemberId;
-                            var date = firstMemberDate.Date.ToString("yyyy-MM-dd");
+                            Title = $"{heading} event '{title}' - {model.Calendar?.Name}",
+                            Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {text}\nSkapad av användare {currentUser.Email}",
+                            Url = $"{_emailSettings.HostingDomain}/CalendarOverview"
+                        };
 
-                            var pushData = new PushData()
-                            {
-                                Title = $"{heading} event '{title}' - {model.Calendar?.Name}",
-                                Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {text}\nSkapad av användare {currentUser.Email}",
-                                //Url = $"{_emailSettings.HostingDomain}/CalendarOverview"
-
-                                Url = $"{_emailSettings.HostingDomain}/EventDetails?eventId={eventId}&memberId={memberId}&day={date}"
-                            };
-
-                            SendPush(pushData, pushUser.Email, pushUser.NotificationSetting.Endpoint, pushUser.NotificationSetting.P256dh, pushUser.NotificationSetting.Auth);
-
-                        }
+                        SendPush(pushData, pushUser.Email, pushUser.NotificationSetting.Endpoint, pushUser.NotificationSetting.P256dh, pushUser.NotificationSetting.Auth);
                     }
                 }
             }
