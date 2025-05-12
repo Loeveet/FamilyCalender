@@ -26,6 +26,7 @@
                     <th>Registrerad</th>
                     <th>Tillgång till antal kalendrar</th>
                     <th>Pushnotiser</th>
+                    <th>Senast inloggad</th>
                     <th></th>
 
                 </tr>
@@ -57,6 +58,16 @@
                             else
                             {
                                 <span>Nej</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.LastLoggedInUtc.HasValue)
+                            {
+                                <span>@user.LastLoggedInUtc.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                            }
+                            else
+                            {
+                                <span></span>
                             }
                         </td>
                         <td>

@@ -117,6 +117,12 @@ namespace FamilyCalender.Infrastructure.Services
 			user.VerificationToken = null;
 			user.VerificationDateUtc = DateTime.UtcNow;
 		}
+		public async Task SetLastLoggedInAsync(User user)
+		{
+			user.LastLoggedInUtc = DateTime.UtcNow;
+            _context.Entry(user).Property(u => u.LastLoggedInUtc).IsModified = true;
+            await _context.SaveChangesAsync();
+		}
 
 		public async Task SendPasswordResetEmailAsync(string email)
 		{
