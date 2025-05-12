@@ -86,7 +86,7 @@
                         <td>@(cal.Events.Count)</td>
                         <td>@(cal.Accesses.Count)</td>
                         <td>@cal.MemberCalendars.Count</td>
-                        <td>
+@*                         <td>
                             @if (cal.Events.Any() && cal.Events.LastOrDefault().LastEditedUtc.HasValue)
                             {
                                 <span>@cal.Events.LastOrDefault().LastEditedUtc.Value.ToString("yyyy-MM-dd HH:mm")</span>
@@ -94,6 +94,25 @@
                             else
                             {
                                 <span></span>
+                            }
+                        </td> *@
+                        <td>
+                            @{
+                                var calendarLastEdited = cal.LastEditedUtc;
+
+                                var lastEventLastEdited = cal.Events
+                                .OrderByDescending(e => e.LastEditedUtc)
+                                .FirstOrDefault()?.LastEditedUtc;
+
+                                var latestTime = (calendarLastEdited.HasValue || lastEventLastEdited.HasValue)
+                                ? new[] { calendarLastEdited, lastEventLastEdited }
+                                .Max()
+                                : null;
+                            }
+
+                            @if (latestTime != null)
+                            {
+                                <span>@latestTime.Value.ToString("yyyy-MM-dd HH:mm")</span>
                             }
                         </td>
                     </tr>
