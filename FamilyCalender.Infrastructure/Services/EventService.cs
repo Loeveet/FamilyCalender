@@ -191,9 +191,9 @@ namespace FamilyCalender.Infrastructure.Services
 
 		private async Task<Event> AddAsync(Event e)
 		{
-			await _context.Events.AddAsync(e);
 			e.CreatedUtc = DateTime.UtcNow;
 			e.LastEditedUtc = DateTime.UtcNow;
+			await _context.Events.AddAsync(e);
 			await _context.SaveChangesAsync();
 			return e;
 		}
@@ -203,8 +203,8 @@ namespace FamilyCalender.Infrastructure.Services
 
 			try
 			{
-				_context.Events.Update(e);
 				e.LastEditedUtc = DateTime.UtcNow;
+				_context.Events.Update(e);
 				await _context.SaveChangesAsync();
 			}
 			catch (DbUpdateException ex)
