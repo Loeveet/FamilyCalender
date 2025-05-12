@@ -27,6 +27,7 @@ namespace FamilyCalender.Web.Pages
 			{
 				return RedirectToPage("/Login");
 			}
+			await _authService.SetLastLoggedInAsync(user);
 
 			ViewModel.CurrentUserAllowsPush = user.NotificationSetting is {AllowNotifications: true};
 			SetCurrentYearAndMonth(year, month);
