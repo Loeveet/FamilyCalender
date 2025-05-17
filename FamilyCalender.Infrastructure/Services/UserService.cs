@@ -14,6 +14,7 @@ namespace FamilyCalender.Infrastructure.Services
 			return await _context.Users
 				.Include(u => u.OwnedCalendars)
 				.Include(u => u.CalendarAccesses)
+				.Include(u => u.NotificationSetting)
 				.ToListAsync();
 		}
 		public async Task CreateNotificationAsync(UserNotificationSetting uns)
