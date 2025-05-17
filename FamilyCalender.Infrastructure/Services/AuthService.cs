@@ -68,17 +68,21 @@ namespace FamilyCalender.Infrastructure.Services
 		}
 
 
+        public async Task<User?> GetUserByEmailForPasswordAsync(string email)
+        {
+            var user = await _context.Users
+                .Include(c => c.NotificationSetting)
+                .FirstOrDefaultAsync(u => u.Email == email);
+            return user;
+        }
 
-	
 
-		public async Task<User> GetUserByEmailAsync(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
 		{
 			//Gör en try catch eller returna ett fel om användaren inte hittas
 			var user = await _context.Users
 				.Include(c => c.NotificationSetting)
 				.FirstOrDefaultAsync(u => u.Email == email);
-			if (user == null)
-				throw new Exception(); //Fixa så det blir ett vettigt exception
 			return user;
         }
 		public async Task<User> GetUserByTokenAsync(string verificationToken)
@@ -130,7 +134,7 @@ namespace FamilyCalender.Infrastructure.Services
 
 		public async Task SendPasswordResetEmailAsync(string email)
 		{
-			var user = await GetUserByEmailAsync(email);
+			var user = await GetUserByEmailForPasswordAsync(email);
 			if (user == null) return;
 
 			var token = Guid.NewGuid().ToString();
