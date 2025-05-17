@@ -7,6 +7,7 @@ namespace FamilyCalender.Core.Interfaces.IServices
 		Task<bool> IsValidUserNamePassword(string email, string password);
 		Task<(bool Succeeded, string Error, string Token)> RegisterAsync(string email, string password);
 		Task<User> GetUserByEmailAsync(string email);
+        Task<User?> GetUserByEmailForPasswordAsync(string email);
         Task<User> GetUserByTokenAsync(string verificationToken);
         Task<User> GetUserByPasswordResetTokenAsync(string passwordResetToken);
         Task<User> GetUserByIdAsync(int ownerId);
