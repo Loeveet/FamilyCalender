@@ -2,6 +2,7 @@
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Context;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamilyCalender.Infrastructure.Services
@@ -73,9 +74,12 @@ namespace FamilyCalender.Infrastructure.Services
 		public async Task<User> GetUserByEmailAsync(string email)
 		{
 			//Gör en try catch eller returna ett fel om användaren inte hittas
-            return await _context.Users
-                .Include(c => c.NotificationSetting)
-                .FirstOrDefaultAsync(u => u.Email == email);
+			var user = await _context.Users
+				.Include(c => c.NotificationSetting)
+				.FirstOrDefaultAsync(u => u.Email == email);
+			if (user == null)
+				throw new Exception(); //Fixa så det blir ett vettigt exception
+			return user;
         }
 		public async Task<User> GetUserByTokenAsync(string verificationToken)
 		{
