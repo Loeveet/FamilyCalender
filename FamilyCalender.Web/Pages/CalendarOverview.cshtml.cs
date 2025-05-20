@@ -5,6 +5,8 @@ using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Web.Code;
 using System.Globalization;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static FamilyCalender.Web.ViewModels.CalendarOverViewViewModel;
 
 
 namespace FamilyCalender.Web.Pages
@@ -20,7 +22,7 @@ namespace FamilyCalender.Web.Pages
 		[BindProperty]
 		public CalendarOverViewViewModel ViewModel { get; set; } = new CalendarOverViewViewModel();
 
-		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId)
+		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId, string? view, int? weekOffset, DateTime? weekDate)
 		{
 			var user = await GetCurrentUserAsync();
 			if (user == null)
@@ -28,28 +30,58 @@ namespace FamilyCalender.Web.Pages
 				return RedirectToPage("/Login");
 			}
 			await _authService.SetLastLoggedInAsync(user);
-
 			ViewModel.CurrentUserAllowsPush = user.NotificationSetting is {AllowNotifications: true};
-			SetCurrentYearAndMonth(year, month);
 
+			if (!string.IsNullOrEmpty(view))
+			{
+				Response.Cookies.Append("calendarView", view, new CookieOptions
+				{
+					Expires = DateTimeOffset.UtcNow.AddYears(1),
+					IsEssential = true,
+					Path = "/"
+				});
+
+				// Redirect för att inte ha ?view= i URL:en efteråt
+				return RedirectToPage(new { year, month, calendarId });
+			}
+			var viewCookie = Request.Cookies["calendarView"];
+			if (!Enum.TryParse<CalendarView>(viewCookie, true, out var selectedView))
+			{
+				selectedView = CalendarView.Month;
+			}
+			ViewModel.SelectedView = selectedView;
+
+			SetCurrentYearAndMonth(year, month);
 			var publicHolidays = publicHolidayService.GetHolidays(ViewModel.CurrentYear);
 
-			ViewModel.DaysInMonth = GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo, publicHolidays);
-
-			var calendarDtos = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
-			ViewModel.CalendarDtos = calendarDtos;
-			var calendarIds = calendarDtos.Select(c => c.Id).ToList();
-
-
-			if (calendarIds != null)
+			if (ViewModel.SelectedView == CalendarView.Week)
 			{
-				await LoadSelectedCalendarData(calendarId, calendarIds);
+				// Om inget weekDate skickas med, defaulta till dagens datum
+				var dateToShow = weekDate ?? DateTime.Today;
+
+				ViewModel.CurrentWeekOfYear = GetIso8601WeekOfYear(DateTime.Today);
+				ViewModel.DisplayedWeekOfYear = GetIso8601WeekOfYear(dateToShow);
+
+				// Generera dagar i veckan baserat på det datumet
+				ViewModel.DaysInMonth = GenerateWeekDays(dateToShow, ViewModel.CultureInfo, publicHolidays);
+
+				// Ladda övrig data för veckovy
+				var calendarDtos = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
+				ViewModel.CalendarDtos = calendarDtos;
+				var calendarIds = calendarDtos.Select(c => c.Id).ToList();
+
+				await LoadWeekViewData(calendarId, calendarIds, dateToShow, publicHolidays);
 			}
 			else
 			{
-				ViewModel.SelectedCalendar = new Core.Models.Entities.Calendar();
-				ViewModel.Events = new List<Event>();
-				ViewModel.Members = new List<Member>();
+				// Månadsvy
+				ViewModel.DaysInMonth = GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo, publicHolidays);
+
+				var calendarDtos = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
+				ViewModel.CalendarDtos = calendarDtos;
+				var calendarIds = calendarDtos.Select(c => c.Id).ToList();
+
+				await LoadMonthViewData(calendarId, calendarIds, publicHolidays);
 			}
 
 			return Page();
@@ -135,7 +167,38 @@ namespace FamilyCalender.Web.Pages
 			ViewModel.Events = await _calendarManagementService.GetEventsForCalendarAsync(chosenCalendarId, ViewModel.CurrentYear, ViewModel.CurrentMonth);
 			ViewModel.Members = await _calendarManagementService.GetMembersForCalendarAsync(chosenCalendarId);
 		}
+		private async Task LoadWeekViewData(int? calendarId, List<int> calendarIds, DateTime weekDate, List<PublicHolidayInfo> publicHolidays)
+		{
+			// Sätt startdatum för veckan baserat på year, month och weekOffset
+			// Hämta events och andra data för veckan
+    ViewModel.DaysInMonth = GenerateWeekDays(weekDate, ViewModel.CultureInfo, publicHolidays);
 
+			if (calendarIds != null)
+			{
+				await LoadSelectedCalendarData(calendarId, calendarIds);
+			}
+			else
+			{
+				ViewModel.SelectedCalendar = new Core.Models.Entities.Calendar();
+				ViewModel.Events = new List<Event>();
+				ViewModel.Members = new List<Member>();
+			}
+		}
+		private async Task LoadMonthViewData(int? calendarId, List<int> calendarIds, List<PublicHolidayInfo> publicHolidays)
+		{
+			ViewModel.DaysInMonth = GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo, publicHolidays);
+
+			if (calendarIds != null)
+			{
+				await LoadSelectedCalendarData(calendarId, calendarIds);
+			}
+			else
+			{
+				ViewModel.SelectedCalendar = new Core.Models.Entities.Calendar();
+				ViewModel.Events = new List<Event>();
+				ViewModel.Members = new List<Member>();
+			}
+		}
 		private void SetCurrentYearAndMonth(int? year, int? month)
 		{
 			ViewModel.CurrentYear = year ?? ViewModel.CurrentYear;
@@ -235,7 +298,7 @@ namespace FamilyCalender.Web.Pages
 			{
 				var date = new DateTime(year, month, day);
 				var weekOfYear = GetIso8601WeekOfYear(date);
-				string dayName = date.ToString("dddd", cultureInfo);
+				var dayName = date.ToString("dddd", cultureInfo);
 
 				days.Add(new DayViewModel
 				{
@@ -258,15 +321,15 @@ namespace FamilyCalender.Web.Pages
 
 			var selectedDaysLower = selectedDays.Select(day => day.ToLower()).ToList();
 
-			int totalDays = (end - start).Days;
-			int startWeekNumber = GetIso8601WeekOfYear(start);
+			var totalDays = (end - start).Days;
+			var startWeekNumber = GetIso8601WeekOfYear(start);
 
 			for (int i = 0; i <= totalDays; i++)
 			{
 				var currentDate = start.AddDays(i);
 				var dayName = culture.DateTimeFormat.GetDayName(currentDate.DayOfWeek).ToLower();
-				int currentWeekNumber = GetIso8601WeekOfYear(currentDate);
-				int weekDifference = currentWeekNumber - startWeekNumber;
+				var currentWeekNumber = GetIso8601WeekOfYear(currentDate);
+				var weekDifference = currentWeekNumber - startWeekNumber;
 
 				if (weekDifference % intervalInWeeks == 0 && selectedDaysLower.Contains(dayName))
 				{
@@ -287,7 +350,7 @@ namespace FamilyCalender.Web.Pages
 				date = date.AddDays(3);
 			}
 
-			int weekNumber = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+			var weekNumber = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
 				date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday
 			);
 
@@ -298,5 +361,47 @@ namespace FamilyCalender.Web.Pages
 
 			return weekNumber;
 		}
+		public static List<DayViewModel> GenerateWeekDays(DateTime referenceDate, CultureInfo cultureInfo, List<PublicHolidayInfo> publicHolidays)
+		{
+			var monday = FirstDateOfWeekISO8601(referenceDate.Year, GetIso8601WeekOfYear(referenceDate));
+
+			var days = new List<DayViewModel>();
+			for (int i = 0; i < 7; i++)
+			{
+				var day = monday.AddDays(i);
+				string dayName = day.ToString("dddd", cultureInfo);
+
+				days.Add(new DayViewModel
+				{
+					Date = day,
+					IsCurrentDay = day.Date == DateTime.Today,
+					IsPastDay = day.Date < DateTime.Today,
+					WeekOfYear = GetIso8601WeekOfYear(day),
+					ShowWeekNumber = day.DayOfWeek == DayOfWeek.Monday,
+					CapitalizedDayName = char.ToUpper(dayName[0]) + dayName.Substring(1),
+					PublicHoliday = publicHolidays.FirstOrDefault(x => x.DateTime.Date == day.Date)
+				});
+			}
+
+			return days;
+		}
+
+
+		public static DateTime FirstDateOfWeekISO8601(int year, int weekOfYear)
+		{
+			var jan1 = new DateTime(year, 1, 1);
+			var daysOffset = DayOfWeek.Monday - jan1.DayOfWeek;
+			var firstMonday = jan1.AddDays(daysOffset);
+			var cal = CultureInfo.CurrentCulture.Calendar;
+			var firstWeek = GetIso8601WeekOfYear(jan1);
+
+			if (firstWeek <= 1)
+			{
+				weekOfYear -= 1;
+			}
+
+			return firstMonday.AddDays(weekOfYear * 7);
+		}
+
 	}
 }

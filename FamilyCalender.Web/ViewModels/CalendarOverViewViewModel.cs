@@ -26,10 +26,17 @@ namespace FamilyCalender.Web.ViewModels
         public DateTime? EndDate { get; set; }
         public ICollection<string> SelectedDays { get; set; } = [];
 		public RepeatType RepetitionType { get; set; }
-
 		public bool CurrentUserAllowsPush { get; set; }
+		public int CurrentWeekOfYear { get; set; }
+		public int DisplayedWeekOfYear { get; set; }
+		public CalendarView SelectedView { get; set; }
 
-
+        public enum CalendarView
+        {
+			Month = 0,
+			Week = 1,
+			Day = 2
+		}
 		public string CapitalizedMonthName
 		{
 			get

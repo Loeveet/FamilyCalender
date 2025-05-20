@@ -36,6 +36,21 @@
 }
 else
 {
+	<div class="view-switch">
+		<form method="get">
+			<input type="hidden" name="calendarId" value="@Model.ViewModel.SelectedCalendarId" />
+			<input type="hidden" name="year" value="@Model.ViewModel.CurrentYear" />
+			<input type="hidden" name="month" value="@Model.ViewModel.CurrentMonth" />
+			<button type="submit" name="view" value="month" class="btn @(Model.ViewModel.SelectedView == Web.ViewModels.CalendarOverViewViewModel.CalendarView.Month ? "btn-primary" : "btn-secondary")">
+				Månad
+			</button>
+			<button type="submit" name="view" value="week" class="btn @(Model.ViewModel.SelectedView == Web.ViewModels.CalendarOverViewViewModel.CalendarView.Week ? "btn-primary" : "btn-secondary")">
+				Vecka
+			</button>
+		</form>
+	</div>
+
+
 	<h2 class="d-flex justify-content-between align-items-center">
 		<span>@Model.ViewModel.SelectedCalendarName</span>
 	</h2>
@@ -55,7 +70,7 @@ else
 	   onclick="setModalValues(this)">
 		<i class="bi bi-plus-circle" title="Lägg till händelse"></i>
 	</a> *@
-    <h3 class="d-flex justify-content-center align-items-center sticky-header">
+	@*     <h3 class="d-flex justify-content-center align-items-center sticky-header">
 
         <a asp-page="./CalendarOverview" asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
            asp-route-month="@(Model.ViewModel.CurrentMonth == 1 ? 12 : Model.ViewModel.CurrentMonth - 1)"
@@ -76,14 +91,65 @@ else
         </a>
 
 
-    </h3>
+    </h3> *@
+	@if (Model.ViewModel.SelectedView == Web.ViewModels.CalendarOverViewViewModel.CalendarView.Month)
+	{
+		<!-- Visa månads-navigation -->
+		<h3 class="d-flex justify-content-center align-items-center sticky-header">
+			<a asp-page="./CalendarOverview"
+			   asp-route-year="@(Model.ViewModel.CurrentMonth == 1 ? Model.ViewModel.CurrentYear - 1 : Model.ViewModel.CurrentYear)"
+			   asp-route-month="@(Model.ViewModel.CurrentMonth == 1 ? 12 : Model.ViewModel.CurrentMonth - 1)"
+			   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
+			   class="btn btn-secondary btn-block mb-2">
+				<i class="bi bi-chevron-left"></i>
+			</a>
+
+			<span class="d-flex align-items-center justify-content-center text-center month-and-year">
+				@Model.ViewModel.CapitalizedMonthName @Model.ViewModel.CurrentYear
+			</span>
+
+			<a asp-page="./CalendarOverview"
+			   asp-route-year="@(Model.ViewModel.CurrentMonth == 12 ? Model.ViewModel.CurrentYear + 1 : Model.ViewModel.CurrentYear)"
+			   asp-route-month="@(Model.ViewModel.CurrentMonth == 12 ? 1 : Model.ViewModel.CurrentMonth + 1)"
+			   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
+			   class="btn btn-secondary btn-block mb-2">
+				<i class="bi bi-chevron-right"></i>
+			</a>
+		</h3>
+	}
+	else if (Model.ViewModel.SelectedView == Web.ViewModels.CalendarOverViewViewModel.CalendarView.Week)
+	{
+		var previousWeek = Model.ViewModel.DaysInMonth.First().Date.AddDays(-7);
+		var nextWeek = Model.ViewModel.DaysInMonth.First().Date.AddDays(7);
+
+		<h3 class="d-flex justify-content-center align-items-center sticky-header">
+			<a asp-page="./CalendarOverview"
+			   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
+			   asp-route-weekDate="@previousWeek.ToString("yyyy-MM-dd")"
+			   class="btn btn-secondary btn-block mb-2">
+				<i class="bi bi-chevron-left"></i>
+			</a>
+
+			<span class="d-flex align-items-center justify-content-center text-center month-and-year">
+				Vecka @Model.ViewModel.DisplayedWeekOfYear - @Model.ViewModel.CurrentYear
+			</span>
+
+			<a asp-page="./CalendarOverview"
+			   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
+			   asp-route-weekDate="@nextWeek.ToString("yyyy-MM-dd")"
+			   class="btn btn-secondary btn-block mb-2">
+				<i class="bi bi-chevron-right"></i>
+			</a>
+		</h3>
+	}
+
 
 	@if (Model.ViewModel.CurrentUserAllowsPush == false)
-    {
-        <div class="alert alert-info text-center" role="alert">
+	{
+		<div class="alert alert-info text-center" role="alert">
 			<i class="bi bi-bell-fill"></i> Hej! Nu finns det stöd för push, gå till <a href="/UserSettings" class="btn btn-pmf">Min Profil</a> för att aktivera det
-        </div>
-    }
+		</div>
+	}
 
 	<style>
 
@@ -500,7 +566,7 @@ else
 					setCookie(pushNotificationInfoCookieName, true, 360);
 					location.href = "/UserSettings";
 				}
-				else{
+				else {
 					setCookie(pushNotificationInfoCookieName, true, 360);
 				}
 			});
@@ -533,48 +599,48 @@ else
 
 <script>
 
-		//initialize Color picker to set correct color on Model input field
-		eventColorPickerHelper.Init('ViewModel_SelectedCategoryColor');
+	//initialize Color picker to set correct color on Model input field
+	eventColorPickerHelper.Init('ViewModel_SelectedCategoryColor');
 
-		var today = document.getElementById('today');
-		if (today !== null) {
+	var today = document.getElementById('today');
+	if (today !== null) {
 		var elementPosition = today.getBoundingClientRect().top + window.scrollY;
 		var offsetPosition = elementPosition - 100;
-			window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+		window.scrollTo({ top: offsetPosition, behavior: "smooth" });
 	}
 </script>
 
 <script>
 	function handleRepetitionChange() {
-	  var selectedValue = document.getElementById("repetitionSelect").value;
+		var selectedValue = document.getElementById("repetitionSelect").value;
 
-	  document.getElementById("noneDiv").style.display = "none";
-	  document.getElementById("weeklyDiv").style.display = "none";
-	  document.getElementById("biweeklyDiv").style.display = "none";
-	  document.getElementById("monthlyDiv").style.display = "none";
-	  document.getElementById("yearlyDiv").style.display = "none";
-	  document.getElementById("customRepeatAccordion").style.display = "none";
+		document.getElementById("noneDiv").style.display = "none";
+		document.getElementById("weeklyDiv").style.display = "none";
+		document.getElementById("biweeklyDiv").style.display = "none";
+		document.getElementById("monthlyDiv").style.display = "none";
+		document.getElementById("yearlyDiv").style.display = "none";
+		document.getElementById("customRepeatAccordion").style.display = "none";
 
-	  document.getElementById("endDateDiv").style.display = "none";
+		document.getElementById("endDateDiv").style.display = "none";
 
-	  if (selectedValue === "None") {
-		document.getElementById("noneDiv").style.display = "block";
-	  } else {
-		document.getElementById("endDateDiv").style.display = "block"; // Visa slutdatumfältet
-		if (selectedValue === "Daily") {
-		  document.getElementById("dailyDiv").style.display = "block";
-		} else if (selectedValue === "Weekly") {
-		  document.getElementById("weeklyDiv").style.display = "block";
-		} else if (selectedValue === "Biweekly") {
-		  document.getElementById("biweeklyDiv").style.display = "block";
-		} else if (selectedValue === "Monthly") {
-		  document.getElementById("monthlyDiv").style.display = "block";
-		} else if (selectedValue === "Yearly") {
-		  document.getElementById("yearlyDiv").style.display = "block";
-		} else if (selectedValue === "Custom") {
-		  document.getElementById("customRepeatAccordion").style.display = "block";
+		if (selectedValue === "None") {
+			document.getElementById("noneDiv").style.display = "block";
+		} else {
+			document.getElementById("endDateDiv").style.display = "block"; // Visa slutdatumfältet
+			if (selectedValue === "Daily") {
+				document.getElementById("dailyDiv").style.display = "block";
+			} else if (selectedValue === "Weekly") {
+				document.getElementById("weeklyDiv").style.display = "block";
+			} else if (selectedValue === "Biweekly") {
+				document.getElementById("biweeklyDiv").style.display = "block";
+			} else if (selectedValue === "Monthly") {
+				document.getElementById("monthlyDiv").style.display = "block";
+			} else if (selectedValue === "Yearly") {
+				document.getElementById("yearlyDiv").style.display = "block";
+			} else if (selectedValue === "Custom") {
+				document.getElementById("customRepeatAccordion").style.display = "block";
+			}
 		}
-	  }
 	}
 
 	window.onload = handleRepetitionChange;
@@ -582,53 +648,53 @@ else
 </script>
 
 <script>
-		function calculateEndDate() {
-	  var startDate = document.getElementById("modalSelectedDate").value;
-	  var repetitionType = document.getElementById("repetitionSelect").value;
+	function calculateEndDate() {
+		var startDate = document.getElementById("modalSelectedDate").value;
+		var repetitionType = document.getElementById("repetitionSelect").value;
 
-	  if (!startDate || repetitionType === "none") {
-		return;
-	  }
+		if (!startDate || repetitionType === "none") {
+			return;
+		}
 
-	  var start = new Date(startDate);
-	  var endDate;
+		var start = new Date(startDate);
+		var endDate;
 
-	  switch (repetitionType) {
-		case "Daily":
-		  endDate = new Date(start);
-		  endDate.setDate(start.getDate() + 1);
-		  break;
+		switch (repetitionType) {
+			case "Daily":
+				endDate = new Date(start);
+				endDate.setDate(start.getDate() + 1);
+				break;
 
-		case "Weekly":
-		  endDate = new Date(start);
-		  endDate.setDate(start.getDate() + 7);
-		  break;
+			case "Weekly":
+				endDate = new Date(start);
+				endDate.setDate(start.getDate() + 7);
+				break;
 
-		case "Biweekly":
-		  endDate = new Date(start);
-		  endDate.setDate(start.getDate() + 14);
-		  break;
+			case "Biweekly":
+				endDate = new Date(start);
+				endDate.setDate(start.getDate() + 14);
+				break;
 
-		case "Monthly":
-		  endDate = new Date(start);
-		  endDate.setMonth(start.getMonth() + 1);
-		  break;
+			case "Monthly":
+				endDate = new Date(start);
+				endDate.setMonth(start.getMonth() + 1);
+				break;
 
-		case "Yearly":
-		  endDate = new Date(start);
-		  endDate.setFullYear(start.getFullYear() + 1);
-		  break;
+			case "Yearly":
+				endDate = new Date(start);
+				endDate.setFullYear(start.getFullYear() + 1);
+				break;
 
-		case "Custom":
-		  endDate = null;
-		  break;
-	  }
+			case "Custom":
+				endDate = null;
+				break;
+		}
 
-	  if (endDate !== null) {
-		document.getElementById("modalEndDate").value = endDate.toISOString().split("T")[0];
-	  } else {
-		document.getElementById("modalEndDate").value = "";
-	  }
+		if (endDate !== null) {
+			document.getElementById("modalEndDate").value = endDate.toISOString().split("T")[0];
+		} else {
+			document.getElementById("modalEndDate").value = "";
+		}
 	}
 
 	document.getElementById("repetitionSelect").addEventListener("change", calculateEndDate);
