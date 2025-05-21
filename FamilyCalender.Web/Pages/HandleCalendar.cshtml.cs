@@ -8,10 +8,14 @@ using System.Globalization;
 
 namespace FamilyCalender.Web.Pages
 {
-	public class HandleCalendarModel(CalendarManagementService calendarManagementService, IAuthService authService, IMemberService memberService) : BasePageModel(authService)
+	public class HandleCalendarModel(CalendarManagementService calendarManagementService, 
+		IAuthService authService, 
+		IMemberService memberService,
+		ICalendarAccessService calendarAccessService) : BasePageModel(authService)
 	{
 		private readonly CalendarManagementService _calendarManagementService = calendarManagementService;
 		private readonly IMemberService _memberService = memberService;
+		private readonly ICalendarAccessService _calendarAccessService = calendarAccessService;
 
 		[BindProperty]
 		public Core.Models.Entities.Calendar? Calendar { get; set; }
@@ -40,8 +44,6 @@ namespace FamilyCalender.Web.Pages
 		[BindProperty]
 		public CalendarView SelectedView { get; set; }
 
-
-
 		public async Task<IActionResult> OnGetAsync(int id)
 		{
 			var user = await GetCurrentUserAsync();
@@ -55,12 +57,24 @@ namespace FamilyCalender.Web.Pages
 			{
                 return RedirectToPage("/CalendarOverview");
             }
-			var viewCookie = Request.Cookies["calendarView"];
-			if (!Enum.TryParse<CalendarView>(viewCookie, true, out var selectedView))
+			//var viewCookie = Request.Cookies["calendarView"];
+			//if (!Enum.TryParse<CalendarView>(viewCookie, true, out var selectedView))
+			//{
+			//	selectedView = CalendarView.Month;
+			//}
+			//SelectedView = selectedView;
+			var calendarAccess = await _calendarAccessService.GetCalendarAccessAsync(user.Id, id);
+
+			if (calendarAccess?.Settings != null)
 			{
-				selectedView = CalendarView.Month;
+				SelectedView = calendarAccess.Settings.PreferWeekView
+								? CalendarView.Week
+								: CalendarView.Month;
 			}
-			SelectedView = selectedView;
+			else
+			{
+				SelectedView = CalendarView.Month;
+			}
 
 			if (calendar?.InviteId != null)
 			{
@@ -103,14 +117,25 @@ namespace FamilyCalender.Web.Pages
 
 			if (!string.IsNullOrEmpty(view))
 			{
-				Response.Cookies.Append("calendarView", view, new CookieOptions
+				var calendarAccess = await _calendarAccessService.GetCalendarAccessAsync(user.Id, Calendar.Id);
+				if (calendarAccess != null)
 				{
-					Expires = DateTimeOffset.UtcNow.AddYears(1),
-					IsEssential = true,
-					Path = "/"
-				});
-			}
+					if (calendarAccess.Settings == null)
+					{
+						calendarAccess.Settings = new UserSettings();
+					}
 
+					calendarAccess.Settings.PreferWeekView = view.Equals("Week", StringComparison.OrdinalIgnoreCase);
+
+					await _calendarAccessService.UpdateCalendarAccessSettingsAsync(calendarAccess.Settings);
+					//Response.Cookies.Append("calendarView", view, new CookieOptions
+					//{
+					//	Expires = DateTimeOffset.UtcNow.AddYears(1),
+					//	IsEssential = true,
+					//	Path = "/"
+					//});
+				}
+			}
 			return RedirectToPage(new { Calendar.Id });
 		}
 

@@ -11,6 +11,8 @@ namespace FamilyCalender.Core.Interfaces.IServices
     {
         Task CreateCalendarAccessAsync(CalendarAccess access);
         Task RemoveUserFromCalendarAccessAsync(int userId, int calendarId);
+        Task <CalendarAccess> GetCalendarAccessAsync(int userId, int calendarId);
+        Task UpdateCalendarAccessSettingsAsync(UserSettings settings);
 
 	}
 }

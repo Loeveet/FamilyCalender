@@ -14,5 +14,7 @@ namespace FamilyCalender.Core.Models.Entities
         public int CalendarId { get; set; }
         public Calendar? Calendar { get; set; }
         public bool IsOwner { get; set; } = false;
+        public UserSettings? Settings { get; set; }
     }
+
 }

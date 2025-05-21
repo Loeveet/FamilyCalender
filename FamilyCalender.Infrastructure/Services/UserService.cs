@@ -88,6 +88,22 @@ namespace FamilyCalender.Infrastructure.Services
 			}
 		}
 
+        public async Task<int?> GetPreferredCalendarIdAsync(int userId)
+        {
+            var calendarId = await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => u.PreferredCalendarId)
+                .FirstOrDefaultAsync();
 
-	}
+            return calendarId;
+        }
+        public async Task UpdatePreferredCalendarIdAsync(int userId, int preferredCalendarId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) throw new Exception("User not found");
+
+            user.PreferredCalendarId = preferredCalendarId;
+            await _context.SaveChangesAsync();
+        }
+    }
 }
