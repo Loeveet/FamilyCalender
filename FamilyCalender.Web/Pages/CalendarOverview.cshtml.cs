@@ -32,18 +32,6 @@ namespace FamilyCalender.Web.Pages
 			await _authService.SetLastLoggedInAsync(user);
 			ViewModel.CurrentUserAllowsPush = user.NotificationSetting is {AllowNotifications: true};
 
-			if (!string.IsNullOrEmpty(view))
-			{
-				Response.Cookies.Append("calendarView", view, new CookieOptions
-				{
-					Expires = DateTimeOffset.UtcNow.AddYears(1),
-					IsEssential = true,
-					Path = "/"
-				});
-
-				// Redirect för att inte ha ?view= i URL:en efteråt
-				return RedirectToPage(new { year, month, calendarId });
-			}
 			var viewCookie = Request.Cookies["calendarView"];
 			if (!Enum.TryParse<CalendarView>(viewCookie, true, out var selectedView))
 			{
@@ -56,16 +44,13 @@ namespace FamilyCalender.Web.Pages
 
 			if (ViewModel.SelectedView == CalendarView.Week)
 			{
-				// Om inget weekDate skickas med, defaulta till dagens datum
 				var dateToShow = weekDate ?? DateTime.Today;
 
 				ViewModel.CurrentWeekOfYear = GetIso8601WeekOfYear(DateTime.Today);
 				ViewModel.DisplayedWeekOfYear = GetIso8601WeekOfYear(dateToShow);
 
-				// Generera dagar i veckan baserat på det datumet
 				ViewModel.DaysInMonth = GenerateWeekDays(dateToShow, ViewModel.CultureInfo, publicHolidays);
 
-				// Ladda övrig data för veckovy
 				var calendarDtos = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
 				ViewModel.CalendarDtos = calendarDtos;
 				var calendarIds = calendarDtos.Select(c => c.Id).ToList();
@@ -74,7 +59,6 @@ namespace FamilyCalender.Web.Pages
 			}
 			else
 			{
-				// Månadsvy
 				ViewModel.DaysInMonth = GenerateMonthDays(ViewModel.CurrentYear, ViewModel.CurrentMonth, ViewModel.CultureInfo, publicHolidays);
 
 				var calendarDtos = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
