@@ -44,7 +44,7 @@ else
 				<div class="alert alert-info alert-dismissible fade show news-item" role="alert" data-id="@news.Id">
 					<h5 class="alert-heading">@news.Title</h5>
 					<p>@news.Body</p>
-					<button type="button" class="btn btn-pmf close-news">Ok, jag förstår! 💃🕺</button>
+					<button type="button" class="btn btn-pmf close-news">@news.Button</button>
 				</div>
 			}
 		</div>
@@ -594,8 +594,9 @@ else
 	eventColorPickerHelper.Init('ViewModel_SelectedCategoryColor');
 
 	var hasNews = document.querySelector('.news-item') !== null;
-
-	if (!hasNews){
+	var dontScroll = @(Model.DontScrollToToday.ToString().ToLower());
+	console.log("dontscroll", dontScroll);
+	if (!hasNews && !dontScroll){
 		var today = document.getElementById('today');
 		if (today !== null) {
 			var elementPosition = today.getBoundingClientRect().top + window.scrollY;
@@ -700,25 +701,6 @@ else
 </script>
 
 <script>
-@* document.querySelectorAll('.close-news').forEach(btn => {
-	btn.addEventListener('click', function () {
-		const newsId = this.closest('.news-item').dataset.id;
-
-		// Läs gamla värden
-		const old = document.cookie
-			.split('; ')
-			.find(row => row.startsWith('dismissed_news='))
-			?.split('=')[1] ?? '';
-
-		const updated = [...new Set([...old.split(','), newsId])].filter(Boolean).join(',');
-
-		// Uppdatera cookie (exempel: 30 dagar)
-		document.cookie = `dismissed_news=${updated}; path=/; max-age=${60 * 60 * 24 * 30}`;
-
-		// Dölj nyhetsrutan direkt
-		this.closest('.news-item').remove();
-	});
-}); *@
 document.querySelectorAll('.close-news').forEach(btn => {
 	btn.addEventListener('click', function () {
 		const newsId = this.closest('.news-item').dataset.id;
