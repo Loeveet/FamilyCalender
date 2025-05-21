@@ -29,8 +29,10 @@ namespace FamilyCalender.Web.Pages
         [BindProperty]
         public CalendarOverViewViewModel ViewModel { get; set; } = new CalendarOverViewViewModel();
         public List<NewsItemViewModel> NewsItemToShow { get; set; } = [];
+		public bool DontScrollToToday { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId, string? view, int? weekOffset, DateTime? weekDate)
+
+		public async Task<IActionResult> OnGetAsync(int? year, int? month, int? calendarId, string? view, int? weekOffset, DateTime? weekDate)
         {
             var user = await GetCurrentUserAsync();
             if (user == null)
@@ -80,9 +82,14 @@ namespace FamilyCalender.Web.Pages
                 ViewModel.SelectedView = calendarAccess.Settings.PreferWeekView
                                             ? CalendarView.Week
                                             : CalendarView.Month;
-            }
+				DontScrollToToday = calendarAccess.Settings.DontScrollToToday;
+			}
+            else
+            {
+				DontScrollToToday = false;
+			}
 
-            SetCurrentYearAndMonth(year, month);
+			SetCurrentYearAndMonth(year, month);
             var publicHolidays = publicHolidayService.GetHolidays(ViewModel.CurrentYear);
 
             if (ViewModel.SelectedView == CalendarView.Week)

@@ -33,6 +33,19 @@
 		</button>
 	</form>
 </div>
+
+<div>
+	<form method="post" asp-page-handler="toggleScroll" class="mb-4">
+		<input type="hidden" asp-for="Calendar.Id" />
+		<div class="form-check form-switch">
+			<input class="form-check-input" type="checkbox" role="switch" id="dontScrollSwitch" name="dontScroll"
+				   onchange="this.form.submit()" @(Model.DontScrollToToday ? "" : "checked")>
+			<label class="form-check-label" for="dontScrollSwitch">
+				@(Model.DontScrollToToday ? "Automatisk scroll inte aktiv" : "Automatisk scroll aktiv")
+			</label>
+		</div>
+	</form>
+</div>
 @if (Model.IsOwner)
 {
 	<form method="post">

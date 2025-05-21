@@ -43,6 +43,8 @@ namespace FamilyCalender.Web.Pages
 		public List<User?> CalendarUsers { get; set; } = [];
 		[BindProperty]
 		public CalendarView SelectedView { get; set; }
+		public bool DontScrollToToday { get; set; }
+
 
 		public async Task<IActionResult> OnGetAsync(int id)
 		{
@@ -57,12 +59,7 @@ namespace FamilyCalender.Web.Pages
 			{
                 return RedirectToPage("/CalendarOverview");
             }
-			//var viewCookie = Request.Cookies["calendarView"];
-			//if (!Enum.TryParse<CalendarView>(viewCookie, true, out var selectedView))
-			//{
-			//	selectedView = CalendarView.Month;
-			//}
-			//SelectedView = selectedView;
+
 			var calendarAccess = await _calendarAccessService.GetCalendarAccessAsync(user.Id, id);
 
 			if (calendarAccess?.Settings != null)
@@ -70,6 +67,7 @@ namespace FamilyCalender.Web.Pages
 				SelectedView = calendarAccess.Settings.PreferWeekView
 								? CalendarView.Week
 								: CalendarView.Month;
+				DontScrollToToday = calendarAccess.Settings.DontScrollToToday;
 			}
 			else
 			{
@@ -128,16 +126,36 @@ namespace FamilyCalender.Web.Pages
 					calendarAccess.Settings.PreferWeekView = view.Equals("Week", StringComparison.OrdinalIgnoreCase);
 
 					await _calendarAccessService.UpdateCalendarAccessSettingsAsync(calendarAccess.Settings);
-					//Response.Cookies.Append("calendarView", view, new CookieOptions
-					//{
-					//	Expires = DateTimeOffset.UtcNow.AddYears(1),
-					//	IsEssential = true,
-					//	Path = "/"
-					//});
+
 				}
 			}
 			return RedirectToPage(new { Calendar.Id });
 		}
+		public async Task<IActionResult> OnPostToggleScrollAsync()
+		{
+			var user = await GetCurrentUserAsync();
+			if (user == null)
+			{
+				return RedirectToPage("/Login");
+			}
+
+			var calendarAccess = await _calendarAccessService.GetCalendarAccessAsync(user.Id, Calendar.Id);
+			if (calendarAccess != null)
+			{
+				if (calendarAccess.Settings == null)
+				{
+					calendarAccess.Settings = new UserSettings();
+				}
+
+				// Toggle värdet
+				calendarAccess.Settings.DontScrollToToday = !calendarAccess.Settings.DontScrollToToday;
+
+				await _calendarAccessService.UpdateCalendarAccessSettingsAsync(calendarAccess.Settings);
+			}
+
+			return RedirectToPage(new { Calendar.Id });
+		}
+
 
 		public async Task<IActionResult> OnPostUpdateNameAsync()
 		{
