@@ -20,5 +20,7 @@ namespace FamilyCalender.Core.Models.Entities
         public ICollection<Calendar> OwnedCalendars { get; set; } = [];
         public ICollection<Member> Members { get; set; } = [];
         public UserNotificationSetting NotificationSetting { get; set; }
+        public int? PreferredCalendarId { get; set; }
+
     }
 }

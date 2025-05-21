@@ -36,6 +36,19 @@
 }
 else
 {
+	@if (Model.NewsItemToShow?.Any() == true)
+	{
+		<div id="news-container">
+			@foreach (var news in Model.NewsItemToShow)
+			{
+				<div class="alert alert-info alert-dismissible fade show news-item" role="alert" data-id="@news.Id">
+					<h5 class="alert-heading">@news.Title</h5>
+					<p>@news.Body</p>
+					<button type="button" class="btn btn-pmf close-news">Ok, jag förstår! 💃🕺</button>
+				</div>
+			}
+		</div>
+	}
 	<h2 class="d-flex justify-content-between align-items-center">
 		<span>@Model.ViewModel.SelectedCalendarName</span>
 	</h2>
@@ -580,14 +593,18 @@ else
 	//initialize Color picker to set correct color on Model input field
 	eventColorPickerHelper.Init('ViewModel_SelectedCategoryColor');
 
-	var today = document.getElementById('today');
-	if (today !== null) {
-		var elementPosition = today.getBoundingClientRect().top + window.scrollY;
-		var offsetPosition = elementPosition - 100;
-		window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-	}
-</script>
+	var hasNews = document.querySelector('.news-item') !== null;
 
+	if (!hasNews){
+		var today = document.getElementById('today');
+		if (today !== null) {
+			var elementPosition = today.getBoundingClientRect().top + window.scrollY;
+			var offsetPosition = elementPosition - 100;
+			window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+		}
+	}
+
+</script>
 <script>
 	function handleRepetitionChange() {
 		var selectedValue = document.getElementById("repetitionSelect").value;
@@ -679,5 +696,52 @@ else
 	document.getElementById("modalSelectedDate").addEventListener("change", calculateEndDate);
 
 	window.onload = calculateEndDate;
+
+</script>
+
+<script>
+@* document.querySelectorAll('.close-news').forEach(btn => {
+	btn.addEventListener('click', function () {
+		const newsId = this.closest('.news-item').dataset.id;
+
+		// Läs gamla värden
+		const old = document.cookie
+			.split('; ')
+			.find(row => row.startsWith('dismissed_news='))
+			?.split('=')[1] ?? '';
+
+		const updated = [...new Set([...old.split(','), newsId])].filter(Boolean).join(',');
+
+		// Uppdatera cookie (exempel: 30 dagar)
+		document.cookie = `dismissed_news=${updated}; path=/; max-age=${60 * 60 * 24 * 30}`;
+
+		// Dölj nyhetsrutan direkt
+		this.closest('.news-item').remove();
+	});
+}); *@
+document.querySelectorAll('.close-news').forEach(btn => {
+	btn.addEventListener('click', function () {
+		const newsId = this.closest('.news-item').dataset.id;
+
+		// Läs gamla värden och URL-dekoda dem
+		const old = decodeURIComponent(
+			document.cookie
+				.split('; ')
+				.find(row => row.startsWith('dismissed_news='))
+				?.split('=')[1] ?? ''
+		);
+
+		// Lägg till nytt id, ta bort dubbletter och filtera bort tomma
+		const updated = [...new Set([...old.split(','), newsId])]
+			.filter(Boolean)
+			.join(',');
+
+		// URL-enkoda innan du sätter cookien (30 dagar)
+		document.cookie = `dismissed_news=${encodeURIComponent(updated)}; path=/; max-age=${60 * 60 * 24 * 30}`;
+
+		// Dölj nyhetsrutan direkt
+		this.closest('.news-item').remove();
+	});
+});
 
 </script>

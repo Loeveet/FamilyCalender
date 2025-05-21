@@ -8,6 +8,7 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task CreateNotificationAsync(UserNotificationSetting uns);
         Task UpdateNotificationAsync(UserNotificationSetting uns);
         Task DeleteNotificationAsync(int userId);
-
-	}
+        Task<int?> GetPreferredCalendarIdAsync(int userId);
+        Task UpdatePreferredCalendarIdAsync(int userId, int preferredCalenderId);
+    }
 }

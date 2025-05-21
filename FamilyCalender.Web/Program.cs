@@ -8,6 +8,7 @@ using PublicHoliday;
 using FamilyCalender.Web.Code;
 using static FamilyCalender.Infrastructure.Services.EmailService;
 using Microsoft.AspNetCore.DataProtection;
+using FamilyCalender.Web.News;
 
 
 namespace FamilyCalender
@@ -87,11 +88,6 @@ namespace FamilyCalender
 
 			var emailSettings = builder.Configuration.GetSection("Email").Get<EmailSettings>() ?? new EmailSettings();
 
-			//builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
-			//builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-			//builder.Services.AddScoped<IEventRepository, EventRepository>();
-            //builder.Services.AddScoped<IUserRepository, UserRepository>();
-            //builder.Services.AddScoped<ICalendarAccessRepository, CalendarAccessRepository>();
 			builder.Services.AddScoped<ICalendarService, CalendarService>();
 			builder.Services.AddScoped<IMemberService, MemberService>();
 			builder.Services.AddScoped<IEventService, EventService>();
@@ -105,6 +101,7 @@ namespace FamilyCalender
 			builder.Services.AddScoped<PushNotificationService>();
 			builder.Services.AddScoped<InviteService>();
 			builder.Services.AddScoped<IAuthService, AuthService>();
+			builder.Services.AddSingleton<NewsService>();
 			builder.Services.AddSingleton(new EncryptionService(EncryptionService.Magic));
             builder.Services.AddSingleton(new PublicHolidayService(new SwedenPublicHoliday(), "SWEDEN"));
 

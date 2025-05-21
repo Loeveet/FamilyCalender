@@ -7,14 +7,14 @@ using FamilyCalender.Web.Code;
 
 namespace FamilyCalender.Web.Pages
 {
-	public class BasePageModel : PageModel
-	{
-		protected readonly IAuthService _authService;
+    public class BasePageModel : PageModel
+    {
+        protected readonly IAuthService _authService;
 
-		public BasePageModel(IAuthService authService)
-		{
-			_authService = authService;
-		}
+        public BasePageModel(IAuthService authService)
+        {
+            _authService = authService;
+        }
 
         protected readonly string[] BetaTesterEmails = new[]
         {
@@ -22,7 +22,7 @@ namespace FamilyCalender.Web.Pages
             "mikael.lennander@hotmail.com",
             "carolinaguevara@hotmail.com",
             "jenny.liliegren@outlook.com",
-		};
+        };
 
         protected readonly string[] SuperAdminEmails = new[]
         {
@@ -31,28 +31,50 @@ namespace FamilyCalender.Web.Pages
         };
 
         protected async Task<User> GetCurrentUserAsync()
-		{
-			try
-			{
-				var userEmail = HttpContext.User?.FindFirst(ClaimTypes.Name)?.Value;
-				if (string.IsNullOrEmpty(userEmail))
-				{
-					return null;
-				}
+        {
+            try
+            {
+                var userEmail = HttpContext.User?.FindFirst(ClaimTypes.Name)?.Value;
+                if (string.IsNullOrEmpty(userEmail))
+                {
+                    return null;
+                }
 
-				var user = await _authService.GetUserByEmailAsync(userEmail);
+                var user = await _authService.GetUserByEmailAsync(userEmail);
 
                 ViewData[GlobalSettings.ShowBetaTesterMenu] = BetaTesterEmails.Contains(user.Email);
                 ViewData[GlobalSettings.ShowSuperAdminMenu] = SuperAdminEmails.Contains(user.Email);
                 ViewData[GlobalSettings.ShowCalendarMenu] = true;
                 return user;
-			}
-			catch (Exception e)
-			{
-				Log.Error($"Error GetCurrentUserAsync due to {e.Message}");
-			}
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error GetCurrentUserAsync due to {e.Message}");
+            }
 
-			return null;
-		}
-	}
+            return null;
+        }
+
+        protected async Task<int?> GetCurrentUserIdAsync()
+        {
+            try
+            {
+                var userEmail = HttpContext.User?.FindFirst(ClaimTypes.Name)?.Value;
+                if (string.IsNullOrEmpty(userEmail))
+                {
+                    return null;
+                }
+
+                var user = await _authService.GetUserByEmailAsync(userEmail);
+
+                return user?.Id;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error GetCurrentUserIdAsync due to {e.Message}");
+                return null;
+            }
+
+        }
+    }
 }
