@@ -2,6 +2,9 @@ using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static FamilyCalender.Web.ViewModels.CalendarOverViewViewModel;
+using System.Globalization;
 
 namespace FamilyCalender.Web.Pages
 {
@@ -34,6 +37,8 @@ namespace FamilyCalender.Web.Pages
 		public string ShareLink { get; set; }
 		[BindProperty]
 		public List<User?> CalendarUsers { get; set; } = [];
+		[BindProperty]
+		public CalendarView SelectedView { get; set; }
 
 
 
@@ -47,10 +52,15 @@ namespace FamilyCalender.Web.Pages
 
 			var calendar = await _calendarManagementService.GetCalendarWithDetailsAsync(id);
             if (calendar == null)
-            {
+			{
                 return RedirectToPage("/CalendarOverview");
             }
-				
+			var viewCookie = Request.Cookies["calendarView"];
+			if (!Enum.TryParse<CalendarView>(viewCookie, true, out var selectedView))
+			{
+				selectedView = CalendarView.Month;
+			}
+			SelectedView = selectedView;
 
 			if (calendar?.InviteId != null)
 			{
@@ -82,6 +92,26 @@ namespace FamilyCalender.Web.Pages
 
 
 			return Page();
+		}
+		public async Task<IActionResult> OnPostChangeViewAsync(string? view)
+		{
+			var user = await GetCurrentUserAsync();
+			if (user == null)
+			{
+				return RedirectToPage("/Login");
+			}
+
+			if (!string.IsNullOrEmpty(view))
+			{
+				Response.Cookies.Append("calendarView", view, new CookieOptions
+				{
+					Expires = DateTimeOffset.UtcNow.AddYears(1),
+					IsEssential = true,
+					Path = "/"
+				});
+			}
+
+			return RedirectToPage(new { Calendar.Id });
 		}
 
 		public async Task<IActionResult> OnPostUpdateNameAsync()

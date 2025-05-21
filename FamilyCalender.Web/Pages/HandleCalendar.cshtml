@@ -12,7 +12,27 @@
 </div>
 
 <hr />
+<div class="view-switch">
+	<form method="post" asp-page-handler="changeView" class="flex gap-2 mb-4">
+		<input type="hidden" asp-for="Calendar.Id" />
 
+		<button type="submit" name="view" value="Month"
+				class="px-4 py-2 rounded
+                   @(Model.SelectedView == Web.ViewModels.CalendarOverViewViewModel.CalendarView.Month
+                     ? "bg-blue-500 text-white font-semibold"
+                     : "bg-gray-200 text-black")">
+			Månadsvy
+		</button>
+
+		<button type="submit" name="view" value="Week"
+				class="px-4 py-2 rounded
+                   @(Model.SelectedView == Web.ViewModels.CalendarOverViewViewModel.CalendarView.Week
+                     ? "bg-blue-500 text-white font-semibold"
+                     : "bg-gray-200 text-black")">
+			Veckovy
+		</button>
+	</form>
+</div>
 @if (Model.IsOwner)
 {
 	<form method="post">
