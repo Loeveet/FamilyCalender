@@ -1,30 +1,39 @@
 ﻿namespace FamilyCalender.Core.Models.Entities
 {
-    public class List
-    {
+    public class UserList
+	{
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public int OwnerId { get; set; }
         public User? Owner { get; set; }
 
+		public int SortOrder { get; set; }
+
 		public DateTime? CreatedUtc { get; set; }
 		public DateTime? LastEditedUtc { get; set; }
        
         public Guid InviteId { get; set; } = Guid.NewGuid();
-    }
+
+		public int? CalendarId { get; set; }
+		public Calendar? Calendar { get; set; }
+
+		public ListTypeEnum Type { get; set; } = ListTypeEnum.Todolist;
+	}
 
     public class ListItem
     {
 	    public int Id { get; set; }
 	    public string Name { get; set; } = string.Empty;
 
-	    public int ListId { get; set; }
-	    public List? List { get; set; }
+	    public int UserListId { get; set; }
+	    public UserList? UserList { get; set; }
 		
 	    public int CreatedUserId { get; set; }
 	    public User? CreatedUser { get; set; }
 
-	    public DateTime? CreatedUtc { get; set; }
+		public int SortOrder { get; set; } 
+
+		public DateTime? CreatedUtc { get; set; }
 	    public DateTime? LastEditedUtc { get; set; }
 
 	    public ListItemTypeEnum State { get; set; }
@@ -42,8 +51,8 @@
 	    public int Id { get; set; }
 	    public int UserId { get; set; }
 	    public User? User { get; set; }
-	    public int ListId { get; set; }
-	    public List? List { get; set; }
+	    public int UserListId { get; set; }
+	    public UserList? UserList { get; set; }
 	    public bool IsOwner { get; set; } = false;
 
         /// <summary>
