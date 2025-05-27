@@ -30,7 +30,7 @@ namespace FamilyCalender.Web.Pages
             "mikael.lennander@hotmail.com",
         };
 
-        protected async Task<User> GetCurrentUserAsync()
+        protected async Task<User?> GetCurrentUserAsync()
         {
             try
             {

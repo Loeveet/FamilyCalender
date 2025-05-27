@@ -92,6 +92,7 @@ namespace FamilyCalender
 			builder.Services.AddScoped<IMemberService, MemberService>();
 			builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<IUserService, UserService>();
+			builder.Services.AddScoped<IUserListService, UserListService>();
             builder.Services.AddScoped<EmailSettings>(c => emailSettings);
             builder.Services.AddScoped<ICalendarAccessService, CalendarAccessService>();
 			builder.Services.AddScoped<IMemberCalendarService, MemberCalendarService>();

@@ -52,6 +52,8 @@ else
 	<h2 class="d-flex justify-content-between align-items-center">
 		<span>@Model.ViewModel.SelectedCalendarName</span>
 	</h2>
+	<a asp-page="/ListPage" asp-route-calendarId="@Model.ViewModel.SelectedCalendarId" asp-route-calendarName="@Model.ViewModel.SelectedCalendarName">Visa listor</a>
+
 	<a asp-page="/HandleCalendar" style="color:#000; float:left; font-size:18px; text-decoration:none; text-align:left" asp-route-id="@Model.ViewModel.SelectedCalendarId">
 		<i class="fa-solid fa-gear"></i> Inställningar / Dela
 	</a>

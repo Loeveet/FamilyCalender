@@ -1,0 +1,105 @@
+﻿@page "{listId:int}"
+@using FamilyCalender.Core.Models.Entities
+@model FamilyCalender.Web.Pages.HandleListModel
+@{
+    ViewData["Title"] = "Hantera lista";
+}
+<a asp-page="/ListPage" asp-route-calendarId="@Model.UserList.CalendarId" asp-route-calendarName="@Model.CalendarName" class="btn btn-secondary mb-3">
+    ← Tillbaka till listor
+</a>
+
+<h1>@Model.UserList?.Name</h1>
+
+@if (Model.UserList is null)
+{
+    <p class="text-danger">Listan kunde inte hittas.</p>
+    return;
+}
+
+<form method="post">
+    <input type="hidden" asp-for="ListId" />
+    <div class="input-group">
+        <input type="text" class="form-control" asp-for="NewItemName" placeholder="Ny punkt" />
+        <button type="submit" class="btn btn-primary" asp-page-handler="AddItem">Lägg till</button>
+    </div>
+</form>
+@if (Model.Items.Any())
+{
+    <ul class="list-group mb-3">
+        @foreach (var item in Model.Items.OrderByDescending(i => i.SortOrder))
+        {
+            bool isChecked = item.State == ListItemTypeEnum.Checked;
+            <li class="list-group-item d-flex justify-content-between align-items-center" data-item-id="@item.Id">
+                <div class="form-check">
+                    <input class="form-check-input toggle-complete" type="checkbox" @(isChecked ? "checked" : "") data-item-id="@item.Id" id="check-@item.Id">
+                    <label class="form-check-label @(isChecked  ? "text-decoration-line-through text-muted" : "")" for="check-@item.Id">
+                        @item.Name
+                    </label>
+                </div>
+                <button class="btn btn-sm btn-danger delete-item" data-item-id="@item.Id" aria-label="Ta bort">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Inga listobjekt ännu.</p>
+}
+
+<script>
+    document.querySelectorAll('.toggle-complete').forEach(checkbox => {
+        checkbox.addEventListener('change', async (e) => {
+            const itemId = e.target.dataset.itemId;
+
+            const response = await fetch('?handler=ToggleItem', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ItemId: parseInt(itemId) })
+            });
+
+            if (!response.ok) {
+                const text = await response.text();
+                console.error('Servern svarade med fel:', response.status, text);
+                return;
+            }
+            const result = await response.json();
+
+            if (result.success) {
+                const label = e.target.closest('li').querySelector('label');
+                if (result.newState === 'Checked') {
+                    label.classList.add('text-decoration-line-through', 'text-muted');
+                } else {
+                    label.classList.remove('text-decoration-line-through', 'text-muted');
+                }
+            }
+        });
+    });
+
+</script>
+<script>
+    document.querySelectorAll('.delete-item').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const itemId = button.dataset.itemId;
+            if (!confirm('Vill du ta bort denna punkt?')) return;
+
+            const response = await fetch('?handler=DeleteItem', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ itemId: parseInt(itemId) })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Ta bort <li> elementet från DOM
+                button.closest('li').remove();
+            } else {
+                alert('Kunde inte ta bort punkten.');
+            }
+        });
+    });
+
+</script>
