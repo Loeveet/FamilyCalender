@@ -28,6 +28,10 @@ namespace FamilyCalender.Infrastructure.Context
         public DbSet<MemberCalendar> MemberCalendars { get; set; }
         public DbSet<EventMemberDate> EventMemberDates { get; set; }
         public DbSet<UserSettings> UserSettings { get; set; }
-    }
+		public DbSet<UserList> UserLists { get; set; }
+		public DbSet<ListItem> ListItems { get; set; }
+		public DbSet<ListAccess> ListAccesses { get; set; }
+
+	}
 }
 

@@ -17,7 +17,9 @@
 		public int? CalendarId { get; set; }
 		public Calendar? Calendar { get; set; }
 
-		public ListTypeEnum Type { get; set; } = ListTypeEnum.Todolist;
+        public List<ListItem> Items { get; set; } = new();
+
+        public ListTypeEnum Type { get; set; }
 	}
 
     public class ListItem
@@ -66,24 +68,29 @@
         /// <summary>
         /// Items are being removed when "done". To be used in a Todolist/shopping list
         /// </summary>
-        Todolist,
+        Todolist = 0,
 
         /// <summary>
         /// Items are being checked when "done". To be used in a Checklist/completion list that all item should have a checkmark at the end
         /// </summary>
-        Checklist
+        Checklist = 1,
+
+        /// <summary>
+        /// Just a textarea to use how you want
+        /// </summary>
+		Notes = 2
     }
 
-	public enum ListItemTypeEnum
+    public enum ListItemTypeEnum
 	{
 		/// <summary>
 		/// Not defined, usually when a list is och type TodoList and this item should be deleted on click
 		/// </summary>
-		Undefined,
+		Undefined = 0,
 
 		/// <summary>
 		/// Used to mark an item as checked
 		/// </summary>
-		Checked 
+		Checked = 1
 	}
 }

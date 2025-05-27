@@ -107,15 +107,15 @@ namespace FamilyCalender.Web.Pages
 		}
 		public async Task<IActionResult> OnPostChangeViewAsync(string? view)
 		{
-			var user = await GetCurrentUserAsync();
-			if (user == null)
+			var userId = await GetCurrentUserIdAsync();
+			if (userId == null)
 			{
 				return RedirectToPage("/Login");
 			}
 
 			if (!string.IsNullOrEmpty(view))
 			{
-				var calendarAccess = await _calendarAccessService.GetCalendarAccessAsync(user.Id, Calendar.Id);
+				var calendarAccess = await _calendarAccessService.GetCalendarAccessAsync(userId.Value, Calendar.Id);
 				if (calendarAccess != null)
 				{
 					if (calendarAccess.Settings == null)
@@ -133,13 +133,13 @@ namespace FamilyCalender.Web.Pages
 		}
 		public async Task<IActionResult> OnPostToggleScrollAsync()
 		{
-			var user = await GetCurrentUserAsync();
-			if (user == null)
+			var userId = await GetCurrentUserIdAsync();
+			if (userId == null)
 			{
 				return RedirectToPage("/Login");
 			}
 
-			var calendarAccess = await _calendarAccessService.GetCalendarAccessAsync(user.Id, Calendar.Id);
+			var calendarAccess = await _calendarAccessService.GetCalendarAccessAsync(userId.Value, Calendar.Id);
 			if (calendarAccess != null)
 			{
 				if (calendarAccess.Settings == null)
