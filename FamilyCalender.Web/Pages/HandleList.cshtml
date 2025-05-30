@@ -2,104 +2,273 @@
 @using FamilyCalender.Core.Models.Entities
 @model FamilyCalender.Web.Pages.HandleListModel
 @{
-    ViewData["Title"] = "Hantera lista";
+	ViewData["Title"] = "Hantera lista";
+	var undoneItems = Model.Items.Where(i => i.State != ListItemTypeEnum.Checked)
+									.OrderByDescending(i => i.SortOrder)
+									.ToList();
+
+	var doneItems = Model.Items.Where(i => i.State == ListItemTypeEnum.Checked)
+										.ToList();
+
+	bool isTodoList = Model.UserList.Type == ListTypeEnum.Todolist;
 }
 <a asp-page="/ListPage" asp-route-calendarId="@Model.UserList.CalendarId" asp-route-calendarName="@Model.CalendarName" class="btn btn-secondary mb-3">
-    ← Tillbaka till listor
+	← Tillbaka till listor
 </a>
 
 <h1>@Model.UserList?.Name</h1>
 
 @if (Model.UserList is null)
 {
-    <p class="text-danger">Listan kunde inte hittas.</p>
-    return;
+	<p class="text-danger">Listan kunde inte hittas.</p>
+	return;
 }
 
 <form method="post">
-    <input type="hidden" asp-for="ListId" />
-    <div class="input-group">
-        <input type="text" class="form-control" asp-for="NewItemName" placeholder="Ny punkt" />
-        <button type="submit" class="btn btn-primary" asp-page-handler="AddItem">Lägg till</button>
-    </div>
+	<input type="hidden" asp-for="ListId" />
+	<div class="input-group">
+		<input type="text" class="form-control" asp-for="NewItemName" placeholder="Ny punkt" />
+		<button type="submit" class="btn btn-primary" asp-page-handler="AddItem">Lägg till</button>
+	</div>
 </form>
-@if (Model.Items.Any())
-{
-    <ul class="list-group mb-3">
-        @foreach (var item in Model.Items.OrderByDescending(i => i.SortOrder))
-        {
-            bool isChecked = item.State == ListItemTypeEnum.Checked;
-            <li class="list-group-item d-flex justify-content-between align-items-center" data-item-id="@item.Id">
-                <div class="form-check">
-                    <input class="form-check-input toggle-complete" type="checkbox" @(isChecked ? "checked" : "") data-item-id="@item.Id" id="check-@item.Id">
-                    <label class="form-check-label @(isChecked  ? "text-decoration-line-through text-muted" : "")" for="check-@item.Id">
-                        @item.Name
-                    </label>
-                </div>
-                <button class="btn btn-sm btn-danger delete-item" data-item-id="@item.Id" aria-label="Ta bort">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </li>
-        }
-    </ul>
-}
-else
-{
-    <p>Inga listobjekt ännu.</p>
-}
+
+<div id="list-container">
+	@if (Model.Items.Any())
+	{
+
+		<div id="todo-lists">
+			@if (isTodoList && undoneItems.Any())
+			{
+				<h2 class="mt-4" id="undone-heading">Att göra</h2>
+				<ul class="list-group mb-3" id="undone-list">
+					@foreach (var item in undoneItems)
+					{
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-item-id="@item.Id">
+							<div class="form-check">
+								<input class="form-check-input toggle-complete" type="checkbox" data-item-id="@item.Id" id="check-@item.Id" @(item.State == ListItemTypeEnum.Checked ? "checked" : "")>
+								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "")" for="check-@item.Id">
+									@item.Name
+								</label>
+							</div>
+							<button class="btn btn-sm btn-danger delete-item" data-item-id="@item.Id" aria-label="Ta bort">
+								<i class="bi bi-trash"></i>
+							</button>
+						</li>
+					}
+				</ul>
+			}
+
+			@if (isTodoList && doneItems.Any())
+			{
+				<h2 class="mt-4" id="done-heading">Klart</h2>
+				<ul class="list-group mb-3" id="done-list">
+					@foreach (var item in doneItems)
+					{
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-item-id="@item.Id">
+							<div class="form-check">
+								<input class="form-check-input toggle-complete" type="checkbox" data-item-id="@item.Id" id="check-@item.Id" checked>
+								<label class="form-check-label text-decoration-line-through text-muted" for="check-@item.Id">
+									@item.Name
+								</label>
+							</div>
+							<button class="btn btn-sm btn-danger delete-item" data-item-id="@item.Id" aria-label="Ta bort">
+								<i class="bi bi-trash"></i>
+							</button>
+						</li>
+					}
+				</ul>
+			}
+
+			@if (!isTodoList)
+			{
+				<ul class="list-group mb-3">
+					@foreach (var item in Model.Items.OrderByDescending(i => i.SortOrder))
+					{
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-item-id="@item.Id">
+							<div class="form-check">
+								<input class="form-check-input toggle-complete" type="checkbox" data-item-id="@item.Id" id="check-@item.Id" @(item.State == ListItemTypeEnum.Checked ? "checked" : "")>
+								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-muted" : "")" for="check-@item.Id">
+									@item.Name
+								</label>
+							</div>
+							<button class="btn btn-sm btn-danger delete-item" data-item-id="@item.Id" aria-label="Ta bort">
+								<i class="bi bi-trash"></i>
+							</button>
+						</li>
+					}
+				</ul>
+			}
+		</div>
+	}
+	else
+	{
+		<p>Inga punkter ännu.</p>
+	}
+</div>
+
+<!-- Modal for removing item -->
+<div class="modal fade" id="confirmDeleteItemModal" tabindex="-1" aria-labelledby="confirmDeleteItemLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmDeleteItemLabel">Bekräfta borttagning</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+			</div>
+			<div class="modal-body">
+				<p>Är du säker på att du vill ta bort punkten <strong id="itemNamePreview"></strong>?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+				<button type="button" class="btn btn-danger" id="confirmDeleteItemBtn">Ta bort</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <script>
-    document.querySelectorAll('.toggle-complete').forEach(checkbox => {
-        checkbox.addEventListener('change', async (e) => {
-            const itemId = e.target.dataset.itemId;
 
-            const response = await fetch('?handler=ToggleItem', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ItemId: parseInt(itemId) })
-            });
+	const isTodoList = '@(Model.UserList.Type.ToString() == "Todolist" ? "true" : "false")' === 'true';
 
-            if (!response.ok) {
-                const text = await response.text();
-                console.error('Servern svarade med fel:', response.status, text);
-                return;
-            }
-            const result = await response.json();
+	function ensureListAndHeading(type) {
+		const container = document.getElementById('list-container');
+		if (!container) {
+			console.error('Hittar inte list-container.');
+			return null;
+		}
+		let headingId = type === 'undone' ? 'undone-heading' : 'done-heading';
+		let listId = type === 'undone' ? 'undone-list' : 'done-list';
+		let headingText = type === 'undone' ? 'Att göra' : 'Klart';
 
-            if (result.success) {
-                const label = e.target.closest('li').querySelector('label');
-                if (result.newState === 'Checked') {
-                    label.classList.add('text-decoration-line-through', 'text-muted');
-                } else {
-                    label.classList.remove('text-decoration-line-through', 'text-muted');
-                }
-            }
-        });
-    });
+		let heading = document.getElementById(headingId);
+		let list = document.getElementById(listId);
+
+		if (!heading) {
+			heading = document.createElement('h2');
+			heading.id = headingId;
+			heading.classList.add('mt-4');
+			heading.textContent = headingText;
+			container.appendChild(heading);
+		}
+
+		if (!list) {
+			list = document.createElement('ul');
+			list.id = listId;
+			list.classList.add('list-group', 'mb-3');
+			container.appendChild(list);
+		}
+
+		return list;
+	}
+
+	function updateHeadingVisibility() {
+		['undone', 'done'].forEach(type => {
+			const list = document.getElementById(`${type}-list`);
+			const heading = document.getElementById(`${type}-heading`);
+			if (list && heading) {
+				heading.style.display = list.children.length > 0 ? '' : 'none';
+			}
+		});
+	}
+
+	document.querySelectorAll('.toggle-complete').forEach(checkbox => {
+		checkbox.addEventListener('change', async (e) => {
+			const itemId = e.target.dataset.itemId;
+			const li = e.target.closest('li');
+			const label = li.querySelector('label');
+
+			const response = await fetch('?handler=ToggleItem', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ ItemId: parseInt(itemId) })
+			});
+
+			if (!response.ok) {
+				const text = await response.text();
+				console.error('Servern svarade med fel:', response.status, text);
+				e.target.checked = !e.target.checked;
+				return;
+			}
+
+			const result = await response.json();
+
+			if (result.success) {
+				if (isTodoList) {
+					if (result.newState === 'Checked') {
+						label.classList.add('text-decoration-line-through', 'text-muted');
+						const doneList = ensureListAndHeading('done');
+						doneList.appendChild(li);
+					} else {
+						label.classList.remove('text-decoration-line-through', 'text-muted');
+						const undoneList = ensureListAndHeading('undone');
+						undoneList.appendChild(li);
+					}
+
+					updateHeadingVisibility();
+				} else {
+					if (result.newState === 'Checked') {
+						label.classList.add('text-muted');
+					} else {
+						label.classList.remove('text-muted');
+					}
+				}
+			} else {
+				alert('Kunde inte uppdatera punkten.');
+				e.target.checked = !e.target.checked;
+			}
+		});
+	});
+
+	if (isTodoList) {
+		updateHeadingVisibility();
+	}
 
 </script>
 <script>
-    document.querySelectorAll('.delete-item').forEach(button => {
-        button.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const itemId = button.dataset.itemId;
-            if (!confirm('Vill du ta bort denna punkt?')) return;
+	document.addEventListener('DOMContentLoaded', () => {
+		const deleteItemModal = new bootstrap.Modal(document.getElementById('confirmDeleteItemModal'));
+		const itemNamePreview = document.getElementById('itemNamePreview');
+		const confirmDeleteItemBtn = document.getElementById('confirmDeleteItemBtn');
 
-            const response = await fetch('?handler=DeleteItem', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ itemId: parseInt(itemId) })
-            });
+		let itemToDeleteButton = null;
+		let itemToDeleteId = null;
 
-            const result = await response.json();
+		document.querySelectorAll('.delete-item').forEach(button => {
+			button.addEventListener('click', (e) => {
+				e.preventDefault();
+				itemToDeleteButton = button;
+				itemToDeleteId = button.dataset.itemId;
 
-            if (result.success) {
-                // Ta bort <li> elementet från DOM
-                button.closest('li').remove();
-            } else {
-                alert('Kunde inte ta bort punkten.');
-            }
-        });
-    });
+				const li = button.closest('li');
+				const label = li.querySelector('label');
+				itemNamePreview.textContent = label ? label.textContent.trim() : 'denna punkt';
 
+				deleteItemModal.show();
+			});
+		});
+
+		confirmDeleteItemBtn.addEventListener('click', async () => {
+			if (!itemToDeleteId) return;
+
+			const response = await fetch('?handler=DeleteItem', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ itemId: parseInt(itemToDeleteId) })
+			});
+
+			const result = await response.json();
+
+			if (result.success) {
+				itemToDeleteButton.closest('li').remove();
+				if (typeof isTodoList !== 'undefined' && isTodoList) updateHeadingVisibility();
+			} else {
+				alert('Kunde inte ta bort punkten.');
+			}
+
+			deleteItemModal.hide();
+
+			itemToDeleteButton = null;
+			itemToDeleteId = null;
+		});
+	});
 </script>
+

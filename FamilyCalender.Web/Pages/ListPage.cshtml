@@ -1,4 +1,5 @@
 ﻿@page
+@using FamilyCalender.Core.Models.Entities
 @model FamilyCalender.Web.Pages.ListPageModel
 @{
 	ViewData["Title"] = "Mina listor";
@@ -17,7 +18,7 @@ else
 
 @if (Model.Lists.Any())
 {
-@* 	<ul class="list-group">
+	@* 	<ul class="list-group">
 		@foreach (var list in Model.Lists)
 		{
 			<li class="list-group-item d-flex justify-content-between align-items-center">
@@ -47,7 +48,17 @@ else
 
 					<div class="card-body">
 						<h5 class="card-title">@list.Name</h5>
-						<span class="badge bg-primary">@list.Type.ToString()</span>
+						<span class="badge bg-primary">
+							@{
+								var text = list.Type switch
+								{
+									ListTypeEnum.Todolist => "Att göra-lista",
+									ListTypeEnum.Checklist => "Checklista",
+									_ => "Okänd"
+								};
+							}
+							@text
+						</span>
 					</div>
 
 					<button type="button"
@@ -90,6 +101,19 @@ else
 						<input type="text" id="NewListName" name="NewListName" class="form-control" value="@Model.NewListName" />
 						<span asp-validation-for="NewListName" class="text-danger"></span>
 					</div>
+					<div class="btn-group w-75" role="group" aria-label="Listtyp">
+						<input type="radio" class="btn-check" name="NewListType" id="btn-todo" value="Todolist" autocomplete="off" checked>
+						<label class="btn btn-pmf-outline w-100" for="btn-todo">Att göra</label>
+
+						<input type="radio" class="btn-check" name="NewListType" id="btn-checklist" value="Checklist" autocomplete="off">
+						<label class="btn btn-pmf-outline w-100" for="btn-checklist">Checklista</label>
+
+@* 						<input type="radio" class="btn-check" name="NewListType" id="btn-notes" value="Notes" autocomplete="off">
+						<label class="btn btn-pmf-outline w-100" for="btn-notes">Anteckningar</label>  *@
+
+					</div>
+						<i class="bi bi-question-circle-fill ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="En att göra-lista låter dig lägga till uppgifter som du vill bocka av, medan en checklista är mer fast och kan återanvändas."></i>
+
 					<input type="hidden" asp-for="CalendarId" />
 					<input type="hidden" asp-for="CalendarName" />
 				</div>
@@ -123,8 +147,24 @@ else
 		</div>
 	</div>
 </div>
+<style>
+	.btn-check:checked + .btn {
+		box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
+	}
 
+	/* För extra tydlig aktiv stil per typ */
+	.btn-check:checked + .btn-pmf-outline {
+		background-color: var(--pmf-blue);
+		color: #fff;
+		border-color: var(--pmf-blue);
+	}
 
+	.btn-check:checked + .btn-pmf-inverted {
+		background-color: #fff;
+		color: var(--pmf-yellow);
+		border-color: var(--pmf-yellow);
+	}
+</style>
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
 
@@ -165,5 +205,13 @@ else
 			});
 		});
 	</script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+			tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+				new bootstrap.Tooltip(tooltipTriggerEl)
+			})
+		});
 
+	</script>
 }

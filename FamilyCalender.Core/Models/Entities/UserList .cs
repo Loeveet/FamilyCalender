@@ -65,6 +65,11 @@
 
 	public enum ListTypeEnum
     {
+		/// <summary>
+		/// Being used as default to validate users choice
+		/// </summary>
+		Unknown = -1,
+
         /// <summary>
         /// Items are being removed when "done". To be used in a Todolist/shopping list
         /// </summary>
@@ -73,12 +78,12 @@
         /// <summary>
         /// Items are being checked when "done". To be used in a Checklist/completion list that all item should have a checkmark at the end
         /// </summary>
-        Checklist = 1,
+        Checklist = 1
 
         /// <summary>
-        /// Just a textarea to use how you want
+        /// Just a textarea to use how you want. Wait with this until lists works fine
         /// </summary>
-		Notes = 2
+		//Notes = 2
     }
 
     public enum ListItemTypeEnum

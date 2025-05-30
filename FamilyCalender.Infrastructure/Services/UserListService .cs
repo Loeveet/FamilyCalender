@@ -14,7 +14,7 @@ namespace FamilyCalender.Infrastructure.Services
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task CreateListAsync(int userId, string listName, int? calendarId)
+        public async Task CreateListAsync(int userId, string listName, int? calendarId, ListTypeEnum type)
         {
             if (string.IsNullOrWhiteSpace(listName))
                 throw new ArgumentException("Listnamnet får inte vara tomt.", nameof(listName));
@@ -28,7 +28,8 @@ namespace FamilyCalender.Infrastructure.Services
                     Name = listName,
                     OwnerId = userId,
                     CalendarId = calendarId,
-                    CreatedUtc = DateTime.UtcNow
+                    CreatedUtc = DateTime.UtcNow,
+                    Type = type
                 };
 
                 _context.UserLists.Add(newList);

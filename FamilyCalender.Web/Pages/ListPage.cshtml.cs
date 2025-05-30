@@ -22,9 +22,11 @@ namespace FamilyCalender.Web.Pages
         public int UserListId { get; set; }
         [BindProperty]
         public string? NewListName { get; set; }
+		[BindProperty]
+		public ListTypeEnum NewListType { get; set; } = ListTypeEnum.Unknown;
 
 
-        public List<UserList> Lists { get; set; } = new();
+		public List<UserList> Lists { get; set; } = new();
 		public async Task<IActionResult> OnGetAsync()
         {
 			var userId = await GetCurrentUserIdAsync();
@@ -68,11 +70,17 @@ namespace FamilyCalender.Web.Pages
 
             if (string.IsNullOrWhiteSpace(NewListName))
             {
-                ModelState.AddModelError("NewListName", "Namnet på listan kan inte vara tomt.");
+				ModelState.AddModelError("NewListName", "Namnet på listan kan inte vara tomt.");
                 return Page();
             }
 
-            await _userListService.CreateListAsync(userId.Value, NewListName, CalendarId);
+            if (NewListType == ListTypeEnum.Unknown)
+            {
+				ModelState.AddModelError("NewListType", "Du måste välja typ av lista.");
+				return Page();
+			}
+
+            await _userListService.CreateListAsync(userId.Value, NewListName, CalendarId, NewListType);
             return RedirectToPage(new { calendarId = CalendarId, calendarName = CalendarName });
         }
 
