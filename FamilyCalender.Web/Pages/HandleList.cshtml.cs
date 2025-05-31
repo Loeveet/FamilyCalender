@@ -62,8 +62,11 @@ public class HandleListModel(IUserListService userListService, IAuthService auth
             return NotFound();
 
         item.State = item.State == ListItemTypeEnum.Checked ? ListItemTypeEnum.Undefined : ListItemTypeEnum.Checked;
+        item.StateUpdatedUtc = DateTime.UtcNow;
+        item.UpdateUserId = userId.Value;
+        item.LastEditedUtc = DateTime.UtcNow;
 
-        await _userListService.UpdateItemAsync(item);
+		await _userListService.UpdateItemAsync(item);
 
         return new JsonResult(new { success = true, newState = item.State.ToString() });
     }
