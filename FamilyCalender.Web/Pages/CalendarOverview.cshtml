@@ -52,11 +52,31 @@ else
 	<h2 class="d-flex justify-content-between align-items-center">
 		<span>@Model.ViewModel.SelectedCalendarName</span>
 	</h2>
-	<a asp-page="/ListPage" asp-route-calendarId="@Model.ViewModel.SelectedCalendarId" asp-route-calendarName="@Model.ViewModel.SelectedCalendarName">Visa listor</a>
+@* 	<a asp-page="/ListPage" asp-route-calendarId="@Model.ViewModel.SelectedCalendarId" asp-route-calendarName="@Model.ViewModel.SelectedCalendarName">Visa listor</a>
 
 	<a asp-page="/HandleCalendar" style="color:#000; float:left; font-size:18px; text-decoration:none; text-align:left" asp-route-id="@Model.ViewModel.SelectedCalendarId">
 		<i class="fa-solid fa-gear"></i> Inställningar / Dela
-	</a>
+	</a> *@
+	<div class="d-flex flex-wrap gap-2 my-3">
+
+		<a asp-page="/HandleCalendar"
+		   asp-route-id="@Model.ViewModel.SelectedCalendarId"
+		   class="btn btn-secondary"
+		   title="Inställningar / Dela">
+			<i class="fa-solid fa-gear"></i>
+			<i class="fa-solid fa-share-nodes ms-1"></i>
+		</a>
+
+		<a asp-page="/ListPage"
+		   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
+		   asp-route-calendarName="@Model.ViewModel.SelectedCalendarName"
+		   class="btn btn-primary"
+		   title="Visa listor">
+			<i class="fa-solid fa-list"></i>
+		</a>
+	</div>
+
+
 
 	<br />
 	<br />

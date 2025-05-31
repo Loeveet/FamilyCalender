@@ -150,15 +150,6 @@ namespace FamilyCalender.Web.Pages
                 CustomIntervalInWeeks = ViewModel.RepetitionType == RepeatType.Custom ? intervalInWeeks : null
             };
             await _calendarManagementService.CreateEventAsync(evt);
-            //await _calendarManagementService.CreateEventAsync(
-            //	ViewModel.EventTitle,
-            //	ViewModel.EventText ?? "",
-            //	ViewModel.EventTime ?? "",
-            //	ViewModel.EventStopTime ?? "",
-            //	ViewModel.SelectedCategoryColor,
-            //	eventMemberDates,
-            //	ViewModel.SelectedCalendarId,
-            //	selectedMemberIds);
 
             var user = await GetCurrentUserAsync();
 
