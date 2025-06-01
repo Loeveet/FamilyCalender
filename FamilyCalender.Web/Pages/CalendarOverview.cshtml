@@ -61,7 +61,7 @@ else
 
 		<a asp-page="/HandleCalendar"
 		   asp-route-id="@Model.ViewModel.SelectedCalendarId"
-		   class="btn btn-secondary"
+		   class="btn btn-pmf-outline"
 		   title="Inställningar / Dela">
 			<i class="fa-solid fa-gear"></i>
 			<i class="fa-solid fa-share-nodes ms-1"></i>
@@ -70,9 +70,9 @@ else
 		<a asp-page="/ListPage"
 		   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
 		   asp-route-calendarName="@Model.ViewModel.SelectedCalendarName"
-		   class="btn btn-primary"
+		   class="btn btn-pmf"
 		   title="Visa listor">
-			<i class="fa-solid fa-list"></i>
+			<i class="fa-solid fa-list-check"></i>
 		</a>
 	</div>
 

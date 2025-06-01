@@ -28,7 +28,7 @@
 	<input type="hidden" asp-for="ListId" />
 	<div class="input-group">
 		<input type="text" class="form-control" asp-for="NewItemName" placeholder="Ny punkt" />
-		<button type="submit" class="btn btn-primary" asp-page-handler="AddItem">Lägg till</button>
+		<button type="submit" class="btn btn-pmf" asp-page-handler="AddItem">Lägg till</button>
 	</div>
 </form>
 
@@ -118,8 +118,8 @@
 				<p>Är du säker på att du vill ta bort punkten <strong id="itemNamePreview"></strong>?</p>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
-				<button type="button" class="btn btn-danger" id="confirmDeleteItemBtn">Ta bort</button>
+				<button type="button" class="btn btn-pmf" data-bs-dismiss="modal">Avbryt</button>
+				<button type="button" class="btn btn-pmf-inverted" id="confirmDeleteItemBtn">Ta bort</button>
 			</div>
 		</div>
 	</div>

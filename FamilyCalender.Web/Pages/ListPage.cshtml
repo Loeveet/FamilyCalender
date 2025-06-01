@@ -18,27 +18,6 @@ else
 
 @if (Model.Lists.Any())
 {
-	@* 	<ul class="list-group">
-		@foreach (var list in Model.Lists)
-		{
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				<a asp-page="/HandleList" asp-route-listId="@list.Id" asp-route-calendarName="@Model.CalendarName">
-					@list.Name
-				</a>
-				<span class="badge bg-primary rounded-pill me-5">@list.Type.ToString()</span>  <!-- Lägg till margin end -->
-				<!-- Öppna modalen och sätt värdet för listan som ska tas bort -->
-				<button type="button" class="btn btn-sm btn-danger"
-						aria-label="Ta bort listan"
-						data-bs-toggle="modal"
-						data-bs-target="#confirmDeleteModal"
-						data-list-id="@list.Id"
-						data-list-name="@list.Name">
-					<i class="bi bi-trash"></i>
-
-				</button>
-			</li>
-		}
-	</ul> *@
 	<div class="d-flex flex-wrap gap-3">
 		@foreach (var list in Model.Lists)
 		{
@@ -82,7 +61,7 @@ else
 	<p>Inga listor att visa.</p>
 }
 
-<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createListModal">
+<button type="button" class="btn btn-pmf mb-3" data-bs-toggle="modal" data-bs-target="#createListModal">
 	Skapa ny lista
 </button>
 
@@ -118,8 +97,8 @@ else
 					<input type="hidden" asp-for="CalendarName" />
 				</div>
 				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary">Skapa</button>
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+					<button type="submit" class="btn btn-pmf">Skapa</button>
+					<button type="button" class="btn btn-pmf-inverted" data-bs-dismiss="modal">Avbryt</button>
 				</div>
 			</form>
 		</div>
