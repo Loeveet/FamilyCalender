@@ -52,7 +52,7 @@ else
 	<h2 class="d-flex justify-content-between align-items-center">
 		<span>@Model.ViewModel.SelectedCalendarName</span>
 	</h2>
-@* 	<a asp-page="/ListPage" asp-route-calendarId="@Model.ViewModel.SelectedCalendarId" asp-route-calendarName="@Model.ViewModel.SelectedCalendarName">Visa listor</a>
+	@* 	<a asp-page="/ListPage" asp-route-calendarId="@Model.ViewModel.SelectedCalendarId" asp-route-calendarName="@Model.ViewModel.SelectedCalendarName">Visa listor</a>
 
 	<a asp-page="/HandleCalendar" style="color:#000; float:left; font-size:18px; text-decoration:none; text-align:left" asp-route-id="@Model.ViewModel.SelectedCalendarId">
 		<i class="fa-solid fa-gear"></i> Inställningar / Dela
@@ -66,14 +66,16 @@ else
 			<i class="fa-solid fa-gear"></i>
 			<i class="fa-solid fa-share-nodes ms-1"></i>
 		</a>
-
-		<a asp-page="/ListPage"
-		   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
-		   asp-route-calendarName="@Model.ViewModel.SelectedCalendarName"
-		   class="btn btn-pmf"
-		   title="Visa listor">
-			<i class="fa-solid fa-list-check"></i>
-		</a>
+		@if (ViewData[GlobalSettings.ShowBetaTesterMenu] as bool? == true)
+		{
+			<a asp-page="/ListPage"
+			   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
+			   asp-route-calendarName="@Model.ViewModel.SelectedCalendarName"
+			   class="btn btn-pmf"
+			   title="Visa listor">
+				<i class="fa-solid fa-list-check"></i>
+			</a>
+		}
 	</div>
 
 
@@ -271,20 +273,20 @@ else
 
 							<div class="d-flex flex-column align-items-center">
 								<span class="day-info day-info-small day-info-medium
-                                @(day.IsCurrentDay ? "fw-bold" : "")
-                                @(day.PublicHoliday != null ? "text-danger" : "")
-                                @(day is {IsPastDay: true, PublicHoliday: null} ? "text-muted" : "")
+		                                @(day.IsCurrentDay ? "fw-bold" : "")
+		                                @(day.PublicHoliday != null ? "text-danger" : "")
+		                                @(day is { IsPastDay: true, PublicHoliday: null } ? "text-muted" : "")
 
-                                @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")
-                                d-block d-md-none">
+		                                @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")
+		                                d-block d-md-none">
 									@day.CapitalizedDayName[..2]
 								</span>
 
 								<span class="day-info day-info-large
-                                            @(day.IsCurrentDay ? "fw-bold" : "")
-                                             @(day is {IsPastDay: true, PublicHoliday: null} ? "text-muted" : "")
-                                            @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")
-                                            d-none d-md-block">
+		                                            @(day.IsCurrentDay ? "fw-bold" : "")
+		                                             @(day is { IsPastDay: true, PublicHoliday: null } ? "text-muted" : "")
+		                                            @(day.CapitalizedDayName == "Söndag" || day.PublicHoliday != null ? "text-danger" : "")
+		                                            d-none d-md-block">
 									@day.CapitalizedDayName
 								</span>
 
@@ -315,7 +317,7 @@ else
 							.Where(em => em.MemberId == member.Id && em.Date.Date == day.Date.Date)
 							.ToList();
 							<td class="expanding-column clickable-cell"
-							@* data-bs-toggle="modal"
+								@* data-bs-toggle="modal"
 					data-bs-target="#eventModal" *@
 								data-selected-date="@day.Date.ToString("yyyy-MM-dd")"
 								data-member-id="@member.Id"
@@ -723,29 +725,29 @@ else
 </script>
 
 <script>
-document.querySelectorAll('.close-news').forEach(btn => {
-	btn.addEventListener('click', function () {
-		const newsId = this.closest('.news-item').dataset.id;
+	document.querySelectorAll('.close-news').forEach(btn => {
+		btn.addEventListener('click', function () {
+			const newsId = this.closest('.news-item').dataset.id;
 
-		// Läs gamla värden och URL-dekoda dem
-		const old = decodeURIComponent(
-			document.cookie
-				.split('; ')
-				.find(row => row.startsWith('dismissed_news='))
-				?.split('=')[1] ?? ''
-		);
+			// Läs gamla värden och URL-dekoda dem
+			const old = decodeURIComponent(
+				document.cookie
+					.split('; ')
+					.find(row => row.startsWith('dismissed_news='))
+					?.split('=')[1] ?? ''
+			);
 
-		// Lägg till nytt id, ta bort dubbletter och filtera bort tomma
-		const updated = [...new Set([...old.split(','), newsId])]
-			.filter(Boolean)
-			.join(',');
+			// Lägg till nytt id, ta bort dubbletter och filtera bort tomma
+			const updated = [...new Set([...old.split(','), newsId])]
+				.filter(Boolean)
+				.join(',');
 
-		// URL-enkoda innan du sätter cookien (30 dagar)
-		document.cookie = `dismissed_news=${encodeURIComponent(updated)}; path=/; max-age=${60 * 60 * 24 * 30}`;
+			// URL-enkoda innan du sätter cookien (30 dagar)
+			document.cookie = `dismissed_news=${encodeURIComponent(updated)}; path=/; max-age=${60 * 60 * 24 * 30}`;
 
-		// Dölj nyhetsrutan direkt
-		this.closest('.news-item').remove();
+			// Dölj nyhetsrutan direkt
+			this.closest('.news-item').remove();
+		});
 	});
-});
 
 </script>
