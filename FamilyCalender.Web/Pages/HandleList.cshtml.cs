@@ -29,11 +29,11 @@ public class HandleListModel(IUserListService userListService, IAuthService auth
 
     public async Task<IActionResult> OnGetAsync()
     {
-        var userId = await GetCurrentUserIdAsync();
-        if (userId == null)
+        var user = await GetCurrentUserAsync();
+        if (user == null)
 			return RedirectToPage("/Login");
 
-		UserList = await _userListService.GetListByIdAsync(ListId, userId.Value);
+		UserList = await _userListService.GetListByIdAsync(ListId, user.Id);
         if (UserList is null)
             return NotFound();
 

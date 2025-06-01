@@ -29,19 +29,19 @@ namespace FamilyCalender.Web.Pages
 		public List<UserList> Lists { get; set; } = new();
 		public async Task<IActionResult> OnGetAsync()
         {
-			var userId = await GetCurrentUserIdAsync();
-			if (userId == null)
+			var user = await GetCurrentUserAsync();
+			if (user == null)
 			{
 				return RedirectToPage("/Login");
 			}
 
 			if (CalendarId.HasValue)
 			{
-				Lists = await _userListService.GetListsForUserByCalendarAsync(userId.Value, CalendarId.Value);
+				Lists = await _userListService.GetListsForUserByCalendarAsync(user.Id, CalendarId.Value);
 			}
 			else
 			{
-				Lists = await _userListService.GetListsForUserAsync(userId.Value);
+				Lists = await _userListService.GetListsForUserAsync(user.Id);
 			}
 
 			return Page();
