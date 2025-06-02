@@ -5,7 +5,6 @@
 	ViewData["Title"] = "Mina listor";
 }
 
-<h1>Mina listor</h1>
 
 @if (Model.CalendarId.HasValue)
 {
@@ -118,6 +117,7 @@ else
 					<p>Är du säker på att du vill ta bort listan <strong id="listNamePreview"></strong>?</p>
 					<input type="hidden" name="UserListId" id="deleteListId" />
 					<input type="hidden" asp-for="CalendarId" />
+					<input type="hidden" asp-for="CalendarName" />
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>

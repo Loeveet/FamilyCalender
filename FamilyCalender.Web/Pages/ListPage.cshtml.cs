@@ -8,11 +8,9 @@ namespace FamilyCalender.Web.Pages
 {
     public class ListPageModel(
 		IAuthService authService,
-		IUserListService userListService,
-		ICalendarService calendarService) : BasePageModel(authService)
+		IUserListService userListService) : BasePageModel(authService)
 	{
 		private readonly IUserListService _userListService = userListService;
-		private readonly ICalendarService _calendarService = calendarService;
 
 		[BindProperty(SupportsGet = true)]
 		public int? CalendarId { get; set; }
@@ -60,7 +58,7 @@ namespace FamilyCalender.Web.Pages
 
             await _userListService.DeleteListAsync(UserListId);
 
-            return RedirectToPage(new { CalendarId });
+            return RedirectToPage(new { CalendarId , CalendarName});
         }
         public async Task<IActionResult> OnPostCreateNewListAsync()
         {
