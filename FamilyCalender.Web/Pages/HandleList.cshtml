@@ -24,11 +24,14 @@
 	return;
 }
 
-<form method="post">
+<form method="post" id="add-item-form">
 	<input type="hidden" asp-for="ListId" />
-	<div class="input-group">
-		<input type="text" class="form-control" asp-for="NewItemName" placeholder="Ny punkt" />
-		<button type="submit" class="btn btn-pmf" asp-page-handler="AddItem">Lägg till</button>
+	<div class="d-flex align-items-start gap-2">
+		<div class="flex-grow-1">
+			<input type="text" class="form-control" asp-for="NewItemName" id="new-item-name" placeholder="Ny punkt" onfocus="this.placeholder=''" onblur="this.placeholder='Ny punkt'" />
+			<div id="validation-message" class="text-danger small mt-1"></div>
+		</div>
+		<button type="submit" class="btn btn-pmf" asp-page-handler="AddItem"><i class="fa fa-plus"></i></button>
 	</div>
 </form>
 
@@ -221,6 +224,23 @@
 	if (isTodoList) {
 		updateHeadingVisibility();
 	}
+
+</script>
+<script>
+		const form = document.getElementById('add-item-form');
+	form.addEventListener('submit', function (e) {
+		const input = document.getElementById('new-item-name');
+		const errorMsg = document.getElementById('validation-message');
+
+		if (!input.value.trim()) {
+			e.preventDefault();
+			errorMsg.textContent = 'Fältet får inte vara tomt.';
+			input.classList.add('is-invalid');
+		} else {
+			errorMsg.textContent = '';
+			input.classList.remove('is-invalid');
+		}
+	});
 
 </script>
 <script>
