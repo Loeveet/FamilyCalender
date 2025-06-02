@@ -12,9 +12,10 @@
 
 	bool isTodoList = Model.UserList.Type == ListTypeEnum.Todolist;
 }
-<a asp-page="/ListPage" asp-route-calendarId="@Model.UserList.CalendarId" asp-route-calendarName="@Model.CalendarName" class="btn btn-secondary mb-3">
-	← Tillbaka till listor
+<a asp-page="/ListPage" asp-route-calendarId="@Model.UserList.CalendarId" asp-route-calendarName="@Model.CalendarName" class="btn btn-outline-dark btn-sm mb-3">
+	← Tillbaka
 </a>
+
 
 <h1>@Model.UserList?.Name</h1>
 
