@@ -12,13 +12,14 @@
 
 	bool isTodoList = Model.UserList.Type == ListTypeEnum.Todolist;
 }
-<a asp-page="/ListPage" asp-route-calendarId="@Model.UserList.CalendarId" asp-route-calendarName="@Model.CalendarName" class="btn btn-outline-dark btn-sm mb-3">
+<h1>@Model.UserList?.Name</h1>
+
+<a asp-page="/ListPage" asp-route-calendarId="@Model.UserList.CalendarId" asp-route-calendarName="@Model.CalendarName" class="btn btn-outline-dark btn-sm">
 	            <i class="bi bi-arrow-left"></i> Tillbaka
 
 </a>
 
-
-<h1>@Model.UserList?.Name</h1>
+<hr />
 
 @if (Model.UserList is null)
 {
@@ -33,6 +34,7 @@
 			<input type="text" class="form-control" asp-for="NewItemName" id="new-item-name" placeholder="Ny punkt" onfocus="this.placeholder=''" onblur="this.placeholder='Ny punkt'" />
 			<div id="validation-message" class="text-danger small mt-1"></div>
 		</div>
+		<input type="hidden" asp-for="CalendarName" />
 		<button type="submit" class="btn btn-pmf" asp-page-handler="AddItem"><i class="fa fa-plus"></i></button>
 	</div>
 </form>
@@ -89,6 +91,7 @@
 
 			@if (!isTodoList)
 			{
+				<h2 class="mt-4" id="heading-checklist"><i class="bi bi-ui-checks-grid"></i></h2>
 				<ul class="list-group mb-3">
 					@foreach (var item in Model.Items.OrderByDescending(i => i.SortOrder))
 					{
@@ -107,10 +110,6 @@
 				</ul>
 			}
 		</div>
-	}
-	else
-	{
-		<p>Inga punkter ännu.</p>
 	}
 </div>
 
@@ -151,208 +150,6 @@
 		</div>
 	</div>
 </div>
-
-@* <script>
-	function updateResetButtonVisibility() {
-	  const checkedItems = document.querySelectorAll('.toggle-complete:checked');
-	  const resetBtn = document.getElementById('reset-checkboxes');
-
-	  if (resetBtn) {
-		resetBtn.style.display = checkedItems.length > 0 ? 'inline-block' : 'none';
-	  }
-	}
-
-	updateResetButtonVisibility();
-
-	document.querySelectorAll('.toggle-complete').forEach(cb => {
-	  cb.addEventListener('change', () => {
-		updateResetButtonVisibility();
-	  });
-	});
-</script>
-<script>
-
-	const isTodoList = '@(Model.UserList.Type.ToString() == "Todolist" ? "true" : "false")' === 'true';
-
-	function ensureListAndHeading(type) {
-		const container = document.getElementById('list-container');
-		if (!container) {
-			console.error('Hittar inte list-container.');
-			return null;
-		}
-		let headingId = type === 'undone' ? 'undone-heading' : 'done-heading';
-		let listId = type === 'undone' ? 'undone-list' : 'done-list';
-		let headingText = type === 'undone' ? 'Att göra' : 'Klart';
-
-		let heading = document.getElementById(headingId);
-		let list = document.getElementById(listId);
-
-		if (!heading) {
-			heading = document.createElement('h2');
-			heading.id = headingId;
-			heading.classList.add('mt-4');
-			heading.textContent = headingText;
-			container.appendChild(heading);
-		}
-
-		if (!list) {
-			list = document.createElement('ul');
-			list.id = listId;
-			list.classList.add('list-group', 'mb-3');
-			container.appendChild(list);
-		}
-
-		return list;
-	}
-
-	function updateHeadingVisibility() {
-		['undone', 'done'].forEach(type => {
-			const list = document.getElementById(`${type}-list`);
-			const heading = document.getElementById(`${type}-heading`);
-			if (list && heading) {
-				heading.style.display = list.children.length > 0 ? '' : 'none';
-			}
-		});
-	}
-
-	document.querySelectorAll('.toggle-complete').forEach(checkbox => {
-		checkbox.addEventListener('change', async (e) => {
-			const itemId = e.target.dataset.itemId;
-			const li = e.target.closest('li');
-			const label = li.querySelector('label');
-
-			const response = await fetch('?handler=ToggleItem', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ ItemId: parseInt(itemId) })
-			});
-
-			if (!response.ok) {
-				const text = await response.text();
-				console.error('Servern svarade med fel:', response.status, text);
-				e.target.checked = !e.target.checked;
-				return;
-			}
-
-			const result = await response.json();
-
-			if (result.success) {
-				if (isTodoList) {
-					if (result.newState === 'Checked') {
-						label.classList.add('text-decoration-line-through', 'text-muted');
-						const doneList = ensureListAndHeading('done');
-						doneList.appendChild(li);
-					} else {
-						label.classList.remove('text-decoration-line-through', 'text-muted');
-						const undoneList = ensureListAndHeading('undone');
-						undoneList.appendChild(li);
-					}
-
-					updateHeadingVisibility();
-				} else {
-					if (result.newState === 'Checked') {
-						label.classList.add('text-muted');
-					} else {
-						label.classList.remove('text-muted');
-					}
-				}
-				updateResetButtonVisibility();
-
-			} else {
-				alert('Kunde inte uppdatera punkten.');
-				e.target.checked = !e.target.checked;
-			}
-		});
-	});
-
-	if (isTodoList) {
-		updateHeadingVisibility();
-	}
-
-</script>
-<script>
-	document.getElementById("confirmResetBtn").addEventListener("click", async function () {
-		const checkboxes = document.querySelectorAll(".toggle-complete:checked");
-
-		for (const cb of checkboxes) {
-			cb.checked = false;
-			cb.dispatchEvent(new Event('change', { bubbles: true }));
-		}
-
-		const modal = bootstrap.Modal.getInstance(document.getElementById('confirmResetModal'));
-		modal.hide();
-	});
-</script>
-
-<script>
-		const form = document.getElementById('add-item-form');
-	form.addEventListener('submit', function (e) {
-		const input = document.getElementById('new-item-name');
-		const errorMsg = document.getElementById('validation-message');
-
-		if (!input.value.trim()) {
-			e.preventDefault();
-			errorMsg.textContent = 'Fältet får inte vara tomt.';
-			input.classList.add('is-invalid');
-		} else {
-			errorMsg.textContent = '';
-			input.classList.remove('is-invalid');
-		}
-	});
-
-</script>
-
-<script>
-	document.addEventListener('DOMContentLoaded', () => {
-		const deleteItemModal = new bootstrap.Modal(document.getElementById('confirmDeleteItemModal'));
-		const itemNamePreview = document.getElementById('itemNamePreview');
-		const confirmDeleteItemBtn = document.getElementById('confirmDeleteItemBtn');
-
-		let itemToDeleteButton = null;
-		let itemToDeleteId = null;
-
-		document.querySelectorAll('.delete-item').forEach(button => {
-			button.addEventListener('click', (e) => {
-				e.preventDefault();
-				itemToDeleteButton = button;
-				itemToDeleteId = button.dataset.itemId;
-
-				const li = button.closest('li');
-				const label = li.querySelector('label');
-				itemNamePreview.textContent = label ? label.textContent.trim() : 'denna punkt';
-
-				deleteItemModal.show();
-			});
-		});
-
-		confirmDeleteItemBtn.addEventListener('click', async () => {
-			if (!itemToDeleteId) return;
-
-			const response = await fetch('?handler=DeleteItem', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ itemId: parseInt(itemToDeleteId) })
-			});
-
-			const result = await response.json();
-
-			if (result.success) {
-				itemToDeleteButton.closest('li').remove();
-				if (typeof isTodoList !== 'undefined' && isTodoList) {
-					updateHeadingVisibility();
-					updateResetButtonVisibility();
-				}
-			} else {
-				alert('Kunde inte ta bort punkten.');
-			}
-
-			deleteItemModal.hide();
-
-			itemToDeleteButton = null;
-			itemToDeleteId = null;
-		});
-	});
-</script> *@
 
 <script>
 	document.addEventListener('DOMContentLoaded', () => {
@@ -408,6 +205,16 @@
 				}
 			});
 		}
+			function updateChecklistHeadingVisibility() {
+		if (!isTodoList) {
+			const checklistHeading = document.getElementById('heading-checklist');
+			// Hitta UL:en som hör till checklistan (den första ul efter heading-checklist)
+			const checklistUl = checklistHeading?.nextElementSibling;
+			if (checklistHeading && checklistUl) {
+				checklistHeading.style.display = checklistUl.children.length > 0 ? '' : 'none';
+			}
+		}
+	}
 
 		// =======================
 		// Toggle checkbox-status
@@ -536,6 +343,8 @@
 				itemToDeleteButton.closest('li').remove();
 				if (isTodoList) {
 					updateHeadingVisibility();
+				} else {
+					updateChecklistHeadingVisibility();
 				}
 				updateResetButtonVisibility();
 			} else {
@@ -552,6 +361,9 @@
 		// ===========================
 		if (isTodoList) {
 			updateHeadingVisibility();
+		}
+		else {
+			updateChecklistHeadingVisibility();
 		}
 	});
 </script>
