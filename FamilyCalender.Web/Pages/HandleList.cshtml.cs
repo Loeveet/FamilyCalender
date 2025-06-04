@@ -48,7 +48,7 @@ public class HandleListModel(IUserListService userListService, IAuthService auth
 			return RedirectToPage("/Login");
         
 		await _userListService.AddItemToListAsync(userId.Value, ListId, NewItemName);
-        return RedirectToPage(new { listId = ListId });
+        return RedirectToPage(new { listId = ListId, CalendarName });
     }
 
     public async Task<IActionResult> OnPostToggleItemAsync([FromBody] ToggleItemDto data)
