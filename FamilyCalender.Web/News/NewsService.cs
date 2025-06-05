@@ -32,6 +32,15 @@ namespace FamilyCalender.Web.News
 			StartDate = new DateTime(2025, 5, 21),
 			DurationDays = 14,
 			Button = "Svinbra! 👌"
+		},
+				new ()
+		{
+			Id = "news_2025_06_06_1",
+			Title = "Gemensamma listor!",
+			Body = "Nu kan du även ha gemensamma listor kopplat till kalender. Det går att skapa båda att göra-listor samt checklistor, perfekt inför semestern!",
+			StartDate = new DateTime(2025, 6, 5),
+			DurationDays = 14,
+			Button = "Check✅ ☀️⛱️"
 		}
         // Bara fylla på med nyheter här under. Eller ta bort sånt som inte är aktuellt längre. Nyheterna är aktiva i 14 dagar efter startDate
     };
