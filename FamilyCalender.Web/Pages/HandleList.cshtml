@@ -429,6 +429,10 @@
 
 		new Sortable(list, {
 			animation: 150,
+			delay: 200,
+			delayOnTouchOnly: true,
+			filter: 'input, button',
+			preventOnFilter: false,
 			onEnd: function () {
 				const sortedIds = Array.from(list.children).map(li => li.dataset.itemId);
 
