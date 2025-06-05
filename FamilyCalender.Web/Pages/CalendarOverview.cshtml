@@ -66,16 +66,15 @@ else
 			<i class="fa-solid fa-gear"></i>
 			<i class="fa-solid fa-share-nodes ms-1"></i>
 		</a>
-		@if (ViewData[GlobalSettings.ShowBetaTesterMenu] as bool? == true)
-		{
-			<a asp-page="/ListPage"
-			   asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
-			   asp-route-calendarName="@Model.ViewModel.SelectedCalendarName"
-			   class="btn btn-pmf"
-			   title="Visa listor">
-				<i class="fa-solid fa-list-check"></i>
-			</a>
-		}
+
+		<a asp-page="/ListPage"
+			asp-route-calendarId="@Model.ViewModel.SelectedCalendarId"
+			asp-route-calendarName="@Model.ViewModel.SelectedCalendarName"
+			class="btn btn-pmf"
+			title="Visa listor">
+			<i class="fa-solid fa-list-check"></i>
+		</a>
+		
 	</div>
 
 
