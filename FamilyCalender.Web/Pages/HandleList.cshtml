@@ -9,13 +9,18 @@
 
 	var doneItems = Model.Items.Where(i => i.State == ListItemTypeEnum.Checked)
 										.ToList();
+	bool isTodoList = Model.UserList?.Type == ListTypeEnum.Todolist;
 
-	bool isTodoList = Model.UserList.Type == ListTypeEnum.Todolist;
 }
+
+<div id="anti-forgery-token">
+	@Html.AntiForgeryToken()
+</div>
+
 <h1>@Model.UserList?.Name</h1>
 
 <a asp-page="/ListPage" asp-route-calendarId="@Model.UserList.CalendarId" asp-route-calendarName="@Model.CalendarName" class="btn btn-outline-dark btn-sm">
-	            <i class="bi bi-arrow-left"></i> Tillbaka
+	<i class="bi bi-arrow-left"></i> Tillbaka
 
 </a>
 
@@ -50,17 +55,28 @@
 			@if (isTodoList && undoneItems.Any())
 			{
 				<h2 class="mt-4" id="undone-heading">Att göra</h2>
-				<ul class="list-group mb-3" id="undone-list">
+				<ul class="list-group mb-3" id="undone-list" data-list-id="@Model.UserList.Id">
 					@foreach (var item in undoneItems)
 					{
-						<li class="list-group-item d-flex justify-content-between align-items-center" data-item-id="@item.Id">
-							<div class="form-check">
-								<input class="form-check-input toggle-complete" type="checkbox" data-item-id="@item.Id" id="check-@item.Id" @(item.State == ListItemTypeEnum.Checked ? "checked" : "")>
-								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "")" for="check-@item.Id">
+						<li class="list-group-item d-flex justify-content-between align-items-center" style="cursor: grab;" data-item-id="@item.Id">
+							<div class="d-flex align-items-center">
+								<span class="me-2 text-muted" style="cursor: grab;">☰</span>
+								<input class="form-check-input toggle-complete me-2 mb-1"
+									   type="checkbox"
+									   data-item-id="@item.Id"
+									   id="check-@item.Id"
+									   style="cursor: pointer;"
+									   @(item.State == ListItemTypeEnum.Checked ? "checked" : "")>
+								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "")"
+									   for="check-@item.Id"
+									   style="cursor: pointer;">
 									@item.Name
 								</label>
 							</div>
-							<button class="btn btn-sm btn-danger delete-item" data-item-id="@item.Id" aria-label="Ta bort">
+							<button class="btn btn-sm btn-danger delete-item"
+									data-item-id="@item.Id"
+									style="cursor: pointer;"
+									aria-label="Ta bort">
 								<i class="bi bi-trash"></i>
 							</button>
 						</li>
@@ -71,17 +87,28 @@
 			@if (isTodoList && doneItems.Any())
 			{
 				<h2 class="mt-4" id="done-heading">Klart</h2>
-				<ul class="list-group mb-3" id="done-list">
+				<ul class="list-group mb-3" id="done-list" data-list-id="@Model.UserList.Id">
 					@foreach (var item in doneItems)
 					{
-						<li class="list-group-item d-flex justify-content-between align-items-center" data-item-id="@item.Id">
-							<div class="form-check">
-								<input class="form-check-input toggle-complete" type="checkbox" data-item-id="@item.Id" id="check-@item.Id" checked>
-								<label class="form-check-label text-decoration-line-through text-muted" for="check-@item.Id">
+						<li class="list-group-item d-flex justify-content-between align-items-center" style="cursor: grab;" data-item-id="@item.Id">
+							<div class="d-flex align-items-center">
+								<span class="me-2 text-muted" style="cursor: grab;">☰</span>
+								<input class="form-check-input toggle-complete me-2 mb-1"
+									   type="checkbox"
+									   data-item-id="@item.Id"
+									   id="check-@item.Id"
+									   checked
+									   style="cursor: pointer;">
+								<label class="form-check-label text-decoration-line-through text-muted"
+									   for="check-@item.Id"
+									   style="cursor: pointer;">
 									@item.Name
 								</label>
 							</div>
-							<button class="btn btn-sm btn-danger delete-item" data-item-id="@item.Id" aria-label="Ta bort">
+							<button class="btn btn-sm btn-danger delete-item"
+									data-item-id="@item.Id"
+									style="cursor: pointer;"
+									aria-label="Ta bort">
 								<i class="bi bi-trash"></i>
 							</button>
 						</li>
@@ -92,17 +119,33 @@
 			@if (!isTodoList)
 			{
 				<h2 class="mt-4" id="heading-checklist"><i class="bi bi-ui-checks-grid"></i></h2>
-				<ul class="list-group mb-3">
+				<ul class="list-group mb-3" id="sortableCheckList" data-list-id="@Model.UserList.Id">
 					@foreach (var item in Model.Items.OrderByDescending(i => i.SortOrder))
 					{
-						<li class="list-group-item d-flex justify-content-between align-items-center" data-item-id="@item.Id">
-							<div class="form-check">
-								<input class="form-check-input toggle-complete" type="checkbox" data-item-id="@item.Id" id="check-@item.Id" @(item.State == ListItemTypeEnum.Checked ? "checked" : "")>
-								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-muted" : "")" for="check-@item.Id">
+						<li class="list-group-item d-flex justify-content-between align-items-center"
+							style="cursor: grab;" data-item-id="@item.Id">
+
+							<div class="d-flex align-items-center">
+								<span class="me-2 text-muted" style="cursor: grab;">☰</span>
+
+								<input class="form-check-input toggle-complete me-2 mb-1"
+									   type="checkbox"
+									   data-item-id="@item.Id"
+									   id="check-@item.Id"
+									   style="cursor: pointer;"
+									   @(item.State == ListItemTypeEnum.Checked ? "checked" : "")>
+
+								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-muted" : "")"
+									   for="check-@item.Id"
+									   style="cursor: pointer;">
 									@item.Name
 								</label>
 							</div>
-							<button class="btn btn-sm btn-danger delete-item" data-item-id="@item.Id" aria-label="Ta bort">
+
+							<button class="btn btn-sm btn-danger delete-item"
+									data-item-id="@item.Id"
+									style="cursor: pointer;"
+									aria-label="Ta bort">
 								<i class="bi bi-trash"></i>
 							</button>
 						</li>
@@ -112,6 +155,7 @@
 		</div>
 	}
 </div>
+
 
 <!-- Modal for removing item -->
 <div class="modal fade" id="confirmDeleteItemModal" tabindex="-1" aria-labelledby="confirmDeleteItemLabel" aria-hidden="true">
@@ -150,6 +194,7 @@
 		</div>
 	</div>
 </div>
+
 
 <script>
 	document.addEventListener('DOMContentLoaded', () => {
@@ -228,8 +273,11 @@
 
 				const response = await fetch('?handler=ToggleItem', {
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ ItemId: parseInt(itemId) })
+				headers: {
+					'Content-Type': 'application/json',
+					'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+				},					
+				body: JSON.stringify({ ItemId: parseInt(itemId) })
 				});
 
 				if (!response.ok) {
@@ -333,7 +381,10 @@
 
 			const response = await fetch('?handler=DeleteItem', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					'Content-Type': 'application/json',
+					'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+				},
 				body: JSON.stringify({ itemId: parseInt(itemToDeleteId) })
 			});
 
@@ -365,6 +416,54 @@
 		else {
 			updateChecklistHeadingVisibility();
 		}
+	});
+
+		// ===========================
+		// Logik för drag and drop
+		// ===========================
+	function initSortable(id, updateUrl) {
+		const list = document.getElementById(id);
+		if (!list) return;
+
+		const listId = list.dataset.listId;
+
+		new Sortable(list, {
+			animation: 150,
+			onEnd: function () {
+				const sortedIds = Array.from(list.children).map(li => li.dataset.itemId);
+
+			fetch(updateUrl, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+				},
+				body: JSON.stringify({ listId: listId, sortedIds: sortedIds })
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Något gick fel vid uppdatering av ordning');
+				}
+				return response.json();
+			})
+			.then(data => {
+				if (!data.success) {
+					alert('Kunde inte spara ordningen på servern');
+				}
+			})
+			.catch(err => {
+				console.error(err);
+				alert('Fel vid uppdatering av ordning');
+			});
+					}
+				});
+			}
+
+	document.addEventListener('DOMContentLoaded', function () {
+		initSortable('sortableCheckList', '@Url.Page("HandleList", "UpdateOrder")');
+		initSortable('undone-list', '@Url.Page("HandleList", "UpdateOrder")');
+		initSortable('done-list', '@Url.Page("HandleList", "UpdateOrder")');
+
 	});
 </script>
 
