@@ -84,7 +84,7 @@ else
 						<input type="text" id="NewListName" name="NewListName" class="form-control" value="@Model.NewListName" />
 						<span asp-validation-for="NewListName" class="text-danger"></span>
 					</div>
-					<div class="btn-group w-75" role="group" aria-label="Listtyp">
+					<div class="btn-group w-100" role="group" aria-label="Listtyp">
 						<input type="radio" class="btn-check" name="NewListType" id="btn-todo" value="Todolist" autocomplete="off" checked>
 						<label class="btn btn-pmf-outline w-100" for="btn-todo">Att göra</label>
 
@@ -95,7 +95,6 @@ else
 						<label class="btn btn-pmf-outline w-100" for="btn-notes">Anteckningar</label>  *@
 
 					</div>
-						<i class="bi bi-question-circle-fill ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="En att göra-lista låter dig lägga till uppgifter som du vill bocka av, medan en checklista kan återanvändas."></i>
 
 					<input type="hidden" asp-for="CalendarId" />
 					<input type="hidden" asp-for="CalendarName" />
