@@ -42,6 +42,16 @@ namespace FamilyCalender.Web.News
 			DurationDays = 14,
 			Button = "Check✅ ☀️⛱️"
 		}
+				,
+				new ()
+		{
+			Id = "news_2025_06_16_1",
+			Title = "Nytt alternativ för återkommande händelser!",
+			Body = "Nu finns alternativet att få upprepade händelser var femte vecka. Perfekt om du jobbar femskift!",
+			StartDate = new DateTime(2025, 6, 5),
+			DurationDays = 14,
+			Button = "OK! 👩‍🏭🏭 "
+		}
         // Bara fylla på med nyheter här under. Eller ta bort sånt som inte är aktuellt längre. Nyheterna är aktiva i 14 dagar efter startDate
     };
 
