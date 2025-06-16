@@ -50,6 +50,9 @@ namespace FamilyCalender.Core.Models.Entities
 		Yearly = 50,
 
 		[Display(Name = "Anpassad")]
-		Custom = 60
+		Custom = 60,
+
+        [Display(Name = "Var femte vecka")]
+        FifthWeekly = 70
 	}
 }

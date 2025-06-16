@@ -263,7 +263,8 @@ namespace FamilyCalender.Web.Pages
                 RepeatType.Daily => GenerateDailyEventDates(startDate, endDate),
                 RepeatType.Weekly => GenerateWeeklyEventDates(startDate, endDate, 1),
                 RepeatType.BiWeekly => GenerateWeeklyEventDates(startDate, endDate, 2),
-                RepeatType.Monthly => GenerateMonthlyEventDates(startDate, endDate),
+				RepeatType.FifthWeekly => GenerateWeeklyEventDates(startDate, endDate, 5),
+				RepeatType.Monthly => GenerateMonthlyEventDates(startDate, endDate),
                 RepeatType.Yearly => GenerateYearlyEventDates(startDate, endDate),
                 RepeatType.Custom => GenerateEventMemberDatesInRangeWithWeekdays(startDate, endDate, selectedDays, intervalInWeeks),
                 _ => null
