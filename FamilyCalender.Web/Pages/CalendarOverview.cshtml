@@ -456,6 +456,7 @@ else
 							<option value="Daily">Varje dag</option>
 							<option value="Weekly">Varje vecka</option>
 							<option value="Biweekly">Varannan vecka</option>
+							<option value="Fifthweekly">Var femte vecka</option>
 							<option value="Monthly">Varje månad</option>
 							<option value="Yearly">Varje år</option>
 							<option value="Custom">Anpassad</option>
@@ -466,6 +467,7 @@ else
 					<div id="dailyDiv" style="display:none;"></div>
 					<div id="weeklyDiv" style="display:none;"></div>
 					<div id="biweeklyDiv" style="display:none;"></div>
+					<div id="fifthweekDiv" style="display:none;"></div>
 					<div id="monthlyDiv" style="display:none;"></div>
 					<div id="yearlyDiv" style="display:none;"></div>
 					<div id="customRepeatAccordion" style="display: none;">
@@ -652,6 +654,8 @@ else
 				document.getElementById("weeklyDiv").style.display = "block";
 			} else if (selectedValue === "Biweekly") {
 				document.getElementById("biweeklyDiv").style.display = "block";
+			} else if (selectedValue === "Fifthweekly") {
+				document.getElementById("fifthweekDiv").style.display = "block";
 			} else if (selectedValue === "Monthly") {
 				document.getElementById("monthlyDiv").style.display = "block";
 			} else if (selectedValue === "Yearly") {
@@ -692,6 +696,11 @@ else
 			case "Biweekly":
 				endDate = new Date(start);
 				endDate.setDate(start.getDate() + 14);
+				break;
+			
+			case "Fifthweekly":
+				endDate = new Date(start);
+				endDate.setDate(start.getDate() + 35);
 				break;
 
 			case "Monthly":
