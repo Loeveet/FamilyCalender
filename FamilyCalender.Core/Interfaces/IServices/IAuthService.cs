@@ -15,7 +15,10 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task SendPasswordResetEmailAsync(string email);
         Task<bool> ResetPasswordAsync(string token, string newPassword);
         Task SetLastLoggedInAsync(User user);
+        Task RemoveUserAsync(int userId);
 
 
-    }
+
+
+	}
 }
