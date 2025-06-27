@@ -21,8 +21,9 @@ namespace FamilyCalender.Web.Pages
         public List<CalendarDto> InactiveCalendars { get; set; } = new();
         [BindProperty]
         public int UserId { get; set; }
+		public int CurrentUserId { get; set; }
 
-        private static readonly string[] AllowedEmails = new[]
+		private static readonly string[] AllowedEmails = new[]
             {
                 "loeveet@gmail.com",
                 "mikael.lennander@hotmail.com"
@@ -34,6 +35,7 @@ namespace FamilyCalender.Web.Pages
             {
                 return RedirectToPage("/Index");
             }
+            CurrentUserId = user.Id;
             IsAdmin = true;
 
             Users = await _userService.GetAllUsersAsync();
