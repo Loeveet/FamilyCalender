@@ -105,6 +105,23 @@ namespace FamilyCalender.Infrastructure.Services
                 .FirstOrDefaultAsync(u => u.Id == ownerId);
 		}
 
+		public async Task RemoveUserAsync(int userId)
+		{
+			await _context.Users
+				.Where(u => u.Id == userId)
+				.ExecuteDeleteAsync();
+
+			await _context.CalendarAccesses
+				.Where(ca => ca.UserId == userId)
+				.ExecuteDeleteAsync();
+
+			await _context.Calendars
+				.Where(c => c.OwnerId == userId)
+				.ExecuteDeleteAsync();
+
+			await _context.SaveChangesAsync();
+		}
+
 		public async Task<bool> VerifyAccount(string token)
 		{
 			var user = await _context.Users.FirstOrDefaultAsync(u => u.VerificationToken == token);

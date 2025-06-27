@@ -19,6 +19,8 @@ namespace FamilyCalender.Web.Pages
         public List<Calendar> Calendars { get; set; } = [];
         public DateTime? LatestCalendarUpdate { get; set; }
         public List<CalendarDto> InactiveCalendars { get; set; } = new();
+        [BindProperty]
+        public int UserId { get; set; }
 
         private static readonly string[] AllowedEmails = new[]
             {
@@ -40,6 +42,10 @@ namespace FamilyCalender.Web.Pages
             VerifiedUsers = Users.Where(u => u.IsVerified).Count();
             return Page();
         }
-
-    }
+        public async Task<IActionResult> OnPostDeleteUserAsync()
+        {
+            await _authService.RemoveUserAsync(UserId);
+			return RedirectToPage();
+		}
+	}
 }

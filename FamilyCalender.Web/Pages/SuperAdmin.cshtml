@@ -71,9 +71,35 @@
                             }
                         </td>
                         <td>
-                            <button class="btn btn-danger">Ta bort</button>
+@*                             <button class="btn btn-danger" asp-page-handler="RemoveUser">Ta bort</button>
+ *@                         <button type="button" class="btn btn-sm btn-pmf-inverted rounded-pill px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteUserModal-@user.Id">
+                                Ta bort
+                            </button>
+                            <div class="modal fade" id="deleteUserModal-@user.Id" tabindex="-1" aria-labelledby="deleteUserLabel-@user.Id" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteUserLabel-@user.Id">Är du säker på att du vill ta bort @user.Email?</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            Denna åtgärd går inte att ångra.
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+                                            <form method="post" id="deleteUserForm-@user.Id">
+@*                                                 <input type="hidden" name="Model.UserId" value="@user.Id" />
+ *@                                                <input type="hidden" asp-for="UserId" value="@user.Id"/>
+
+                                                <button type="submit" class="btn btn-pmf-inverted" asp-page-handler="DeleteUser">Ja, ta bort</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
+
+                    <!-- Modal för att bekräfta borttagning av medlem -->
                 }
             </tbody>
         </table>
@@ -132,6 +158,8 @@
         </table>
     </div>
 }
+
+
 
 
 <script>
