@@ -18,7 +18,7 @@
     //When user has allowed push, lets just register the service worker
     function registerForPush(vapidPublicKey) {
 
-        navigator.serviceWorker.register("push_service_0007.js", { scope: '/' }).then(function (reg) {
+        navigator.serviceWorker.register("push_service_0008.js", { scope: '/' }).then(function (reg) {
 
             window.Notification.requestPermission().then(function (perm) {
                 if (perm !== "granted") {
@@ -31,7 +31,7 @@
     //register serviceworker for push, that user must allow and then register the device
     function registerServiceWorker(vapidPublicKey) {
         
-        navigator.serviceWorker.register("push_service_0007.js", { scope: '/' }).then(function (reg) {
+        navigator.serviceWorker.register("push_service_0008.js", { scope: '/' }).then(function (reg) {
             
             window.Notification.requestPermission().then(function (perm) {
                 if (perm !== "granted") {
