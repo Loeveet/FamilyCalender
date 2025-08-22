@@ -149,12 +149,12 @@ namespace FamilyCalender.Web.Pages
                 RepeatIntervalType = ViewModel.RepetitionType,
                 CustomIntervalInWeeks = ViewModel.RepetitionType == RepeatType.Custom ? intervalInWeeks : null
             };
-            await _calendarManagementService.CreateEventAsync(evt);
+            var savedEvent = await _calendarManagementService.CreateEventAsync(evt);
 
             var user = await GetCurrentUserAsync();
 
             //var users = await _calendarManagementService.GetPushSubscribers(ViewModel.SelectedCalendarId, user.Id);
-            await pushNotificationService.SendPush(evt, user);
+            await pushNotificationService.SendPush(savedEvent, user);
 
             return RedirectToPage("./CalendarOverview", new
             {
