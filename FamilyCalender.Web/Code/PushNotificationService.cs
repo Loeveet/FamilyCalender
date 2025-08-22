@@ -25,7 +25,7 @@ namespace FamilyCalender.Web.Code
             _client = new WebPushClient();
         }
 
-        public async Task SendPush(NewCalendarEventSaveModel model, User currentUser)
+        public async Task SendPush(Event model, User currentUser)
         {
             if (model != null)
             {

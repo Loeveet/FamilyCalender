@@ -49,9 +49,9 @@ namespace FamilyCalender.Infrastructure.Services
 			return await _memberService.GetMembersForCalendarAsync(calendarId);
 		}
 
-		public async Task CreateEventAsync(NewCalendarEventSaveModel model)
+		public async Task<Event> CreateEventAsync(NewCalendarEventSaveModel model)
 		{
-			await _eventService.CreateEventAsync(model);
+			return await _eventService.CreateEventAsync(model);
 		}
 
         public async Task<Core.Models.Entities.Calendar?> GetCalendarWithDetailsAsync(int calendarId)
