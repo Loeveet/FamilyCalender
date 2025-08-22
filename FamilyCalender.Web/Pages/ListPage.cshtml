@@ -4,7 +4,14 @@
 @{
 	ViewData["Title"] = "Mina listor";
 }
-
+<div class="d-block d-md-none">
+	<a asp-page="/CalendarOverview"
+	   asp-route-calendarId="@Model.CalendarId"
+	   class="btn btn-pmf fixed-btn"
+	   title="Tillbaka till kalendern">
+		<i class="fa-regular fa-calendar-alt"></i>
+	</a>
+</div>
 @if (Model.CalendarId.HasValue)
 {
 	<h2><i class="bi bi-calendar"></i> @Model.CalendarName</h2>

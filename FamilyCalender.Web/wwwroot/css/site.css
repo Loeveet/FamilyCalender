@@ -159,9 +159,20 @@ footer {
 
     .day-info-medium {
         display: none; /* Döljer förkortat namn på dag på stora skärmar */
+    }   
+}
+
+@media(max-width: 767px) {
+    .fixed-btn {
+        position: fixed;
+        bottom: 1.2rem;
+        right: 1.5rem;
+        z-index: 1000;
     }
 
-   
+    #list-container {
+        padding-bottom: 2rem;
+    }
 }
 
 .event-title {

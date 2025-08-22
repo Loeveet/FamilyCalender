@@ -16,7 +16,16 @@
 <div id="anti-forgery-token">
 	@Html.AntiForgeryToken()
 </div>
+<div class="d-block d-md-none">
+	<a asp-page="/CalendarOverview"
+	   asp-route-calendarId="@Model.UserList.CalendarId"
+	   class="btn btn-pmf fixed-btn"
+	   title="Tillbaka till kalendern">
+		<i class="fa-regular fa-calendar-alt"></i>
 
+
+	</a>
+</div>
 <h1>@Model.UserList?.Name</h1>
 
 <a asp-page="/ListPage" asp-route-calendarId="@Model.UserList.CalendarId" asp-route-calendarName="@Model.CalendarName" class="btn btn-outline-dark btn-sm">

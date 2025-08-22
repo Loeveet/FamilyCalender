@@ -21,7 +21,7 @@ public class HandleListModel(IUserListService userListService, IAuthService auth
     [BindProperty(SupportsGet = true)]
     public string? CalendarName { get; set; }
 
-    public UserList? UserList { get; set; }
+	public UserList? UserList { get; set; }
 
     public List<ListItem> Items { get; set; } = [];
 
