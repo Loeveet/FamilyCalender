@@ -87,6 +87,16 @@ namespace FamilyCalender.Web.Pages
             eventToUpdate.EventStopTime = ViewModel?.EventDetails?.EventStopTime ?? "";
 			eventToUpdate.EventCategoryColor = ViewModel?.EventDetails?.EventCategoryColor ?? EventCategoryColor.None;
 
+			if (eventToUpdate.RepeatIntervalType == RepeatType.None)
+			{
+				var oldDate = eventToUpdate.EventMemberDates.FirstOrDefault()?.Date ?? DateTime.Today;
+
+				foreach (var emd in eventToUpdate.EventMemberDates.Where(x => x.Date == oldDate))
+				{
+					emd.Date = ViewModel.Day;
+				}
+			}
+
 			await _eventManagementService.UpdateEventAsync(eventToUpdate);
 
 			await pushNotificationService.SendPush(eventToUpdate, false, await GetCurrentUserAsync()); 
