@@ -141,7 +141,8 @@ namespace FamilyCalender.Web.Code
     {
         public string Title { get; set; }
         public string Body { get; set; }
-        public string Url { get; set; }
+		[JsonProperty("url")]
+		public string Url { get; set; }
 
     }
 }
