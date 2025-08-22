@@ -53,37 +53,50 @@ namespace FamilyCalender.Web.Code
             }
         }
 
-        public async Task SendPush(Event model, bool delete, User currentUser)
-        {
-            if (model != null)
-            {
-                var title = _encryptionService.AutoDetectDecryptStringToString(model.Title, model.CalendarId.ToString());
-                var text = _encryptionService.AutoDetectDecryptStringToString(model.Text, model.CalendarId.ToString());
-                var heading = delete ? "Raderat" : "Uppdaterat";
-                var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, currentUser.Id, delete ? SubscriberType.DeleteCalendarEvent : SubscriberType.UpdateCalendarEvent); // so we always get push during beta
+		public async Task SendPush(Event model, bool delete, User currentUser)
+		{
+			if (model == null) return;
 
-				var firstEventMember = model.EventMemberDates?.FirstOrDefault();
-				var memberId = firstEventMember?.MemberId ?? 0;
-				var day = firstEventMember?.Date ?? DateTime.Today;
+			var title = _encryptionService.AutoDetectDecryptStringToString(model.Title, model.CalendarId.ToString());
+			var text = _encryptionService.AutoDetectDecryptStringToString(model.Text, model.CalendarId.ToString());
+			var heading = delete ? "Raderat" : "Uppdaterat";
 
-				foreach (var pushUser in users)
-                {
-                    if (pushUser.NotificationSetting != null)
-                    {
-                        var pushData = new PushData()
-                        {
-                            Title = $"{heading} event '{title}' - {model.Calendar?.Name}",
-                            Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {text}\nSkapad av användare {currentUser.Email}",
-							Url = $"{_emailSettings.HostingDomain}/EventDetails?eventId={model.Id}&memberId={memberId}&day={day:yyyy-MM-dd}"
-						};
+			var users = await _calendarManagementService.GetPushSubscribers(
+				model.CalendarId,
+				currentUser.Id,
+				delete ? SubscriberType.DeleteCalendarEvent : SubscriberType.UpdateCalendarEvent
+			);
 
-                        SendPush(pushData, pushUser.Email, pushUser.NotificationSetting.Endpoint, pushUser.NotificationSetting.P256dh, pushUser.NotificationSetting.Auth);
-                    }
-                }
-            }
-        }
+			foreach (var pushUser in users)
+			{
+				if (pushUser.NotificationSetting == null) continue;
 
-        public void SendPush(PushData data, string userEmail, string endpoint, string p256dh, string auth)
+				var pushUrl = delete
+					? $"{_emailSettings.HostingDomain}/CalendarOverview"
+					: $"{_emailSettings.HostingDomain}/EventDetails?eventId={model.Id}&memberId={model.EventMemberDates?.FirstOrDefault()?.MemberId ?? 0}&day={model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}";
+
+				var pushBody = delete
+					? $"{text}\nSkapad av användare {currentUser.Email}"
+					: $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {text}\nSkapad av användare {currentUser.Email}";
+
+				var pushData = new PushData()
+				{
+					Title = $"{heading} event '{title}' - {model.Calendar?.Name}",
+					Body = pushBody,
+					Url = pushUrl
+				};
+
+				SendPush(
+					pushData,
+					pushUser.Email,
+					pushUser.NotificationSetting.Endpoint,
+					pushUser.NotificationSetting.P256dh,
+					pushUser.NotificationSetting.Auth
+				);
+			}
+		}
+
+		public void SendPush(PushData data, string userEmail, string endpoint, string p256dh, string auth)
         {
             var vapidDetails = new VapidDetails($"mailto:{userEmail}", GlobalSettings.VapidPublicKey, GlobalSettings.VapidPrivateKey);
             var subscription = new PushSubscription(endpoint, p256dh, auth);
