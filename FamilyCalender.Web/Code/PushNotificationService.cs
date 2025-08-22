@@ -29,8 +29,11 @@ namespace FamilyCalender.Web.Code
         {
             if (model != null)
             {
-                
-                var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, currentUser.Id, SubscriberType.NewCalendarEvent);
+				var title = _encryptionService.AutoDetectDecryptStringToString(model.Title, model.CalendarId.ToString());
+				var text = _encryptionService.AutoDetectDecryptStringToString(model.Text ?? "", model.CalendarId.ToString());
+
+
+				var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, currentUser.Id, SubscriberType.NewCalendarEvent);
 
 				var firstEventMember = model.EventMemberDates?.FirstOrDefault();
 				var memberId = firstEventMember?.MemberId ?? 0;
@@ -42,8 +45,8 @@ namespace FamilyCalender.Web.Code
                     {
                         var pushData = new PushData()
                         {
-                            Title = $"Nytt event '{model.Title}' - {model.Calendar?.Name}",
-                            Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {model.Text}\nSkapad av användare {currentUser.Email}",
+							Title = $"Nytt event '{title}' - {model.Calendar?.Name}",
+							Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {text}\nSkapad av användare {currentUser.Email}",
 							Url = $"{_emailSettings.HostingDomain}/EventDetails?eventId={model.Id}&memberId={memberId}&day={day:yyyy-MM-dd}"
 						};
 
@@ -76,7 +79,7 @@ namespace FamilyCalender.Web.Code
 					: $"{_emailSettings.HostingDomain}/EventDetails?eventId={model.Id}&memberId={model.EventMemberDates?.FirstOrDefault()?.MemberId ?? 0}&day={model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}";
 
 				var pushBody = delete
-					? $"{text}\nSkapad av användare {currentUser.Email}"
+					? $"{text}\nRaderat av användare {currentUser.Email}"
 					: $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {text}\nSkapad av användare {currentUser.Email}";
 
 				var pushData = new PushData()

@@ -104,9 +104,10 @@ namespace FamilyCalender.Web.Pages
 			{
 				return Page();
 			}
+			var eventFromDb = await _eventManagementService.GetEventDetailsAsync(ViewModel.EventId);
 
 			await _eventManagementService.DeleteEventAsync(ViewModel.EventId, ViewModel.MemberId, ViewModel.Day, selectedMemberIds, deleteOption);
-			await pushNotificationService.SendPush(ViewModel.EventDetails, true, await GetCurrentUserAsync());
+			await pushNotificationService.SendPush(eventFromDb, true, await GetCurrentUserAsync());
 
 			return RedirectToPage("./CalendarOverview", new { year = ViewModel.Day.Year, month = ViewModel.Day.Month, calendarId = ViewModel.CalendarId });
 		}
