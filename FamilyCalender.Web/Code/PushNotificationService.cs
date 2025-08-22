@@ -29,8 +29,14 @@ namespace FamilyCalender.Web.Code
         {
             if (model != null)
             {
+                
                 var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, currentUser.Id, SubscriberType.NewCalendarEvent);
-                foreach (var pushUser in users)
+
+				var firstEventMember = model.EventMemberDates?.FirstOrDefault();
+				var memberId = firstEventMember?.MemberId ?? 0;
+				var day = firstEventMember?.Date ?? DateTime.Today;
+
+				foreach (var pushUser in users)
                 {
                     if (pushUser.NotificationSetting != null)
                     {
@@ -38,8 +44,8 @@ namespace FamilyCalender.Web.Code
                         {
                             Title = $"Nytt event '{model.Title}' - {model.Calendar?.Name}",
                             Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {model.Text}\nSkapad av användare {currentUser.Email}",
-                            Url = $"{_emailSettings.HostingDomain}/CalendarOverview"
-                        };
+							Url = $"{_emailSettings.HostingDomain}/EventDetails?eventId={model.Id}&memberId={memberId}&day={day:yyyy-MM-dd}"
+						};
 
                         SendPush(pushData, pushUser.Email, pushUser.NotificationSetting.Endpoint, pushUser.NotificationSetting.P256dh, pushUser.NotificationSetting.Auth);
                     }
@@ -55,7 +61,12 @@ namespace FamilyCalender.Web.Code
                 var text = _encryptionService.AutoDetectDecryptStringToString(model.Text, model.CalendarId.ToString());
                 var heading = delete ? "Raderat" : "Uppdaterat";
                 var users = await _calendarManagementService.GetPushSubscribers(model.CalendarId, currentUser.Id, delete ? SubscriberType.DeleteCalendarEvent : SubscriberType.UpdateCalendarEvent); // so we always get push during beta
-                foreach (var pushUser in users)
+
+				var firstEventMember = model.EventMemberDates?.FirstOrDefault();
+				var memberId = firstEventMember?.MemberId ?? 0;
+				var day = firstEventMember?.Date ?? DateTime.Today;
+
+				foreach (var pushUser in users)
                 {
                     if (pushUser.NotificationSetting != null)
                     {
@@ -63,8 +74,8 @@ namespace FamilyCalender.Web.Code
                         {
                             Title = $"{heading} event '{title}' - {model.Calendar?.Name}",
                             Body = $"{model.EventMemberDates?.FirstOrDefault()?.Date:yyyy-MM-dd}, {text}\nSkapad av användare {currentUser.Email}",
-                            Url = $"{_emailSettings.HostingDomain}/CalendarOverview"
-                        };
+							Url = $"{_emailSettings.HostingDomain}/EventDetails?eventId={model.Id}&memberId={memberId}&day={day:yyyy-MM-dd}"
+						};
 
                         SendPush(pushData, pushUser.Email, pushUser.NotificationSetting.Endpoint, pushUser.NotificationSetting.P256dh, pushUser.NotificationSetting.Auth);
                     }
