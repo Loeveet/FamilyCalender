@@ -131,7 +131,7 @@
 									   id="deleteMember-@member.Id"
 									   value="@member.Id"
 									   name="selectedMemberIds"
-								@(isOnlyMember ? "checked disabled" : "") />
+									   @(isOnlyMember ? "checked disabled" : "") />
 								<label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
 							</div>
 							<input type="hidden" name="selectedMemberIds" value="@Model.ViewModel.Member.Id" />
@@ -337,6 +337,15 @@
 							<i class="bi bi-chevron-down"></i>
 						</div>
 					</div>
+
+					@if (Model.ViewModel.EventDetails.RepeatIntervalType == RepeatType.None)
+					{
+						<div class="mb-3">
+							<b for="eventDate" class="form-label">Datum</b>
+							<input type="date" id="eventDate" class="form-control"
+								   asp-for="ViewModel.Day" value="@Model.ViewModel.Day.ToString("yyyy-MM-dd")" />
+						</div>
+					}
 
 					<div class="mb-3">
 						<b for="EventTime" class="form-label">Starttid</b>
