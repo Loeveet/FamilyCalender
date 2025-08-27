@@ -21,60 +21,54 @@ else
 	<h2>Alla dina listor</h2>
 }
 <div class="d-flex align-items-center">
-        <a href="/CalendarOverview" class="btn btn-outline-dark btn-sm">
-            <i class="bi bi-arrow-left"></i> Tillbaka
-        </a>
+	<a href="/CalendarOverview" class="btn btn-outline-dark btn-sm">
+		<i class="bi bi-arrow-left"></i> Tillbaka
+	</a>
 </div>
 <hr />
-
-@if (Model.Lists.Any())
-{
-	<div class="d-flex flex-wrap gap-3">
-		@foreach (var list in Model.Lists)
-		{
-			<div class="col-12 col-sm-6 col-md-4 col-lg-3">
-				<div class="card h-100 position-relative list-card"
-					 data-url="@Url.Page("/HandleList", new { listId = list.Id, calendarName = Model.CalendarName })">
-
-					<div class="card-body">
-						<h5 class="card-title">@list.Name</h5>
-						<span class="badge rounded-pill bg-dark bg-opacity-25 fw-lighter">
-							@{
-								var text = list.Type switch
-								{
-									ListTypeEnum.Todolist => "Todolista",
-									ListTypeEnum.Checklist => "Checklista",
-									_ => "Okänd"
-								};
-							}
-							@text
-						</span>
-					</div>
-
-					<button type="button"
-							class="border-0 bg-transparent text-danger position-absolute top-0 end-0 m-2"
-							aria-label="Ta bort listan"
-							data-bs-toggle="modal"
-							data-bs-target="#confirmDeleteModal"
-							data-list-id="@list.Id"
-							data-list-name="@list.Name"
-							onclick="event.stopPropagation();">
-						<i class="bi bi-trash"></i>
-					</button>
-				</div>
-			</div>
-		}
-	</div>
-	<br />
-}
-else
-{
-	<p>Inga listor att visa.</p>
-}
-
 <button type="button" class="btn btn-pmf mb-3" data-bs-toggle="modal" data-bs-target="#createListModal">
 	Skapa ny lista
 </button>
+<div id="listPage-container">
+	@if (Model.Lists.Any())
+	{
+		<div id="listsContainer" data-calendar-id="@Model.CalendarId" class="d-flex flex-wrap gap-3">
+			@foreach (var list in Model.Lists.OrderBy(l => l.SortOrder))
+			{
+				<div class="col-12 col-sm-6 col-md-4 col-lg-3 list-card"
+					 data-id="@list.Id"
+					 data-url="@Url.Page("/HandleList", new { listId = list.Id, calendarName = Model.CalendarName })">
+
+					<div class="card h-100 position-relative">
+						<div class="card-body">
+							<h5 class="card-title">@list.Name</h5>
+							<span class="badge rounded-pill bg-dark bg-opacity-25 fw-lighter">
+								@list.Type
+							</span>
+						</div>
+
+						<button type="button"
+								class="border-0 bg-transparent text-danger position-absolute top-0 end-0 m-2"
+								aria-label="Ta bort listan"
+								data-bs-toggle="modal"
+								data-bs-target="#confirmDeleteModal"
+								data-list-id="@list.Id"
+								data-list-name="@list.Name"
+								onclick="event.stopPropagation();">
+							<i class="bi bi-trash"></i>
+						</button>
+					</div>
+				</div>
+			}
+		</div>
+	}
+
+	else
+	{
+		<p>Inga listor att visa.</p>
+	}
+
+</div>
 
 <!-- Modal for adding list -->
 <div class="modal fade" id="createListModal" tabindex="-1" aria-labelledby="createListModalLabel" aria-hidden="true">
@@ -98,7 +92,7 @@ else
 						<input type="radio" class="btn-check" name="NewListType" id="btn-checklist" value="Checklist" autocomplete="off">
 						<label class="btn btn-pmf-outline w-100" for="btn-checklist">Checklista</label>
 
-@* 						<input type="radio" class="btn-check" name="NewListType" id="btn-notes" value="Notes" autocomplete="off">
+						@* 						<input type="radio" class="btn-check" name="NewListType" id="btn-notes" value="Notes" autocomplete="off">
 						<label class="btn btn-pmf-outline w-100" for="btn-notes">Anteckningar</label>  *@
 
 					</div>
@@ -160,12 +154,15 @@ else
 	<partial name="_ValidationScriptsPartial" />
 
 	<script>
+		/* ============================================================
+		   Validera skapa-lista formulär
+		============================================================ */
 		document.getElementById('createListForm').addEventListener('submit', function (e) {
 			const input = document.getElementById('NewListName');
 			const errorSpan = document.querySelector('[data-valmsg-for="NewListName"]');
 
 			if (!input.value.trim()) {
-				e.preventDefault(); // Stoppa formuläret från att skickas
+				e.preventDefault();
 				errorSpan.textContent = 'Listan måste ha ett namn';
 				input.classList.add('is-invalid');
 			} else {
@@ -173,8 +170,56 @@ else
 				input.classList.remove('is-invalid');
 			}
 		});
-	</script>
-	<script>
+
+		// ===========================
+		// Drag and drop för listor
+		// ===========================
+		function initSortableLists(containerId, updateUrl) {
+			const container = document.getElementById(containerId);
+			if (!container) return;
+
+			new Sortable(container, {
+				animation: 150,
+				delay: 200,
+				delayOnTouchOnly: true,
+				filter: 'input, button',
+				preventOnFilter: false,
+				onEnd: function () {
+		const sortedIds = Array.from(container.children).map(el => parseInt(el.dataset.id));
+
+		fetch(updateUrl, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+			},
+			body: JSON.stringify({
+				calendarId: parseInt(container.dataset.calendarId || 0),
+				sortedIds: sortedIds
+			})
+		})
+					.then(response => response.json())
+					.then(data => {
+						if (!data.success) {
+							alert('Kunde inte spara ordningen på servern');
+						}
+					})
+					.catch(err => {
+						console.error(err);
+						alert('Fel vid uppdatering av ordning');
+					});
+				}
+			});
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			initSortableLists('listsContainer', '@Url.Page("/ListPage", "UpdateListOrder")');
+		});
+
+
+		/* ============================================================
+		   Ställ in delete-modal med lista som ska tas bort
+		============================================================ */
 		const deleteModal = document.getElementById('confirmDeleteModal');
 		deleteModal.addEventListener('show.bs.modal', function (event) {
 			const button = event.relatedTarget;
@@ -187,22 +232,26 @@ else
 			input.value = listId;
 			namePreview.textContent = listName;
 		});
-	</script>
-	<script>
+
+		/* ============================================================
+		   Klick på lista navigerar till rätt sida
+		============================================================ */
 		document.querySelectorAll('.list-card').forEach(card => {
 			card.addEventListener('click', function () {
 				const url = card.getAttribute('data-url');
 				if (url) window.location.href = url;
 			});
 		});
-	</script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-			tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-				new bootstrap.Tooltip(tooltipTriggerEl)
-			})
-		});
 
+		/* ============================================================
+		   Aktivera Bootstrap-tooltips
+		============================================================ */
+		document.addEventListener('DOMContentLoaded', function () {
+			const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+			tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+				new bootstrap.Tooltip(tooltipTriggerEl);
+			});
+		});
 	</script>
 }
+

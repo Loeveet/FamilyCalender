@@ -172,6 +172,9 @@ footer {
     #list-container {
         padding-bottom: 2rem;
     }
+    #listPage-container {
+        padding-bottom: 3rem;
+    }
 }
 
 .event-title {

@@ -3,10 +3,13 @@ using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 namespace FamilyCalender.Web.Pages
 {
-    public class ListPageModel(
+	[ValidateAntiForgeryToken]
+
+	public class ListPageModel(
 		IAuthService authService,
 		IUserListService userListService) : BasePageModel(authService)
 	{
@@ -22,9 +25,12 @@ namespace FamilyCalender.Web.Pages
         public string? NewListName { get; set; }
 		[BindProperty]
 		public ListTypeEnum NewListType { get; set; } = ListTypeEnum.Unknown;
-
-
 		public List<UserList> Lists { get; set; } = new();
+		public class UpdateListOrderDto
+		{
+			public int CalendarId { get; set; }
+			public List<int> SortedIds { get; set; } = new();
+		}
 		public async Task<IActionResult> OnGetAsync()
         {
 			var user = await GetCurrentUserAsync();
@@ -81,6 +87,36 @@ namespace FamilyCalender.Web.Pages
             await _userListService.CreateListAsync(userId.Value, NewListName, CalendarId, NewListType);
             return RedirectToPage(new { calendarId = CalendarId, calendarName = CalendarName });
         }
+		public async Task<IActionResult> OnPostUpdateListOrderAsync([FromBody] UpdateListOrderDto data)
+		{
+			var user = await GetCurrentUserAsync();
+			if (user == null)
+				return Unauthorized();
 
-    }
+			if (data == null || data.SortedIds == null || !data.SortedIds.Any())
+				return BadRequest();
+
+			// Hämta alla listor för användaren (eller filtrera på kalender)
+			var allLists = data.CalendarId > 0
+				? await _userListService.GetListsForUserByCalendarAsync(user.Id, data.CalendarId)
+				: await _userListService.GetListsForUserAsync(user.Id);
+
+			// Filtrera bara de listor som ska uppdateras
+			var listsToUpdate = allLists.Where(l => data.SortedIds.Contains(l.Id)).ToList();
+
+			for (int i = 0; i < data.SortedIds.Count; i++)
+			{
+				var list = listsToUpdate.FirstOrDefault(l => l.Id == data.SortedIds[i]);
+				if (list != null)
+				{
+					list.SortOrder = i + 1;
+				}
+			}
+
+			// Spara via service
+			await _userListService.UpdateListsAsync(listsToUpdate);
+
+			return new JsonResult(new { success = true });
+		}
+	}
 }
