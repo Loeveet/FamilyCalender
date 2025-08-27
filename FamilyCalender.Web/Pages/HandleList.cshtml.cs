@@ -37,6 +37,11 @@ public class HandleListModel(IUserListService userListService, IAuthService auth
 		public int ListId { get; set; }
 		public List<int> SortedIds { get; set; }
 	}
+	public class UpdateItemDto
+	{
+		public int Id { get; set; }
+		public string Name { get; set; } = string.Empty;
+	}
 
 
 	public async Task<IActionResult> OnGetAsync()
@@ -98,6 +103,36 @@ public class HandleListModel(IUserListService userListService, IAuthService auth
 
         return new JsonResult(new { success = true });
     }
+
+	public async Task<IActionResult> OnPostUpdateItemAsync([FromBody] UpdateItemDto data)
+	{
+		var userId = await GetCurrentUserIdAsync();
+		if (userId == null)
+			return Unauthorized();
+
+		if (data == null || string.IsNullOrWhiteSpace(data.Name))
+			return BadRequest(new { success = false, message = "Ogiltigt data" });
+
+		var item = await _userListService.GetItemByIdAsync(data.Id);
+		if (item == null)
+			return NotFound(new { success = false, message = "Hittade inte objektet" });
+
+		var originalName = item.Name;
+		item.Name = data.Name;
+		item.LastEditedUtc = DateTime.UtcNow;
+		item.UpdateUserId = userId.Value;
+
+		try
+		{
+			await _userListService.UpdateItemAsync(item);
+			return new JsonResult(new { success = true });
+		}
+		catch (Exception ex)
+		{
+			return new JsonResult(new { success = false, message = ex.Message, originalName });
+		}
+	}
+
 	public async Task<IActionResult> OnPostUpdateOrderAsync([FromBody] UpdateOrderDto data)
 	{
 		var userId = await GetCurrentUserIdAsync();
