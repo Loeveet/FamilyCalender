@@ -68,26 +68,33 @@
 					@foreach (var item in undoneItems)
 					{
 						<li class="list-group-item d-flex justify-content-between align-items-center" style="cursor: grab;" data-item-id="@item.Id">
+							<!-- Vänster sektion: delete och label -->
+							<div class="d-flex align-items-center flex-grow-1">
+								<button class="border-0 bg-transparent delete-item me-2 text-danger"
+										data-item-id="@item.Id"
+										style="cursor: pointer; font-size: 1.3rem;"
+										aria-label="Ta bort">
+									<i class="bi bi-trash"></i>
+								</button>
+
+								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "") mb-0"
+									   for="check-@item.Id"
+									   style="cursor: pointer;">
+									@item.Name
+								</label>
+							</div>
+
+							<!-- Höger sektion: checkbox och drag-handle -->
 							<div class="d-flex align-items-center">
-								<span class="me-2 text-muted" style="cursor: grab;">☰</span>
 								<input class="form-check-input toggle-complete me-2 mb-1"
 									   type="checkbox"
 									   data-item-id="@item.Id"
 									   id="check-@item.Id"
 									   style="cursor: pointer;"
 									   @(item.State == ListItemTypeEnum.Checked ? "checked" : "")>
-								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "")"
-									   for="check-@item.Id"
-									   style="cursor: pointer;">
-									@item.Name
-								</label>
+
+								<span class="text-muted ms-1" style="cursor: grab;">☰</span>
 							</div>
-							<button class="btn btn-sm btn-danger delete-item"
-									data-item-id="@item.Id"
-									style="cursor: pointer;"
-									aria-label="Ta bort">
-								<i class="bi bi-trash"></i>
-							</button>
 						</li>
 					}
 				</ul>
@@ -100,26 +107,33 @@
 					@foreach (var item in doneItems)
 					{
 						<li class="list-group-item d-flex justify-content-between align-items-center" style="cursor: grab;" data-item-id="@item.Id">
-							<div class="d-flex align-items-center">
-								<span class="me-2 text-muted" style="cursor: grab;">☰</span>
-								<input class="form-check-input toggle-complete me-2 mb-1"
-									   type="checkbox"
-									   data-item-id="@item.Id"
-									   id="check-@item.Id"
-									   checked
-									   style="cursor: pointer;">
-								<label class="form-check-label text-decoration-line-through text-muted"
+							<!-- Vänster sektion: delete och label -->
+							<div class="d-flex align-items-center flex-grow-1">
+								<button class="border-0 bg-transparent delete-item me-2 text-danger"
+										data-item-id="@item.Id"
+										style="cursor: pointer; font-size: 1.3rem;"
+										aria-label="Ta bort">
+									<i class="bi bi-trash"></i>
+								</button>
+
+								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "") mb-0"
 									   for="check-@item.Id"
 									   style="cursor: pointer;">
 									@item.Name
 								</label>
 							</div>
-							<button class="btn btn-sm btn-danger delete-item"
-									data-item-id="@item.Id"
-									style="cursor: pointer;"
-									aria-label="Ta bort">
-								<i class="bi bi-trash"></i>
-							</button>
+
+							<!-- Höger sektion: checkbox och drag-handle -->
+							<div class="d-flex align-items-center">
+								<input class="form-check-input toggle-complete me-2 mb-1"
+									   type="checkbox"
+									   data-item-id="@item.Id"
+									   id="check-@item.Id"
+									   style="cursor: pointer;"
+									   @(item.State == ListItemTypeEnum.Checked ? "checked" : "")>
+
+								<span class="text-muted ms-1" style="cursor: grab;">☰</span>
+							</div>
 						</li>
 					}
 				</ul>
