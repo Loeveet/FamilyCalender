@@ -223,6 +223,25 @@ namespace FamilyCalender.Infrastructure.Services
             _context.ListItems.Remove(item);
             await _context.SaveChangesAsync();
         }
-    }
+
+		public async Task UpdateListsAsync(List<UserList> lists)
+		{
+			if (lists == null || lists.Count == 0)
+				return;
+
+			foreach (var list in lists)
+			{
+				// Hämta listan från databasen via ditt repository/metod
+				var existingList = await _context.UserLists.FindAsync(list.Id);
+				if (existingList != null)
+				{
+					existingList.SortOrder = list.SortOrder;
+					// här kan du lägga till fler fält som behöver uppdateras
+				}
+			}
+
+			await _context.SaveChangesAsync();
+		}
+	}
 
 }
