@@ -598,3 +598,8 @@ input[type="checkbox"].toggle-complete:checked {
     .account-verified-btn:hover {
         background-color: #357ab7;
     }
+
+.list-item-text:focus,
+label:focus {
+    outline: none; /* tar bort den svarta/röda kanten */
+}

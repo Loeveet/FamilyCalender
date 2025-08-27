@@ -68,7 +68,7 @@
 					@foreach (var item in undoneItems)
 					{
 						<li class="list-group-item d-flex justify-content-between align-items-center" style="cursor: grab;" data-item-id="@item.Id">
-							<!-- Vänster sektion: delete och label -->
+							<!-- Vänster: delete-knapp och text -->
 							<div class="d-flex align-items-center flex-grow-1">
 								<button class="border-0 bg-transparent delete-item me-2 text-danger"
 										data-item-id="@item.Id"
@@ -77,14 +77,16 @@
 									<i class="bi bi-trash"></i>
 								</button>
 
-								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "") mb-0"
-									   for="check-@item.Id"
-									   style="cursor: pointer;">
+								<span class="list-item-text @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "") mb-0"
+									  contenteditable="true"
+									  data-item-id="@item.Id"
+									  style="cursor: text;">
 									@item.Name
-								</label>
+								</span>
+
 							</div>
 
-							<!-- Höger sektion: checkbox och drag-handle -->
+							<!-- Höger: checkbox och drag-handle -->
 							<div class="d-flex align-items-center">
 								<input class="form-check-input toggle-complete me-2 mb-1"
 									   type="checkbox"
@@ -107,7 +109,7 @@
 					@foreach (var item in doneItems)
 					{
 						<li class="list-group-item d-flex justify-content-between align-items-center" style="cursor: grab;" data-item-id="@item.Id">
-							<!-- Vänster sektion: delete och label -->
+							<!-- Vänster: delete-knapp och text -->
 							<div class="d-flex align-items-center flex-grow-1">
 								<button class="border-0 bg-transparent delete-item me-2 text-danger"
 										data-item-id="@item.Id"
@@ -116,14 +118,16 @@
 									<i class="bi bi-trash"></i>
 								</button>
 
-								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "") mb-0"
-									   for="check-@item.Id"
-									   style="cursor: pointer;">
+								<span class="list-item-text @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "") mb-0"
+									  contenteditable="true"
+									  data-item-id="@item.Id"
+									  style="cursor: text;">
 									@item.Name
-								</label>
+								</span>
+
 							</div>
 
-							<!-- Höger sektion: checkbox och drag-handle -->
+							<!-- Höger: checkbox och drag-handle -->
 							<div class="d-flex align-items-center">
 								<input class="form-check-input toggle-complete me-2 mb-1"
 									   type="checkbox"
@@ -183,6 +187,7 @@
 	}
 </div>
 
+<div id="keyboard-spacer" style="height:0; transition: height 0.2s;"></div>
 
 <!-- Modal for removing item -->
 <div class="modal fade" id="confirmDeleteItemModal" tabindex="-1" aria-labelledby="confirmDeleteItemLabel" aria-hidden="true">
@@ -303,7 +308,7 @@
 				headers: {
 					'Content-Type': 'application/json',
 					'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-				},					
+				},
 				body: JSON.stringify({ ItemId: parseInt(itemId) })
 				});
 
@@ -338,6 +343,8 @@
 					updateResetButtonVisibility();
 			});
 		});
+
+
 
 		// ===========================
 		// Visa/dölj reset-knappen
@@ -444,6 +451,56 @@
 		else {
 			updateChecklistHeadingVisibility();
 		}
+	});
+
+		// ===========================
+		// Editera text direkt med dynamisk scroll
+		// ===========================
+		document.querySelectorAll('.list-item-text, label').forEach(el => {
+		el.dataset.originalName = el.textContent.trim();
+
+	el.addEventListener('pointerdown', e => {
+		e.stopPropagation();
+		el.setAttribute('contenteditable', 'true');
+		el.focus();
+
+	});
+
+		el.addEventListener('keydown', e => {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			el.blur();
+		}
+	});
+		el.addEventListener('blur', async e => {
+			el.removeAttribute('contenteditable');
+
+			const li = el.closest('li');
+			const itemId = li.dataset.itemId;
+			const newName = el.textContent.trim();
+
+			if (!newName) {
+				el.textContent = el.dataset.originalName || '';
+				return;
+			}
+
+			const response = await fetch('?handler=UpdateItem', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+				},
+				body: JSON.stringify({ id: parseInt(itemId), name: newName })
+			});
+
+			const result = await response.json();
+			if (!result.success) {
+				alert('Kunde inte uppdatera punkten.');
+				el.textContent = el.dataset.originalName || '';
+			} else {
+				el.dataset.originalName = newName;
+			}
+		});
 	});
 
 		// ===========================
