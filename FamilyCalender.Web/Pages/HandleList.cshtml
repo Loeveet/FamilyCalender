@@ -145,12 +145,26 @@
 				<ul class="list-group mb-3" id="sortableCheckList" data-list-id="@Model.UserList.Id">
 					@foreach (var item in Model.Items.OrderByDescending(i => i.SortOrder))
 					{
-						<li class="list-group-item d-flex justify-content-between align-items-center"
-							style="cursor: grab;" data-item-id="@item.Id">
+						<li class="list-group-item d-flex justify-content-between align-items-center" style="cursor: grab;" data-item-id="@item.Id">
+							<!-- Vänster: delete-knapp och text -->
+							<div class="d-flex align-items-center flex-grow-1">
+								<button class="border-0 bg-transparent delete-item me-2 text-danger"
+										data-item-id="@item.Id"
+										style="cursor: pointer; font-size: 1.3rem;"
+										aria-label="Ta bort">
+									<i class="bi bi-trash"></i>
+								</button>
 
+								<span class="list-item-text @(item.State == ListItemTypeEnum.Checked ? "text-decoration-line-through text-muted" : "") mb-0"
+									  contenteditable="true"
+									  data-item-id="@item.Id"
+									  style="cursor: text;">
+									@item.Name
+								</span>
+							</div>
+
+							<!-- Höger: checkbox och drag-handle -->
 							<div class="d-flex align-items-center">
-								<span class="me-2 text-muted" style="cursor: grab;">☰</span>
-
 								<input class="form-check-input toggle-complete me-2 mb-1"
 									   type="checkbox"
 									   data-item-id="@item.Id"
@@ -158,23 +172,13 @@
 									   style="cursor: pointer;"
 									   @(item.State == ListItemTypeEnum.Checked ? "checked" : "")>
 
-								<label class="form-check-label @(item.State == ListItemTypeEnum.Checked ? "text-muted" : "")"
-									   for="check-@item.Id"
-									   style="cursor: pointer;">
-									@item.Name
-								</label>
+								<span class="text-muted ms-1" style="cursor: grab;">☰</span>
 							</div>
-
-							<button class="btn btn-sm btn-danger delete-item"
-									data-item-id="@item.Id"
-									style="cursor: pointer;"
-									aria-label="Ta bort">
-								<i class="bi bi-trash"></i>
-							</button>
 						</li>
 					}
 				</ul>
 			}
+
 		</div>
 	}
 </div>
@@ -292,7 +296,7 @@
 			checkbox.addEventListener('change', async (e) => {
 				const itemId = e.target.dataset.itemId;
 				const li = e.target.closest('li');
-				const label = li.querySelector('label');
+				const textSpan = li.querySelector('.list-item-text') || li.querySelector('label');
 
 				const response = await fetch('?handler=ToggleItem', {
 					method: 'POST',
@@ -314,17 +318,18 @@
 				if (result.success) {
 					if (isTodoList) {
 						if (result.newState === 'Checked') {
-							label.classList.add('text-decoration-line-through', 'text-muted');
+							textSpan.classList.add('text-decoration-line-through', 'text-muted');
 							const doneList = ensureListAndHeading('done');
 							doneList.appendChild(li);
 						} else {
-							label.classList.remove('text-decoration-line-through', 'text-muted');
+							textSpan.classList.remove('text-decoration-line-through', 'text-muted');
 							const undoneList = ensureListAndHeading('undone');
 							undoneList.appendChild(li);
 						}
 						updateHeadingVisibility();
 					} else {
-						label.classList.toggle('text-muted', result.newState === 'Checked');
+						textSpan.classList.toggle('text-decoration-line-through', result.newState === 'Checked');
+						textSpan.classList.toggle('text-muted', result.newState === 'Checked');
 					}
 				} else {
 					alert('Kunde inte uppdatera punkten.');
