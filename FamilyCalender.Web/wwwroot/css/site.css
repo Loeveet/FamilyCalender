@@ -452,7 +452,21 @@ h4 {
         padding: 10px;
     }
 
+/* Bas-stil för checkboxen (okryssad) */
+input[type="checkbox"].toggle-complete {
+    transform: scale(1.4);
+    cursor: pointer;
+    accent-color: #1e3a8a;
+    border: 1px solid #1e3a8a;
+    border-radius: 4px;
+}
 
+/* När den är ikryssad */
+input[type="checkbox"].toggle-complete:checked {
+    accent-color: #1e3a8a; 
+    border-color: #1e3a8a; 
+    background-color: #1e3a8a;
+}
 
 /* NEVER rename these - they are being used when creating event with category, and the class name is being stored in database*/
 .event-color-category-blue {
