@@ -554,20 +554,18 @@ else
 	</div>
 </div>
 
-
 <script>
-
+	/* ============================================================
+	   PUSH-NOTISER
+	   ============================================================ */
 	var pushNotificationInfoCookieName = "pushnewscookie";
 
 	if ('@Model.ViewModel.CurrentUserAllowsPush' === 'True') {
-		//lets just make sure the service worker for push is activated so push can be processed
 		console.log("activating service worker since user allows push")
 		notificationService.RegisterForPush('@GlobalSettings.VapidPublicKey');
-	}
-	else {
+	} else {
 		var cookie = getCookie(pushNotificationInfoCookieName);
 		if (cookie === void 0) {
-			//show alert
 			Swal.fire({
 				title: 'Aktivera pushnotiser?',
 				text: "Vill du få aviseringar när något händer i din kalender?",
@@ -581,8 +579,7 @@ else
 				if (result.isConfirmed) {
 					setCookie(pushNotificationInfoCookieName, true, 360);
 					location.href = "/UserSettings";
-				}
-				else {
+				} else {
 					setCookie(pushNotificationInfoCookieName, true, 360);
 				}
 			});
@@ -601,27 +598,22 @@ else
 		let decodedCookie = decodeURIComponent(document.cookie);
 		let ca = decodedCookie.split(';');
 		for (let i = 0; i < ca.length; i++) {
-			let c = ca[i];
-			while (c.charAt(0) == ' ') {
-				c = c.substring(1);
-			}
-			if (c.indexOf(name) == 0) {
-				return c.substring(name.length, c.length);
-			}
+			let c = ca[i].trim();
+			if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
 		}
 		return void 0;
 	}
-</script>
 
-<script>
-
-	//initialize Color picker to set correct color on Model input field
+	/* ============================================================
+	   SCROLL TILL IDAG OCH INIT COLOR PICKER
+	   ============================================================ */
 	eventColorPickerHelper.Init('ViewModel_SelectedCategoryColor');
 
 	var hasNews = document.querySelector('.news-item') !== null;
 	var dontScroll = @(Model.DontScrollToToday.ToString().ToLower());
 	console.log("dontscroll", dontScroll);
-	if (!hasNews && !dontScroll){
+
+	if (!hasNews && !dontScroll) {
 		var today = document.getElementById('today');
 		if (today !== null) {
 			var elementPosition = today.getBoundingClientRect().top + window.scrollY;
@@ -630,132 +622,80 @@ else
 		}
 	}
 
-</script>
-<script>
+	/* ============================================================
+	   HANTERA REPETITION
+	   ============================================================ */
 	function handleRepetitionChange() {
 		var selectedValue = document.getElementById("repetitionSelect").value;
 
-		document.getElementById("noneDiv").style.display = "none";
-		document.getElementById("weeklyDiv").style.display = "none";
-		document.getElementById("biweeklyDiv").style.display = "none";
-		document.getElementById("monthlyDiv").style.display = "none";
-		document.getElementById("yearlyDiv").style.display = "none";
-		document.getElementById("customRepeatAccordion").style.display = "none";
-
-		document.getElementById("endDateDiv").style.display = "none";
+		var sections = ["noneDiv", "dailyDiv", "weeklyDiv", "biweeklyDiv", "fifthweekDiv", "monthlyDiv", "yearlyDiv", "customRepeatAccordion", "endDateDiv"];
+		sections.forEach(id => document.getElementById(id).style.display = "none");
 
 		if (selectedValue === "None") {
 			document.getElementById("noneDiv").style.display = "block";
 		} else {
-			document.getElementById("endDateDiv").style.display = "block"; // Visa slutdatumfältet
-			if (selectedValue === "Daily") {
-				document.getElementById("dailyDiv").style.display = "block";
-			} else if (selectedValue === "Weekly") {
-				document.getElementById("weeklyDiv").style.display = "block";
-			} else if (selectedValue === "Biweekly") {
-				document.getElementById("biweeklyDiv").style.display = "block";
-			} else if (selectedValue === "Fifthweekly") {
-				document.getElementById("fifthweekDiv").style.display = "block";
-			} else if (selectedValue === "Monthly") {
-				document.getElementById("monthlyDiv").style.display = "block";
-			} else if (selectedValue === "Yearly") {
-				document.getElementById("yearlyDiv").style.display = "block";
-			} else if (selectedValue === "Custom") {
-				document.getElementById("customRepeatAccordion").style.display = "block";
-			}
+			document.getElementById("endDateDiv").style.display = "block";
+			if (selectedValue === "Daily") document.getElementById("dailyDiv").style.display = "block";
+			else if (selectedValue === "Weekly") document.getElementById("weeklyDiv").style.display = "block";
+			else if (selectedValue === "Biweekly") document.getElementById("biweeklyDiv").style.display = "block";
+			else if (selectedValue === "Fifthweekly") document.getElementById("fifthweekDiv").style.display = "block";
+			else if (selectedValue === "Monthly") document.getElementById("monthlyDiv").style.display = "block";
+			else if (selectedValue === "Yearly") document.getElementById("yearlyDiv").style.display = "block";
+			else if (selectedValue === "Custom") document.getElementById("customRepeatAccordion").style.display = "block";
 		}
 	}
+	document.getElementById("repetitionSelect").addEventListener("change", handleRepetitionChange);
+	window.addEventListener("load", handleRepetitionChange);
 
-	window.onload = handleRepetitionChange;
-
-</script>
-
-<script>
-	function calculateEndDate() {
+	/* ============================================================
+	   BERÄKNA SLUTDATUM FÖR REPETITION
+	   ============================================================ */
+@* 	function calculateEndDate() {
 		var startDate = document.getElementById("modalSelectedDate").value;
 		var repetitionType = document.getElementById("repetitionSelect").value;
 
-		if (!startDate || repetitionType === "none") {
-			return;
-		}
+		if (!startDate || repetitionType === "none") return;
 
 		var start = new Date(startDate);
 		var endDate;
 
 		switch (repetitionType) {
-			case "Daily":
-				endDate = new Date(start);
-				endDate.setDate(start.getDate() + 1);
-				break;
-
-			case "Weekly":
-				endDate = new Date(start);
-				endDate.setDate(start.getDate() + 7);
-				break;
-
-			case "Biweekly":
-				endDate = new Date(start);
-				endDate.setDate(start.getDate() + 14);
-				break;
-			
-			case "Fifthweekly":
-				endDate = new Date(start);
-				endDate.setDate(start.getDate() + 35);
-				break;
-
-			case "Monthly":
-				endDate = new Date(start);
-				endDate.setMonth(start.getMonth() + 1);
-				break;
-
-			case "Yearly":
-				endDate = new Date(start);
-				endDate.setFullYear(start.getFullYear() + 1);
-				break;
-
-			case "Custom":
-				endDate = null;
-				break;
+			case "Daily": endDate = new Date(start); endDate.setDate(start.getDate() + 1); break;
+			case "Weekly": endDate = new Date(start); endDate.setDate(start.getDate() + 7); break;
+			case "Biweekly": endDate = new Date(start); endDate.setDate(start.getDate() + 14); break;
+			case "Fifthweekly": endDate = new Date(start); endDate.setDate(start.getDate() + 35); break;
+			case "Monthly": endDate = new Date(start); endDate.setMonth(start.getMonth() + 1); break;
+			case "Yearly": endDate = new Date(start); endDate.setFullYear(start.getFullYear() + 1); break;
+			case "Custom": endDate = null; break;
 		}
 
-		if (endDate !== null) {
-			document.getElementById("modalEndDate").value = endDate.toISOString().split("T")[0];
-		} else {
-			document.getElementById("modalEndDate").value = "";
-		}
+		document.getElementById("modalEndDate").value = endDate ? endDate.toISOString().split("T")[0] : "";
 	}
 
 	document.getElementById("repetitionSelect").addEventListener("change", calculateEndDate);
 	document.getElementById("modalSelectedDate").addEventListener("change", calculateEndDate);
+	window.addEventListener("load", calculateEndDate); *@
 
-	window.onload = calculateEndDate;
-
-</script>
-
-<script>
+	/* ============================================================
+	   STÄNG NYHETSRUTOR
+	   ============================================================ */
 	document.querySelectorAll('.close-news').forEach(btn => {
 		btn.addEventListener('click', function () {
 			const newsId = this.closest('.news-item').dataset.id;
 
-			// Läs gamla värden och URL-dekoda dem
 			const old = decodeURIComponent(
 				document.cookie
 					.split('; ')
-					.find(row => row.startsWith('dismissed_news='))
-					?.split('=')[1] ?? ''
+					.find(row => row.startsWith('dismissed_news='))?.split('=')[1] ?? ''
 			);
 
-			// Lägg till nytt id, ta bort dubbletter och filtera bort tomma
 			const updated = [...new Set([...old.split(','), newsId])]
 				.filter(Boolean)
 				.join(',');
 
-			// URL-enkoda innan du sätter cookien (30 dagar)
-			document.cookie = `dismissed_news=${encodeURIComponent(updated)}; path=/; max-age=${60 * 60 * 24 * 30}`;
+			document.cookie = `dismissed_news=${encodeURIComponent(updated)}; path=/; max-age=${60*60*24*30}`;
 
-			// Dölj nyhetsrutan direkt
 			this.closest('.news-item').remove();
 		});
 	});
-
 </script>
