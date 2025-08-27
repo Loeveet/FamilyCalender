@@ -38,11 +38,11 @@ else
 
 					<div class="card-body">
 						<h5 class="card-title">@list.Name</h5>
-						<span class="badge bg-primary">
+						<span class="badge rounded-pill bg-dark bg-opacity-25 fw-lighter">
 							@{
 								var text = list.Type switch
 								{
-									ListTypeEnum.Todolist => "Att göra-lista",
+									ListTypeEnum.Todolist => "Todolista",
 									ListTypeEnum.Checklist => "Checklista",
 									_ => "Okänd"
 								};
@@ -52,7 +52,7 @@ else
 					</div>
 
 					<button type="button"
-							class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"
+							class="border-0 bg-transparent text-danger position-absolute top-0 end-0 m-2"
 							aria-label="Ta bort listan"
 							data-bs-toggle="modal"
 							data-bs-target="#confirmDeleteModal"
