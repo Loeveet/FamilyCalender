@@ -41,7 +41,9 @@ else
 
 					<div class="card h-100 position-relative">
 						<div class="card-body">
-							<h5 class="card-title">@list.Name</h5>
+							<h5 class="card-title">
+                                <span class="editable-text">@list.Name</span>
+                            </h5>
 							<span class="badge rounded-pill bg-dark bg-opacity-25 fw-lighter">
 								@list.Type
 							</span>
@@ -153,108 +155,167 @@ else
 	}
 </style>
 @section Scripts {
-	<partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 
-	<script>
-		/* ============================================================
-		   Validera skapa-lista formulär
-		============================================================ */
-		document.getElementById('createListForm').addEventListener('submit', function (e) {
-			const input = document.getElementById('NewListName');
-			const errorSpan = document.querySelector('[data-valmsg-for="NewListName"]');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-			if (!input.value.trim()) {
-				e.preventDefault();
-				errorSpan.textContent = 'Listan måste ha ett namn';
-				input.classList.add('is-invalid');
-			} else {
-				errorSpan.textContent = '';
-				input.classList.remove('is-invalid');
-			}
-		});
+            /* ============================================================
+               Validera skapa-lista formulär
+            ============================================================= */
+            const createListForm = document.getElementById('createListForm');
+            createListForm.addEventListener('submit', function (e) {
+                const input = document.getElementById('NewListName');
+                const errorSpan = document.querySelector('[data-valmsg-for="NewListName"]');
 
-		// ===========================
-		// Drag and drop för listor
-		// ===========================
-		function initSortableLists(containerId, updateUrl) {
-			const container = document.getElementById(containerId);
-			if (!container) return;
+                if (!input.value.trim()) {
+                    e.preventDefault();
+                    errorSpan.textContent = 'Listan måste ha ett namn';
+                    input.classList.add('is-invalid');
+                } else {
+                    errorSpan.textContent = '';
+                    input.classList.remove('is-invalid');
+                }
+            });
 
-			new Sortable(container, {
-				animation: 150,
-				delay: 200,
-				delayOnTouchOnly: true,
-				handle: '.drag-handle',
-				filter: 'input, button',
-				preventOnFilter: false,
-				onEnd: function () {
-		const sortedIds = Array.from(container.children).map(el => parseInt(el.dataset.id));
+            /* ============================================================
+               Gör texten redigerbar
+            ============================================================= */
+            document.querySelectorAll('.editable-text').forEach(el => {
+                el.dataset.originalName = el.textContent.trim();
 
-		fetch(updateUrl, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-			},
-			body: JSON.stringify({
-				calendarId: parseInt(container.dataset.calendarId || 0),
-				sortedIds: sortedIds
-			})
-		})
-					.then(response => response.json())
-					.then(data => {
-						if (!data.success) {
-							alert('Kunde inte spara ordningen på servern');
-						}
-					})
-					.catch(err => {
-						console.error(err);
-						alert('Fel vid uppdatering av ordning');
-					});
-				}
-			});
-		}
+                el.addEventListener('click', e => {
+                    e.stopPropagation(); // förhindra navigering
+                    el.setAttribute('contenteditable', 'true');
+                    el.focus();
 
-		document.addEventListener('DOMContentLoaded', function () {
-			initSortableLists('listsContainer', '@Url.Page("/ListPage", "UpdateListOrder")');
-		});
+                    // Placera caret sist i texten
+                    const range = document.createRange();
+                    range.selectNodeContents(el);
+                    range.collapse(false);
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                });
 
+                el.addEventListener('keydown', e => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        el.blur();
+                    }
+                });
 
-		/* ============================================================
-		   Ställ in delete-modal med lista som ska tas bort
-		============================================================ */
-		const deleteModal = document.getElementById('confirmDeleteModal');
-		deleteModal.addEventListener('show.bs.modal', function (event) {
-			const button = event.relatedTarget;
-			const listId = button.getAttribute('data-list-id');
-			const listName = button.getAttribute('data-list-name');
+                el.addEventListener('blur', async () => {
+                    el.removeAttribute('contenteditable');
 
-			const input = deleteModal.querySelector('#deleteListId');
-			const namePreview = deleteModal.querySelector('#listNamePreview');
+                    const card = el.closest('.list-card');
+                    const listId = card.dataset.id;
+                    const newName = el.textContent.trim();
 
-			input.value = listId;
-			namePreview.textContent = listName;
-		});
+                    if (!newName) {
+                        el.textContent = el.dataset.originalName || '';
+                        return;
+                    }
 
-		/* ============================================================
-		   Klick på lista navigerar till rätt sida
-		============================================================ */
-		document.querySelectorAll('.list-card').forEach(card => {
-			card.addEventListener('click', function () {
-				const url = card.getAttribute('data-url');
-				if (url) window.location.href = url;
-			});
-		});
+                    const response = await fetch('?handler=UpdateListName', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: JSON.stringify({ id: parseInt(listId), name: newName })
+                    });
 
-		/* ============================================================
-		   Aktivera Bootstrap-tooltips
-		============================================================ */
-		document.addEventListener('DOMContentLoaded', function () {
-			const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-			tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-				new bootstrap.Tooltip(tooltipTriggerEl);
-			});
-		});
-	</script>
+                    const result = await response.json();
+                    if (!result.success) {
+                        alert('Kunde inte uppdatera listan.');
+                        el.textContent = el.dataset.originalName || '';
+                    } else {
+                        el.dataset.originalName = newName;
+                    }
+                });
+            });
+
+            /* ============================================================
+               Drag and drop för listor
+            ============================================================= */
+            function initSortableLists(containerId, updateUrl) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                new Sortable(container, {
+                    animation: 150,
+                    delay: 200,
+                    delayOnTouchOnly: true,
+                    handle: '.drag-handle',
+                    filter: 'input, button',
+                    preventOnFilter: false,
+                    onEnd: function () {
+                        const sortedIds = Array.from(container.children).map(el => parseInt(el.dataset.id));
+
+                        fetch(updateUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                            },
+                            body: JSON.stringify({
+                                calendarId: parseInt(container.dataset.calendarId || 0),
+                                sortedIds: sortedIds
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.success) {
+                                alert('Kunde inte spara ordningen på servern');
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert('Fel vid uppdatering av ordning');
+                        });
+                    }
+                });
+            }
+
+            initSortableLists('listsContainer', '@Url.Page("/ListPage", "UpdateListOrder")');
+
+            /* ============================================================
+               Ställ in delete-modal med lista som ska tas bort
+            ============================================================= */
+            const deleteModal = document.getElementById('confirmDeleteModal');
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const listId = button.getAttribute('data-list-id');
+                const listName = button.getAttribute('data-list-name');
+
+                const input = deleteModal.querySelector('#deleteListId');
+                const namePreview = deleteModal.querySelector('#listNamePreview');
+
+                input.value = listId;
+                namePreview.textContent = listName;
+            });
+
+            /* ============================================================
+               Klick på lista navigerar till rätt sida
+            ============================================================= */
+            document.querySelectorAll('.list-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    const url = card.getAttribute('data-url');
+                    if (url) window.location.href = url;
+                });
+            });
+
+            /* ============================================================
+               Aktivera Bootstrap-tooltips
+            ============================================================= */
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+        }); // DOMContentLoaded slut
+    </script>
 }
+
 

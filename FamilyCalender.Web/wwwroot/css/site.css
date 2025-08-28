@@ -601,10 +601,12 @@ input[type="checkbox"].toggle-complete:checked {
         background-color: #357ab7;
     }
 
-.list-item-text:focus{
-    outline: none; /* tar bort den svarta/röda kanten */
+.list-item-text:focus,
+.editable-text:focus {
+    outline: none;
 }
-.list-item-text {
+.list-item-text,
+.editable-text{
     cursor: text;
     user-select: text;
 }
