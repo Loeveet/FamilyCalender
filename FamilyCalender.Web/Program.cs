@@ -1,14 +1,16 @@
-using Microsoft.EntityFrameworkCore;
-using FamilyCalender.Infrastructure.Context;
-using FamilyCalender.Core.Interfaces.IServices;
-using FamilyCalender.Infrastructure.Services;
 using FamilyCalender.Core.Interfaces;
-using Serilog;
-using PublicHoliday;
+using FamilyCalender.Core.Interfaces.IServices;
+using FamilyCalender.Infrastructure.Context;
+using FamilyCalender.Infrastructure.Services;
 using FamilyCalender.Web.Code;
-using static FamilyCalender.Infrastructure.Services.EmailService;
-using Microsoft.AspNetCore.DataProtection;
 using FamilyCalender.Web.News;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.EntityFrameworkCore;
+using PublicHoliday;
+using Serilog;
+using System.Security.Claims;
+using static FamilyCalender.Infrastructure.Services.EmailService;
 
 
 namespace FamilyCalender
@@ -134,6 +136,41 @@ namespace FamilyCalender
             app.UseRouting();
 
 			app.UseAuthentication();
+			app.Use(async (context, next) =>
+			{
+				if (context.User.Identity?.IsAuthenticated ?? false)
+				{
+					var authResult = await context.AuthenticateAsync(GlobalSettings.AuthCookieName);
+					var expiresUtc = authResult?.Properties?.ExpiresUtc;
+
+					if (expiresUtc.HasValue)
+					{
+						var remainingDays = (expiresUtc.Value - DateTime.UtcNow).TotalDays;
+
+						if (remainingDays < 100)
+						{
+							var email = context.User.Identity.Name;
+
+							// Skapa ny cookie med 365 dagar giltighet
+							var claims = new List<Claim> { new Claim(ClaimTypes.Name, email) };
+							var identity = new ClaimsIdentity(claims, GlobalSettings.AuthCookieName);
+							var principal = new ClaimsPrincipal(identity);
+
+							var authProperties = new AuthenticationProperties
+							{
+								IsPersistent = true,
+								ExpiresUtc = DateTime.UtcNow.AddDays(365)
+							};
+
+							await context.SignInAsync(GlobalSettings.AuthCookieName, principal, authProperties);
+
+							Log.Information($"Refreshed auth cookie for user {email}");
+						}
+					}
+				}
+
+				await next();
+			});
 			app.UseAuthorization();
 
 			app.MapRazorPages();
