@@ -611,7 +611,8 @@ input[type="checkbox"].toggle-complete:checked {
     user-select: text;
 }
 
-.drag-handle {
+.drag-handle,
+.drag-handle-list{
     cursor: grab;
     user-select: none;
     font-size: 1.5rem;
@@ -619,3 +620,14 @@ input[type="checkbox"].toggle-complete:checked {
     align-items: center;
     justify-content: center;
 }
+
+.drag-handle-list 
+{
+    position: absolute;
+    top: 75%;
+    right: 0.25rem;
+    margin-right: 0.5rem;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
