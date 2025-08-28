@@ -185,17 +185,10 @@ else
                 el.dataset.originalName = el.textContent.trim();
 
                 el.addEventListener('click', e => {
-                    e.stopPropagation(); // förhindra navigering
+                    e.stopPropagation();
                     el.setAttribute('contenteditable', 'true');
                     el.focus();
 
-                    // Placera caret sist i texten
-                    const range = document.createRange();
-                    range.selectNodeContents(el);
-                    range.collapse(false);
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(range);
                 });
 
                 el.addEventListener('keydown', e => {

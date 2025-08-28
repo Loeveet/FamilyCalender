@@ -20,6 +20,8 @@ namespace FamilyCalender.Core.Interfaces.IServices
         Task UpdateItemAsync(ListItem item);
         Task DeleteItemAsync(ListItem item);
 		Task UpdateListsAsync(List<UserList> lists);
+		Task UpdateListAsync(UserList list);
+
 
 	}
 }
