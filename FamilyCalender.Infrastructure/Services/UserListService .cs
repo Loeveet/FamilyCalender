@@ -242,6 +242,12 @@ namespace FamilyCalender.Infrastructure.Services
 
 			await _context.SaveChangesAsync();
 		}
+
+		public async Task UpdateListAsync(UserList list)
+		{
+			_context.UserLists.Update(list);
+			await _context.SaveChangesAsync();
+		}
 	}
 
 }

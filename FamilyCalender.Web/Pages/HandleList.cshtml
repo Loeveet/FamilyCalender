@@ -220,333 +220,334 @@
 	</div>
 </div>
 
+@section Scripts {
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			// ================================
+			// Globala variabler och funktioner
+			// ================================
 
-<script>
-	document.addEventListener('DOMContentLoaded', () => {
-		// ================================
-		// Globala variabler och funktioner
-		// ================================
+			const isTodoList = '@(Model.UserList.Type.ToString() == "Todolist" ? "true" : "false")' === 'true';
 
-		const isTodoList = '@(Model.UserList.Type.ToString() == "Todolist" ? "true" : "false")' === 'true';
+			function updateResetButtonVisibility() {
+				const checkedItems = document.querySelectorAll('.toggle-complete:checked');
+				const resetBtn = document.getElementById('reset-checkboxes');
+				if (resetBtn) {
+					resetBtn.style.display = checkedItems.length > 0 ? 'inline-block' : 'none';
+				}
+			}
 
-		function updateResetButtonVisibility() {
-			const checkedItems = document.querySelectorAll('.toggle-complete:checked');
-			const resetBtn = document.getElementById('reset-checkboxes');
-			if (resetBtn) {
-				resetBtn.style.display = checkedItems.length > 0 ? 'inline-block' : 'none';
+			function ensureListAndHeading(type) {
+				const container = document.getElementById('list-container');
+				if (!container) return null;
+
+				let headingId = type === 'undone' ? 'undone-heading' : 'done-heading';
+				let listId = type === 'undone' ? 'undone-list' : 'done-list';
+				let headingText = type === 'undone' ? 'Att göra' : 'Klart';
+
+				let heading = document.getElementById(headingId);
+				let list = document.getElementById(listId);
+
+				if (!heading) {
+					heading = document.createElement('h2');
+					heading.id = headingId;
+					heading.classList.add('mt-4');
+					heading.textContent = headingText;
+					container.appendChild(heading);
+				}
+
+				if (!list) {
+					list = document.createElement('ul');
+					list.id = listId;
+					list.classList.add('list-group', 'mb-3');
+					container.appendChild(list);
+				}
+
+				return list;
+			}
+
+			function updateHeadingVisibility() {
+				['undone', 'done'].forEach(type => {
+					const list = document.getElementById(`${type}-list`);
+					const heading = document.getElementById(`${type}-heading`);
+					if (list && heading) {
+						heading.style.display = list.children.length > 0 ? '' : 'none';
+					}
+				});
+			}
+				function updateChecklistHeadingVisibility() {
+			if (!isTodoList) {
+				const checklistHeading = document.getElementById('heading-checklist');
+				// Hitta UL:en som hör till checklistan (den första ul efter heading-checklist)
+				const checklistUl = checklistHeading?.nextElementSibling;
+				if (checklistHeading && checklistUl) {
+					checklistHeading.style.display = checklistUl.children.length > 0 ? '' : 'none';
+				}
 			}
 		}
 
-		function ensureListAndHeading(type) {
-			const container = document.getElementById('list-container');
-			if (!container) return null;
+			// =======================
+			// Toggle checkbox-status
+			// =======================
 
-			let headingId = type === 'undone' ? 'undone-heading' : 'done-heading';
-			let listId = type === 'undone' ? 'undone-list' : 'done-list';
-			let headingText = type === 'undone' ? 'Att göra' : 'Klart';
+			document.querySelectorAll('.toggle-complete').forEach(checkbox => {
+				checkbox.addEventListener('change', async (e) => {
+					const itemId = e.target.dataset.itemId;
+					const li = e.target.closest('li');
+					const textSpan = li.querySelector('.list-item-text') || li.querySelector('label');
 
-			let heading = document.getElementById(headingId);
-			let list = document.getElementById(listId);
+					const response = await fetch('?handler=ToggleItem', {
+						method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+					},
+					body: JSON.stringify({ ItemId: parseInt(itemId) })
+					});
 
-			if (!heading) {
-				heading = document.createElement('h2');
-				heading.id = headingId;
-				heading.classList.add('mt-4');
-				heading.textContent = headingText;
-				container.appendChild(heading);
-			}
+					if (!response.ok) {
+						console.error('Serverfel:', response.status);
+						e.target.checked = !e.target.checked;
+						return;
+					}
 
-			if (!list) {
-				list = document.createElement('ul');
-				list.id = listId;
-				list.classList.add('list-group', 'mb-3');
-				container.appendChild(list);
-			}
+					const result = await response.json();
 
-			return list;
-		}
+					if (result.success) {
+						if (isTodoList) {
+							if (result.newState === 'Checked') {
+								textSpan.classList.add('text-decoration-line-through', 'text-muted');
+								const doneList = ensureListAndHeading('done');
+								doneList.appendChild(li);
+							} else {
+								textSpan.classList.remove('text-decoration-line-through', 'text-muted');
+								const undoneList = ensureListAndHeading('undone');
+								undoneList.appendChild(li);
+							}
+							updateHeadingVisibility();
+						} else {
+							textSpan.classList.toggle('text-decoration-line-through', result.newState === 'Checked');
+							textSpan.classList.toggle('text-muted', result.newState === 'Checked');
+						}
+					} else {
+						alert('Kunde inte uppdatera punkten.');
+						e.target.checked = !e.target.checked;
+					}
+						updateResetButtonVisibility();
+				});
+			});
 
-		function updateHeadingVisibility() {
-			['undone', 'done'].forEach(type => {
-				const list = document.getElementById(`${type}-list`);
-				const heading = document.getElementById(`${type}-heading`);
-				if (list && heading) {
-					heading.style.display = list.children.length > 0 ? '' : 'none';
+
+
+			// ===========================
+			// Visa/dölj reset-knappen
+			// ===========================
+
+			updateResetButtonVisibility();
+
+			// ===========================
+			// Nollställ förbockade punkter
+			// ===========================
+
+			document.getElementById("confirmResetBtn").addEventListener("click", async function () {
+				const checkboxes = document.querySelectorAll(".toggle-complete:checked");
+
+				for (const cb of checkboxes) {
+					cb.checked = false;
+					cb.dispatchEvent(new Event('change', { bubbles: true }));
+				}
+
+				const modal = bootstrap.Modal.getInstance(document.getElementById('confirmResetModal'));
+				modal.hide();
+			});
+
+			// ===========================
+			// Validering vid nytt objekt
+			// ===========================
+
+			document.getElementById('add-item-form').addEventListener('submit', function (e) {
+				const input = document.getElementById('new-item-name');
+				const errorMsg = document.getElementById('validation-message');
+
+				if (!input.value.trim()) {
+					e.preventDefault();
+					errorMsg.textContent = 'Fältet får inte vara tomt.';
+					input.classList.add('is-invalid');
+				} else {
+					errorMsg.textContent = '';
+					input.classList.remove('is-invalid');
 				}
 			});
-		}
-			function updateChecklistHeadingVisibility() {
-		if (!isTodoList) {
-			const checklistHeading = document.getElementById('heading-checklist');
-			// Hitta UL:en som hör till checklistan (den första ul efter heading-checklist)
-			const checklistUl = checklistHeading?.nextElementSibling;
-			if (checklistHeading && checklistUl) {
-				checklistHeading.style.display = checklistUl.children.length > 0 ? '' : 'none';
-			}
-		}
-	}
 
-		// =======================
-		// Toggle checkbox-status
-		// =======================
+			// ===========================
+			// Ta bort ett objekt
+			// ===========================
 
-		document.querySelectorAll('.toggle-complete').forEach(checkbox => {
-			checkbox.addEventListener('change', async (e) => {
-				const itemId = e.target.dataset.itemId;
-				const li = e.target.closest('li');
-				const textSpan = li.querySelector('.list-item-text') || li.querySelector('label');
+			const deleteItemModal = new bootstrap.Modal(document.getElementById('confirmDeleteItemModal'));
+			const itemNamePreview = document.getElementById('itemNamePreview');
+			const confirmDeleteItemBtn = document.getElementById('confirmDeleteItemBtn');
 
-				const response = await fetch('?handler=ToggleItem', {
-					method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-				},
-				body: JSON.stringify({ ItemId: parseInt(itemId) })
+			let itemToDeleteButton = null;
+			let itemToDeleteId = null;
+
+			document.querySelectorAll('.delete-item').forEach(button => {
+				button.addEventListener('click', (e) => {
+					e.preventDefault();
+					itemToDeleteButton = button;
+					itemToDeleteId = button.dataset.itemId;
+
+					const li = button.closest('li');
+					const label = li.querySelector('label');
+					itemNamePreview.textContent = label ? label.textContent.trim() : 'denna punkt';
+
+					deleteItemModal.show();
 				});
+			});
 
-				if (!response.ok) {
-					console.error('Serverfel:', response.status);
-					e.target.checked = !e.target.checked;
-					return;
-				}
+			confirmDeleteItemBtn.addEventListener('click', async () => {
+				if (!itemToDeleteId) return;
+
+				const response = await fetch('?handler=DeleteItem', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+					},
+					body: JSON.stringify({ itemId: parseInt(itemToDeleteId) })
+				});
 
 				const result = await response.json();
 
 				if (result.success) {
+					itemToDeleteButton.closest('li').remove();
 					if (isTodoList) {
-						if (result.newState === 'Checked') {
-							textSpan.classList.add('text-decoration-line-through', 'text-muted');
-							const doneList = ensureListAndHeading('done');
-							doneList.appendChild(li);
-						} else {
-							textSpan.classList.remove('text-decoration-line-through', 'text-muted');
-							const undoneList = ensureListAndHeading('undone');
-							undoneList.appendChild(li);
-						}
 						updateHeadingVisibility();
 					} else {
-						textSpan.classList.toggle('text-decoration-line-through', result.newState === 'Checked');
-						textSpan.classList.toggle('text-muted', result.newState === 'Checked');
+						updateChecklistHeadingVisibility();
 					}
-				} else {
-					alert('Kunde inte uppdatera punkten.');
-					e.target.checked = !e.target.checked;
-				}
 					updateResetButtonVisibility();
-			});
-		});
-
-
-
-		// ===========================
-		// Visa/dölj reset-knappen
-		// ===========================
-
-		updateResetButtonVisibility();
-
-		// ===========================
-		// Nollställ förbockade punkter
-		// ===========================
-
-		document.getElementById("confirmResetBtn").addEventListener("click", async function () {
-			const checkboxes = document.querySelectorAll(".toggle-complete:checked");
-
-			for (const cb of checkboxes) {
-				cb.checked = false;
-				cb.dispatchEvent(new Event('change', { bubbles: true }));
-			}
-
-			const modal = bootstrap.Modal.getInstance(document.getElementById('confirmResetModal'));
-			modal.hide();
-		});
-
-		// ===========================
-		// Validering vid nytt objekt
-		// ===========================
-
-		document.getElementById('add-item-form').addEventListener('submit', function (e) {
-			const input = document.getElementById('new-item-name');
-			const errorMsg = document.getElementById('validation-message');
-
-			if (!input.value.trim()) {
-				e.preventDefault();
-				errorMsg.textContent = 'Fältet får inte vara tomt.';
-				input.classList.add('is-invalid');
-			} else {
-				errorMsg.textContent = '';
-				input.classList.remove('is-invalid');
-			}
-		});
-
-		// ===========================
-		// Ta bort ett objekt
-		// ===========================
-
-		const deleteItemModal = new bootstrap.Modal(document.getElementById('confirmDeleteItemModal'));
-		const itemNamePreview = document.getElementById('itemNamePreview');
-		const confirmDeleteItemBtn = document.getElementById('confirmDeleteItemBtn');
-
-		let itemToDeleteButton = null;
-		let itemToDeleteId = null;
-
-		document.querySelectorAll('.delete-item').forEach(button => {
-			button.addEventListener('click', (e) => {
-				e.preventDefault();
-				itemToDeleteButton = button;
-				itemToDeleteId = button.dataset.itemId;
-
-				const li = button.closest('li');
-				const label = li.querySelector('label');
-				itemNamePreview.textContent = label ? label.textContent.trim() : 'denna punkt';
-
-				deleteItemModal.show();
-			});
-		});
-
-		confirmDeleteItemBtn.addEventListener('click', async () => {
-			if (!itemToDeleteId) return;
-
-			const response = await fetch('?handler=DeleteItem', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-				},
-				body: JSON.stringify({ itemId: parseInt(itemToDeleteId) })
-			});
-
-			const result = await response.json();
-
-			if (result.success) {
-				itemToDeleteButton.closest('li').remove();
-				if (isTodoList) {
-					updateHeadingVisibility();
 				} else {
-					updateChecklistHeadingVisibility();
+					alert('Kunde inte ta bort punkten.');
 				}
-				updateResetButtonVisibility();
-			} else {
-				alert('Kunde inte ta bort punkten.');
-			}
 
-			deleteItemModal.hide();
-			itemToDeleteButton = null;
-			itemToDeleteId = null;
-		});
-
-		// ===========================
-		// Uppdatera rubriker vid start
-		// ===========================
-		if (isTodoList) {
-			updateHeadingVisibility();
-		}
-		else {
-			updateChecklistHeadingVisibility();
-		}
-	});
-
-		// ===========================
-		// Editera text direkt med dynamisk scroll
-		// ===========================
-		document.querySelectorAll('.list-item-text, label').forEach(el => {
-		el.dataset.originalName = el.textContent.trim();
-
-	el.addEventListener('pointerdown', e => {
-		e.stopPropagation();
-		el.setAttribute('contenteditable', 'true');
-		el.focus();
-
-	});
-
-		el.addEventListener('keydown', e => {
-		if (e.key === 'Enter') {
-			e.preventDefault();
-			el.blur();
-		}
-	});
-		el.addEventListener('blur', async e => {
-			el.removeAttribute('contenteditable');
-
-			const li = el.closest('li');
-			const itemId = li.dataset.itemId;
-			const newName = el.textContent.trim();
-
-			if (!newName) {
-				el.textContent = el.dataset.originalName || '';
-				return;
-			}
-
-			const response = await fetch('?handler=UpdateItem', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-				},
-				body: JSON.stringify({ id: parseInt(itemId), name: newName })
+				deleteItemModal.hide();
+				itemToDeleteButton = null;
+				itemToDeleteId = null;
 			});
 
-			const result = await response.json();
-			if (!result.success) {
-				alert('Kunde inte uppdatera punkten.');
-				el.textContent = el.dataset.originalName || '';
-			} else {
-				el.dataset.originalName = newName;
+			// ===========================
+			// Uppdatera rubriker vid start
+			// ===========================
+			if (isTodoList) {
+				updateHeadingVisibility();
+			}
+			else {
+				updateChecklistHeadingVisibility();
 			}
 		});
-	});
 
-		// ===========================
-		// Logik för drag and drop
-		// ===========================
-	function initSortable(id, updateUrl) {
-		const list = document.getElementById(id);
-		if (!list) return;
+			// ===========================
+			// Editera text direkt
+			// ===========================
+			document.querySelectorAll('.list-item-text, label').forEach(el => {
+			el.dataset.originalName = el.textContent.trim();
 
-		const listId = list.dataset.listId;
+		el.addEventListener('pointerdown', e => {
+			e.stopPropagation();
+			el.setAttribute('contenteditable', 'true');
+			el.focus();
 
-		new Sortable(list, {
-			animation: 150,
-			delay: 200,
-			delayOnTouchOnly: true,
-			handle: '.drag-handle',
-			filter: 'input, button',
-			preventOnFilter: false,
-			onEnd: function () {
-				const sortedIds = Array.from(list.children).map(li => li.dataset.itemId);
+		});
 
-			fetch(updateUrl, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-				},
-				body: JSON.stringify({ listId: listId, sortedIds: sortedIds })
-			})
-			.then(response => {
-				if (!response.ok) {
-					throw new Error('Något gick fel vid uppdatering av ordning');
+			el.addEventListener('keydown', e => {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				el.blur();
+			}
+		});
+			el.addEventListener('blur', async e => {
+				el.removeAttribute('contenteditable');
+
+				const li = el.closest('li');
+				const itemId = li.dataset.itemId;
+				const newName = el.textContent.trim();
+
+				if (!newName) {
+					el.textContent = el.dataset.originalName || '';
+					return;
 				}
-				return response.json();
-			})
-			.then(data => {
-				if (!data.success) {
-					alert('Kunde inte spara ordningen på servern');
-				}
-			})
-			.catch(err => {
-				console.error(err);
-				alert('Fel vid uppdatering av ordning');
-			});
-					}
+
+				const response = await fetch('?handler=UpdateItem', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+					},
+					body: JSON.stringify({ id: parseInt(itemId), name: newName })
 				});
-			}
 
-	document.addEventListener('DOMContentLoaded', function () {
-		initSortable('sortableCheckList', '@Url.Page("HandleList", "UpdateOrder")');
-		initSortable('undone-list', '@Url.Page("HandleList", "UpdateOrder")');
-		initSortable('done-list', '@Url.Page("HandleList", "UpdateOrder")');
+				const result = await response.json();
+				if (!result.success) {
+					alert('Kunde inte uppdatera punkten.');
+					el.textContent = el.dataset.originalName || '';
+				} else {
+					el.dataset.originalName = newName;
+				}
+			});
+		});
 
-	});
-</script>
+			// ===========================
+			// Logik för drag and drop
+			// ===========================
+		function initSortable(id, updateUrl) {
+			const list = document.getElementById(id);
+			if (!list) return;
+
+			const listId = list.dataset.listId;
+
+			new Sortable(list, {
+				animation: 150,
+				delay: 200,
+				delayOnTouchOnly: true,
+				handle: '.drag-handle',
+				filter: 'input, button',
+				preventOnFilter: false,
+				onEnd: function () {
+					const sortedIds = Array.from(list.children).map(li => li.dataset.itemId);
+
+				fetch(updateUrl, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+					},
+					body: JSON.stringify({ listId: listId, sortedIds: sortedIds })
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Något gick fel vid uppdatering av ordning');
+					}
+					return response.json();
+				})
+				.then(data => {
+					if (!data.success) {
+						alert('Kunde inte spara ordningen på servern');
+					}
+				})
+				.catch(err => {
+					console.error(err);
+					alert('Fel vid uppdatering av ordning');
+				});
+						}
+					});
+				}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			initSortable('sortableCheckList', '@Url.Page("HandleList", "UpdateOrder")');
+			initSortable('undone-list', '@Url.Page("HandleList", "UpdateOrder")');
+			initSortable('done-list', '@Url.Page("HandleList", "UpdateOrder")');
+
+		});
+	</script>
+}
 

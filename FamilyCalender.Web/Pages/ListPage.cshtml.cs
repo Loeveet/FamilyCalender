@@ -31,6 +31,11 @@ namespace FamilyCalender.Web.Pages
 			public int CalendarId { get; set; }
 			public List<int> SortedIds { get; set; } = new();
 		}
+		public class UpdateListDto
+		{
+			public int Id { get; set; }
+			public string Name { get; set; } = string.Empty;
+		}
 		public async Task<IActionResult> OnGetAsync()
         {
 			var user = await GetCurrentUserAsync();
@@ -87,6 +92,34 @@ namespace FamilyCalender.Web.Pages
             await _userListService.CreateListAsync(userId.Value, NewListName, CalendarId, NewListType);
             return RedirectToPage(new { calendarId = CalendarId, calendarName = CalendarName });
         }
+		public async Task<IActionResult> OnPostUpdateListNameAsync([FromBody] UpdateListDto data)
+		{
+			var userId = await GetCurrentUserIdAsync();
+			if (userId == null)
+				return Unauthorized();
+
+			if (data == null || string.IsNullOrWhiteSpace(data.Name))
+				return BadRequest(new { success = false, message = "Ogiltigt data" });
+
+			// Hämta listan via service
+			var list = await _userListService.GetListByIdAsync(data.Id, userId.Value);
+			if (list == null)
+				return NotFound(new { success = false, message = "Hittade inte listan" });
+
+			var originalName = list.Name;
+			list.Name = data.Name;
+			list.LastEditedUtc = DateTime.UtcNow;
+
+			try
+			{
+				await _userListService.UpdateListAsync(list);
+				return new JsonResult(new { success = true });
+			}
+			catch (Exception ex)
+			{
+				return new JsonResult(new { success = false, message = ex.Message, originalName });
+			}
+		}
 		public async Task<IActionResult> OnPostUpdateListOrderAsync([FromBody] UpdateListOrderDto data)
 		{
 			var user = await GetCurrentUserAsync();
