@@ -57,6 +57,8 @@ else
 								onclick="event.stopPropagation();">
 							<i class="bi bi-trash"></i>
 						</button>
+						<div class="drag-handle position-absolute top-50 end-0 me-2">☰</div>
+
 					</div>
 				</div>
 			}
@@ -182,6 +184,7 @@ else
 				animation: 150,
 				delay: 200,
 				delayOnTouchOnly: true,
+				handle: '.drag-handle',
 				filter: 'input, button',
 				preventOnFilter: false,
 				onEnd: function () {
