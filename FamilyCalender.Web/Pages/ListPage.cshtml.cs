@@ -11,9 +11,11 @@ namespace FamilyCalender.Web.Pages
 
 	public class ListPageModel(
 		IAuthService authService,
-		IUserListService userListService) : BasePageModel(authService)
+		IUserListService userListService,
+		EncryptionService encryptionService) : BasePageModel(authService)
 	{
 		private readonly IUserListService _userListService = userListService;
+		private readonly EncryptionService _encryptionService = encryptionService;
 
 		[BindProperty(SupportsGet = true)]
 		public int? CalendarId { get; set; }
@@ -106,8 +108,10 @@ namespace FamilyCalender.Web.Pages
 			if (list == null)
 				return NotFound(new { success = false, message = "Hittade inte listan" });
 
+			var encryptedItemName = _encryptionService.AutoDetectEncryptStringToString(list.Name, list.Id.ToString());
+
 			var originalName = list.Name;
-			list.Name = data.Name;
+			list.Name = encryptedItemName;
 			list.LastEditedUtc = DateTime.UtcNow;
 
 			try

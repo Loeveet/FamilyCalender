@@ -1,6 +1,7 @@
 using FamilyCalender.Core.Interfaces.IServices;
 using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Infrastructure.Context;
+using FamilyCalender.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,11 @@ namespace FamilyCalender.Web.Pages;
 [ValidateAntiForgeryToken]
 
 
-public class HandleListModel(IUserListService userListService, IAuthService authService, ApplicationDbContext context) : BasePageModel(authService)
+public class HandleListModel(IUserListService userListService, IAuthService authService, ApplicationDbContext context, EncryptionService encryptionService) : BasePageModel(authService)
 {
     private readonly IUserListService _userListService = userListService;
 	private readonly ApplicationDbContext _context = context;
+	private readonly EncryptionService _encryptionService = encryptionService;
 
 	[BindProperty(SupportsGet = true)]
     public int ListId { get; set; }
@@ -117,8 +119,10 @@ public class HandleListModel(IUserListService userListService, IAuthService auth
 		if (item == null)
 			return NotFound(new { success = false, message = "Hittade inte objektet" });
 
+		var encryptedItemName = _encryptionService.AutoDetectEncryptStringToString(data.Name, item.UserListId.ToString());
+
 		var originalName = item.Name;
-		item.Name = data.Name;
+		item.Name = encryptedItemName;
 		item.LastEditedUtc = DateTime.UtcNow;
 		item.UpdateUserId = userId.Value;
 
