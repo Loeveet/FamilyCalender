@@ -247,7 +247,7 @@ else
 					{
 						var colspan = Model.ViewModel.Members.Count + 1;
 						<tr style="border:none">
-							<td colspan="@colspan" class="today" style="border:none">
+							<td colspan="@colspan" class="today rounded-3" style="border:none">
 								Idag @day.CapitalizedDayName @day.Date.Day <small>(vecka @day.WeekOfYear)</small>
 							</td>
 						</tr>
@@ -333,7 +333,7 @@ else
 											   asp-route-day="@day.Date.ToString("yyyy-MM-dd")"
 											   class="text-decoration-none text-dark"
 											   onclick="event.stopPropagation();">
-												<span class="event-title rounded px-0 py-1 w-100 d-block @Model.ViewModel.GetCategoryColor(eventMemberDate?.Event)">
+												<span class="event-title rounded shadow px-0 py-1 w-100 d-block @Model.ViewModel.GetCategoryColor(eventMemberDate?.Event)">
 													@eventMemberDate.Event?.Title
 													@if (!string.IsNullOrWhiteSpace(eventMemberDate.Event.EventTime) || !string.IsNullOrWhiteSpace(eventMemberDate.Event.EventStopTime))
 													{
