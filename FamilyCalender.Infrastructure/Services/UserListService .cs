@@ -127,7 +127,15 @@ namespace FamilyCalender.Infrastructure.Services
                 .Select(la => la.UserList!)
                 .ToListAsync();
 
-            return lists;
+			if (lists.Count > 0)
+			{
+				foreach (var list in lists)
+				{
+					list.Name = _encryptionService.AutoDetectDecryptStringToString(list.Name, list.NameIv.ToString());
+				}
+			}
+
+			return lists;
         }
         public async Task<List<UserList>> GetListsForUserByCalendarAsync(int userId, int calendarId)
         {
@@ -144,9 +152,10 @@ namespace FamilyCalender.Infrastructure.Services
             {
                 foreach (var list in lists)
                 {
-                    list.Name = _encryptionService.AutoDetectDecryptStringToString(list.Name, list.NameIv.ToString());
-                }
-            }
+					list.Name = _encryptionService.AutoDetectDecryptStringToString(list.Name, list.NameIv.ToString());
+
+				}
+			}
 
             return lists;
         }

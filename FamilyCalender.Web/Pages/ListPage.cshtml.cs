@@ -108,7 +108,7 @@ namespace FamilyCalender.Web.Pages
 			if (list == null)
 				return NotFound(new { success = false, message = "Hittade inte listan" });
 
-			var encryptedItemName = _encryptionService.AutoDetectEncryptStringToString(list.Name, list.Id.ToString());
+			var encryptedItemName = _encryptionService.AutoDetectEncryptStringToString(data.Name, list.NameIv.ToString());
 
 			var originalName = list.Name;
 			list.Name = encryptedItemName;
