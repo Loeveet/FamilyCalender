@@ -64,7 +64,7 @@
 			@if (isTodoList && undoneItems.Any())
 			{
 
-				<div class="d-flex align-items-center mt-2 mb-2">
+				<div class="d-flex align-items-center mt-4 mb-2">
 					<h2 class="mb-0 me-2" id="undone-heading">Att göra</h2>
 
 					<form method="post" asp-page-handler="ReverseList" class="mb-0">
@@ -152,8 +152,20 @@
 
 			@if (!isTodoList)
 			{
-				<h2 class="mt-4" id="heading-checklist"><i class="bi bi-ui-checks-grid"></i></h2>
-				<ul class="list-group mb-3" id="sortableCheckList" data-list-id="@Model.UserList.Id">
+				<div class="d-flex align-items-center mt-4 mb-2">
+					<h2 class="mb-0" id="heading-checklist">
+						<i class="bi bi-ui-checks-grid"></i>
+					</h2>
+
+					<form method="post" asp-page-handler="ReverseList" class="mb-0 ms-2">
+						<input type="hidden" name="listId" value="@Model.UserList.Id" />
+						<button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill">
+							<i class="fas fa-sort"></i>
+						</button>
+					</form>
+				</div>
+
+					<ul class="list-group mb-3" id="sortableCheckList" data-list-id="@Model.UserList.Id">
 					@foreach (var item in Model.Items.OrderByDescending(i => i.SortOrder))
 					{
 						<li class="list-group-item d-flex justify-content-between align-items-center" data-item-id="@item.Id">
