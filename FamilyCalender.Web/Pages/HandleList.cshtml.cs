@@ -163,4 +163,35 @@ public class HandleListModel(IUserListService userListService, IAuthService auth
 		return new JsonResult(new { success = true });
 	}
 
+	public async Task<IActionResult> OnPostReverseListAsync(int listId)
+	{
+		var userId = await GetCurrentUserIdAsync();
+		if (userId == null)
+			return Unauthorized();
+
+		var userList = await _userListService.GetListByIdAsync(listId, userId.Value);
+		if (userList == null)
+			return NotFound();
+
+		var items = await _context.ListItems
+			.Where(li => li.UserListId == listId)
+			.OrderBy(li => li.SortOrder)
+			.ToListAsync();
+
+		if (items.Count == 0)
+			return RedirectToPage();
+
+		int maxSortOrder = items.Max(i => i.SortOrder);
+
+		foreach (var item in items)
+		{
+			item.SortOrder = maxSortOrder - item.SortOrder + 1;
+		}
+
+		await _context.SaveChangesAsync();
+
+		// Ladda om sidan
+		return RedirectToPage();
+	}
+
 }
