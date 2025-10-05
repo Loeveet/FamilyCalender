@@ -31,7 +31,7 @@ namespace FamilyCalender.Web.ViewModels
         public ICollection<string> SwedishWeekdays { get; set; } = [];
         public ICollection<Member> ChosenMembers { get; set; } = [];
 		public List<string> WeekOrderFromFirstDate { get; set; } = new();
-		public ICollection<string> SortedDaysInSwedish
+		public List<string> SortedDaysInSwedish
 		{
 			get
 			{
