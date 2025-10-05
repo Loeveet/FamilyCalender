@@ -21,9 +21,8 @@ namespace FamilyCalender.Web.Pages
 			ViewModel.EventDetails = await _eventManagementService.GetEventDetailsAsync(eventId);
 
 			if (ViewModel.EventDetails == null)
-			{
 				return NotFound();
-			}
+
 			var culture = new CultureInfo("sv-SE");
 
 			ViewModel.Member = await _eventManagementService.GetMemberAsync(memberId);
@@ -36,37 +35,49 @@ namespace FamilyCalender.Web.Pages
 				.Distinct()
 				.ToList()!;
 
-			ViewModel.SelectedDays = ViewModel.EventDetails.EventMemberDates
-				.Select(ed => culture.DateTimeFormat.GetDayName(ed.Date.DayOfWeek))
-				.Distinct()
-				.ToList();
-
-			ViewModel.IsSingleEvent = ViewModel.EventDetails.EventMemberDates
-				.Select(x => x.Date)
-				.Distinct()
-				.Count() == 1;
-
-			ViewModel.IsSingleMember = ViewModel.EventDetails.EventMemberDates
-				.Select(x => x.Member)
-				.Distinct()
-				.ToList()
-				.Count() < 2;
-
 			var orderedDates = ViewModel.EventDetails.EventMemberDates
 				.Select(x => x.Date)
 				.Distinct()
 				.OrderBy(d => d)
 				.ToList();
 
-			ViewModel.FormattedDate = ViewModel.IsSingleEvent ?
-				orderedDates.First().ToString("yyyy-MM-dd") : string.Empty;
+			ViewModel.IsSingleEvent = orderedDates.Count == 1;
 
-			ViewModel.FormattedInterval = !ViewModel.IsSingleEvent ?
-				$"{orderedDates.First():yyyy-MM-dd} - {orderedDates.Last():yyyy-MM-dd}" : string.Empty;
+			ViewModel.IsSingleMember = ViewModel.EventDetails.EventMemberDates
+				.Select(x => x.Member)
+				.Distinct()
+				.Count() < 2;
 
+			ViewModel.FormattedDate = ViewModel.IsSingleEvent
+				? orderedDates.First().ToString("yyyy-MM-dd")
+				: string.Empty;
+
+			ViewModel.FormattedInterval = !ViewModel.IsSingleEvent
+				? $"{orderedDates.First():yyyy-MM-dd} - {orderedDates.Last():yyyy-MM-dd}"
+				: string.Empty;
+
+			var allWeekdays = orderedDates
+				.Select(d => culture.DateTimeFormat.GetDayName(d.DayOfWeek).ToLower())
+				.ToList();
+
+			ViewModel.SelectedDays = allWeekdays;
+
+			var weekdayCounts = allWeekdays
+				.GroupBy(d => d)
+				.ToDictionary(g => g.Key, g => g.Count());
+
+			var firstDate = orderedDates.First();
+			var weekOrderFromFirst = Enumerable.Range(0, 7)
+				.Select(i => culture.DateTimeFormat.GetDayName(firstDate.AddDays(i).DayOfWeek).ToLower())
+				.ToList();
+
+			ViewModel.WeekOrderFromFirstDate = weekOrderFromFirst;
 
 			return Page();
 		}
+
+
+
 
 		public async Task<IActionResult> OnPostUpdateEventAsync()
 		{
@@ -83,8 +94,8 @@ namespace FamilyCalender.Web.Pages
 
 			eventToUpdate.Title = ViewModel.NewTitle;
 			eventToUpdate.Text = ViewModel?.EventDetails?.Text ?? "";
-            eventToUpdate.EventTime = ViewModel?.EventDetails?.EventTime ?? "";
-            eventToUpdate.EventStopTime = ViewModel?.EventDetails?.EventStopTime ?? "";
+			eventToUpdate.EventTime = ViewModel?.EventDetails?.EventTime ?? "";
+			eventToUpdate.EventStopTime = ViewModel?.EventDetails?.EventStopTime ?? "";
 			eventToUpdate.EventCategoryColor = ViewModel?.EventDetails?.EventCategoryColor ?? EventCategoryColor.None;
 
 			if (eventToUpdate.RepeatIntervalType == RepeatType.None)
@@ -99,12 +110,13 @@ namespace FamilyCalender.Web.Pages
 
 			await _eventManagementService.UpdateEventAsync(eventToUpdate);
 
-			await pushNotificationService.SendPush(eventToUpdate, false, await GetCurrentUserAsync()); 
+			await pushNotificationService.SendPush(eventToUpdate, false, await GetCurrentUserAsync());
 
-			return RedirectToPage("./EventDetails", new { 
-				eventId = eventToUpdate.Id, 
-				memberId = ViewModel.MemberId, 
-				day = ViewModel.Day 
+			return RedirectToPage("./EventDetails", new
+			{
+				eventId = eventToUpdate.Id,
+				memberId = ViewModel.MemberId,
+				day = ViewModel.Day
 			});
 		}
 
