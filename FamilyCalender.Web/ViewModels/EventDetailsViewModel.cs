@@ -30,21 +30,27 @@ namespace FamilyCalender.Web.ViewModels
         public string FormattedInterval { get; set; } = string.Empty;
         public ICollection<string> SwedishWeekdays { get; set; } = [];
         public ICollection<Member> ChosenMembers { get; set; } = [];
-        public ICollection<string> SortedDaysInSwedish
-        {
-            get
-            {
-                var cultureInfo = new System.Globalization.CultureInfo("sv-SE");
-                var weekOrder = new List<string> { "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag", "söndag" };
+		public List<string> WeekOrderFromFirstDate { get; set; } = new();
+		public ICollection<string> SortedDaysInSwedish
+		{
+			get
+			{
+				var weekdayCounts = SelectedDays
+					.GroupBy(d => d.ToLower())
+					.ToDictionary(g => g.Key, g => g.Count());
 
-				return SelectedDays
-					.Select(day => day.ToLower()) 
-					.OrderBy(day => weekOrder.IndexOf(day))
+				return WeekOrderFromFirstDate
+					.Where(day => weekdayCounts.ContainsKey(day))
+					.Select(day => weekdayCounts[day] > 1 ? day + "ar" : day)
 					.ToList();
 			}
-        }
+		}
 
-        public string GetCategoryColorName()
+
+
+
+
+		public string GetCategoryColorName()
         {
 	        if (EventDetails is null)
 	        {
