@@ -4,7 +4,7 @@
 @model FamilyCalender.Web.Pages.EventDetailsModel
 @{
 	var culture = new System.Globalization.CultureInfo("sv-SE");
-
+	var baseHue = 220; // blå grundfärg
 }
 
 <div class="d-flex align-items-center">
@@ -22,8 +22,7 @@
 		<h5 class="card-title text-center text-dark"><i class="bi bi-calendar-event"></i> Händelsedetaljer</h5>
 		<hr>
 		<!-- om vi vill veta vilken kalender den tillhör -->
-
-@* 		<div class="mb-2">
+		@* 		<div class="mb-2">
 			<strong><i class="bi bi-calendar-event"></i> Kalender:</strong> @Model.ViewModel.EventDetails.Calendar.Name
 		</div> *@
 
@@ -47,54 +46,67 @@
 			}
 		</div>
 		<!-- om vi vill ha vilken färg den har -->
-
-@* 		<div class="mb-2">
+		@* 		<div class="mb-2">
 			<strong>Kategorifärg:</strong> @Html.Raw(Model.ViewModel.GetCategoryColorDiamond()) @Model.ViewModel.GetCategoryColorName()
 		</div> *@
 
 
 		<div class="mb-3">
-			<strong>När:</strong>
+			@* <strong>När:</strong> *@
 
-			<div class="time-info mt-2">
 
-				<div class="time-block">
-					<i class="bi bi-calendar-date"></i>
-					<span>@(Model.ViewModel.IsSingleEvent? Model.ViewModel.FormattedDate : Model.ViewModel.FormattedInterval)</span>
-				</div>
+			@if (Model.ViewModel.IsSingleEvent)
+			{
+				<span>@Model.ViewModel.FormattedDate</span>
+			}
+			else
+			{
+				<span><strong>Start:</strong> @Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date).ToString("yyyy-MM-dd")</span>
+				<span> – </span>
+				<span><strong>Slut:</strong> @Model.ViewModel.EventDetails.EventMemberDates.Max(x => x.Date).ToString("yyyy-MM-dd")</span>
+			}
 
+
+			@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) ||
+						!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+			{
 				@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) ||
-								!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+							!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
 				{
-					@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) || 
-						 !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
-					{
-						<div class="time-block">
-							<i class="bi bi-clock"></i>
+					<div class="mb-2">
+						@* <i class="bi bi-clock"></i> *@
+						@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
+						{
+							<span><strong>Starttid:</strong> @Model.ViewModel.EventDetails.EventTime</span>
+						}
+						@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+						{
 							@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
 							{
-								<span><strong>Start:</strong> @Model.ViewModel.EventDetails.EventTime</span>
+								<span> – </span>
 							}
-							@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
-							{
-								@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
-								{
-									<span> – </span>
-								}
-								<span><strong>Slut:</strong> @Model.ViewModel.EventDetails.EventStopTime</span>
-							}
-						</div>
-					}
-				}
-
-				@if (!Model.ViewModel.IsSingleEvent)
-				{
-					<div class="time-block">
-						<i class="bi bi-calendar-week"></i>
-						<span>@string.Join(", ", Model.ViewModel.SortedDaysInSwedish)</span>
+							<span><strong>Sluttid:</strong> @Model.ViewModel.EventDetails.EventStopTime</span>
+						}
 					</div>
 				}
-			</div>
+			}
+
+			@if (!Model.ViewModel.IsSingleEvent)
+			{
+				<div class="time-block weekday-badges">
+
+					@for (int i = 0; i < Model.ViewModel.SortedDaysInSwedish.Count; i++)
+					{
+						var day = Model.ViewModel.SortedDaysInSwedish[i];
+						var lightness = 45 + (i * 6);
+						if (lightness > 70) lightness = 70;
+						var color = $"hsl({baseHue}, 70%, {lightness}%)";
+
+						<span class="member-badge" style="background-color:@(color);">@day</span>
+					}
+				</div>
+			}
+
 		</div>
 
 
@@ -106,7 +118,6 @@
 			.Where(m => m != null)
 			.ToList();
 
-			var baseHue = 220; // blå grundfärg
 		}
 
 		<div class="mb-2">
@@ -115,7 +126,7 @@
 				Gäller:
 			</strong>
 
-			<div class="member-badges mt-1">
+			<div class="member-badges mt-1 d-flex flex-wrap">
 				@for (int i = 0; i < members.Count; i++)
 				{
 					var lightness = 45 + (i * 6);

@@ -53,7 +53,7 @@ namespace FamilyCalender.Web.Pages
 				: string.Empty;
 
 			ViewModel.FormattedInterval = !ViewModel.IsSingleEvent
-				? $"{orderedDates.First():yyyy-MM-dd} - {orderedDates.Last():yyyy-MM-dd}"
+				? $"{orderedDates.First():yyyy-MM-dd} – {orderedDates.Last():yyyy-MM-dd}"
 				: string.Empty;
 
 			var allWeekdays = orderedDates
