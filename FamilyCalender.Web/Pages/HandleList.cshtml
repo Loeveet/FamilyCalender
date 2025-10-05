@@ -63,7 +63,18 @@
 		<div id="todo-lists">
 			@if (isTodoList && undoneItems.Any())
 			{
-				<h2 class="mt-4" id="undone-heading">Att göra</h2>
+
+				<div class="d-flex align-items-center mt-2 mb-2">
+					<h2 class="mb-0 me-2" id="undone-heading">Att göra</h2>
+
+					<form method="post" asp-page-handler="ReverseList" class="mb-0">
+						<input type="hidden" name="listId" value="@Model.UserList.Id" />
+						<button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill">
+							<i class="fas fa-sort"></i>
+						</button>
+					</form>
+				</div>
+
 				<ul class="list-group mb-3" id="undone-list" data-list-id="@Model.UserList.Id">
 					@foreach (var item in undoneItems)
 					{
