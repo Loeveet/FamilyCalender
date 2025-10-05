@@ -21,75 +21,110 @@
 	<div class="card shadow-sm p-3">
 		<h5 class="card-title text-center text-dark"><i class="bi bi-calendar-event"></i> Händelsedetaljer</h5>
 		<hr>
+		<!-- om vi vill veta vilken kalender den tillhör -->
 
-		<div class="mb-2">
+@* 		<div class="mb-2">
 			<strong><i class="bi bi-calendar-event"></i> Kalender:</strong> @Model.ViewModel.EventDetails.Calendar.Name
-		</div>
+		</div> *@
+
 		<div class="mb-2">
 			<strong>Titel:</strong> @Model.ViewModel.EventDetails.Title
 		</div>
 
+
 		<div class="mb-2">
 			<strong>Beskrivning:</strong>
-			<div>
-				@Html.Raw(Model.ViewModel.EventDetails.Text.ReplaceLineEndings("<br/>"))
+			@if (string.IsNullOrEmpty(Model.ViewModel.EventDetails.Text))
+			{
+				<div><em>Ingen beskrivning angiven</em></div>
+			}
+			else
+			{
+				<div>
+					@Html.Raw(Model.ViewModel.EventDetails.Text.ReplaceLineEndings("<br/>"))
+				</div>
+
+			}
+		</div>
+		<!-- om vi vill ha vilken färg den har -->
+
+@* 		<div class="mb-2">
+			<strong>Kategorifärg:</strong> @Html.Raw(Model.ViewModel.GetCategoryColorDiamond()) @Model.ViewModel.GetCategoryColorName()
+		</div> *@
+
+
+		<div class="mb-3">
+			<strong>När:</strong>
+
+			<div class="time-info mt-2">
+
+				<div class="time-block">
+					<i class="bi bi-calendar-date"></i>
+					<span>@(Model.ViewModel.IsSingleEvent? Model.ViewModel.FormattedDate : Model.ViewModel.FormattedInterval)</span>
+				</div>
+
+				@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) ||
+								!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+				{
+					@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) || 
+						 !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+					{
+						<div class="time-block">
+							<i class="bi bi-clock"></i>
+							@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
+							{
+								<span><strong>Start:</strong> @Model.ViewModel.EventDetails.EventTime</span>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+							{
+								@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
+								{
+									<span> – </span>
+								}
+								<span><strong>Slut:</strong> @Model.ViewModel.EventDetails.EventStopTime</span>
+							}
+						</div>
+					}
+				}
+
+				@if (!Model.ViewModel.IsSingleEvent)
+				{
+					<div class="time-block">
+						<i class="bi bi-calendar-week"></i>
+						<span>@string.Join(", ", Model.ViewModel.SortedDaysInSwedish)</span>
+					</div>
+				}
 			</div>
 		</div>
 
+
+
+		@{
+			var members = Model.ViewModel.EventDetails.EventMemberDates
+			.Select(x => x.Member)
+			.Distinct()
+			.Where(m => m != null)
+			.ToList();
+
+			var baseHue = 220; // blå grundfärg
+		}
+
 		<div class="mb-2">
-			<strong>Kategorifärg:</strong> @Html.Raw(Model.ViewModel.GetCategoryColorDiamond()) @Model.ViewModel.GetCategoryColorName()
-		</div>
+			<strong>
+				<i class="bi @(Model.ViewModel.IsSingleMember ? "bi-person-circle" : "bi-people-fill")"></i>
+				Gäller:
+			</strong>
 
-
-
-		<div class="mb-2">
-			<strong> När:</strong>
-			@if (Model.ViewModel.IsSingleEvent)
-			{
-				<span>@Model.ViewModel.FormattedDate</span>
-			}
-			else
-			{
-				<span>@Model.ViewModel.FormattedInterval</span>
-
-			}
-
-			@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) || !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
-			{
-				<Span> <i class="bi bi-clock"></i> @Model.ViewModel.EventDetails?.EventTime</Span>
-				@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) && !string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
+			<div class="member-badges mt-1">
+				@for (int i = 0; i < members.Count; i++)
 				{
-					<span> - </span>
+					var lightness = 45 + (i * 6);
+					if (lightness > 70) lightness = 70;
+					var color = $"hsl({baseHue}, 70%, {lightness}%)";
+
+					<span class="member-badge" style="background-color:@(@color);">@members[i].Name</span>
 				}
-
-				<span>@Model.ViewModel.EventDetails?.EventStopTime</span>
-			}
-
-			@if (!Model.ViewModel.IsSingleEvent)
-			{
-				<br />
-				<strong><i class="bi bi-calendar-day"></i> Veckodagar:</strong>
-				@string.Join(", ", Model.ViewModel.SortedDaysInSwedish)
-			}
-
-		</div>
-
-		<div class="mb-2">
-			@if (Model.ViewModel.IsSingleMember)
-			{
-				<strong><i class="bi bi-person-circle"></i> Gäller:</strong>
-			}
-			else
-			{
-				<strong><i class="bi bi-people-fill"></i> Gäller:</strong>
-
-			}
-			<ul class="list-group list-group-flush">
-				@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().ToList())
-				{
-					<li class="list-group-item">@member?.Name</li>
-				}
-			</ul>
+			</div>
 		</div>
 	</div>
 
