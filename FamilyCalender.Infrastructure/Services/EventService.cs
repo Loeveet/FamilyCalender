@@ -211,22 +211,19 @@ namespace FamilyCalender.Infrastructure.Services
             await UpdateAsync(e);
         }
 
-        private async Task<Event> AddAsync(Event e)
-        {
-            e.CreatedUtc = DateTime.UtcNow;
-            e.LastEditedUtc = DateTime.UtcNow;
+		private async Task<Event> AddAsync(Event e)
+		{
+			var calendar = await _context.Calendars.FindAsync(e.CalendarId)
+						   ?? throw new ArgumentException($"Calendar with ID {e.CalendarId} not found");
 
-            var calendar = await _context.Calendars.FindAsync(e.CalendarId);
-            if (calendar != null)
-            {
-                calendar.LastEditedUtc = DateTime.UtcNow;
-                _context.Entry(calendar).Property(c => c.LastEditedUtc).IsModified = true;
-            }
-            await _context.Events.AddAsync(e);
-            await _context.SaveChangesAsync();
-            return e;
-        }
-        private async Task UpdateAsync(Event e)
+            e.CreatedUtc = e.LastEditedUtc = calendar.LastEditedUtc = DateTime.UtcNow;
+
+			await _context.Events.AddAsync(e);
+			await _context.SaveChangesAsync();
+
+			return e;
+		}
+		private async Task UpdateAsync(Event e)
         {
             ArgumentNullException.ThrowIfNull(e);
 

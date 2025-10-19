@@ -66,17 +66,6 @@ namespace FamilyCalender.Infrastructure.Services
 
         public async Task<List<int>> GetCalendarIdsForUserAsync(int userId)
         {
-			//var calendarAccesses = await _context.CalendarAccesses
-			//	.Where(ca => ca.UserId == userId)
-			//	.Include(ca => ca.Calendar)
-			//	.ThenInclude(c => c.Events)
-			//	.ToListAsync();
-
-			//var calendars = calendarAccesses
-			//	.Select(ca => ca.Calendar.Id)
-			//	.Distinct()
-			//	.ToList();
-
 			var calendars = await _context.CalendarAccesses
 				.Where(ca => ca.UserId == userId)
 				.Include(ca => ca.Calendar)
@@ -84,7 +73,6 @@ namespace FamilyCalender.Infrastructure.Services
 				.Select(ca => ca.Calendar.Id)
 				.Distinct()
 				.ToListAsync();
-
 
 			return calendars;
 		}
@@ -107,9 +95,10 @@ namespace FamilyCalender.Infrastructure.Services
 								.Include(c => c.Accesses)
 									.ThenInclude(a => a.User)
 								.Include(c => c.Events)
-								.FirstOrDefaultAsync(c => c.Id == calendarId);
+								.FirstOrDefaultAsync(c => c.Id == calendarId)
+								?? throw new ArgumentException($"Calendar with ID {calendarId} not found");
 
-			return calendar ?? throw new ArgumentException($"Calendar with ID {calendarId} not found");
+			return calendar;
 		}
 
 		public async Task<Calendar> UpdateCalendarAsync(Calendar calendar)
@@ -124,9 +113,9 @@ namespace FamilyCalender.Infrastructure.Services
         {
 			await UpdateAsync(calendar);
 		}
-        public async Task<CalendarDto> GetCalendarDtoAsync(int calendarId)
-        {
-			return await _context.Calendars
+		public async Task<CalendarDto> GetCalendarDtoAsync(int calendarId)
+		{
+			var calendarDto = await _context.Calendars
 				.Where(c => c.Id == calendarId)
 				.Select(c => new CalendarDto
 				{
@@ -134,7 +123,10 @@ namespace FamilyCalender.Infrastructure.Services
 					Name = c.Name,
 					InviteId = c.InviteId
 				})
-				.FirstOrDefaultAsync() ?? throw new FileNotFoundException();
+				.FirstOrDefaultAsync()
+				?? throw new FileNotFoundException($"Calendar with ID {calendarId} not found");
+
+			return calendarDto;
 		}
 
 		public async Task<List<CalendarDto>> GetCalendarDtosForUserAsync(int userId)
@@ -166,27 +158,22 @@ namespace FamilyCalender.Infrastructure.Services
 		}
 
 		public async Task UpdateCalendarNameAsync(int calendarId, string newName)
-        {
-            var calendar = await _context.Calendars
-				.Include(c => c.MemberCalendars)
-				.Include(c => c.Accesses)
-				.Include(c => c.Events)
-				.FirstOrDefaultAsync(c => c.Id == calendarId);
+		{
+			var calendar = await _context.Calendars
+		  .Include(c => c.MemberCalendars)
+		  .Include(c => c.Accesses)
+		  .Include(c => c.Events)
+		  .FirstOrDefaultAsync(c => c.Id == calendarId)
+		  ?? throw new ArgumentException("Calendar not found");
 
-			if (calendar == null) throw new ArgumentException("Calendar not found");
+			calendar.Name = newName;
+			await UpdateAsync(calendar);
+		}
 
-            calendar.Name = newName;
-            await UpdateAsync(calendar);
-        }
 
-        public async Task DeleteCalendarAsync(int calendarId)
+		public async Task DeleteCalendarAsync(int calendarId)
         {
 			var calendar = await GetCalendarWithAllRelationsAsync(calendarId);
-
-			if (calendar == null)
-			{
-				throw new Exception("Kalendern hittades inte.");
-			}
 
 			await DeleteAsync(calendar);
 		}
@@ -200,14 +187,15 @@ namespace FamilyCalender.Infrastructure.Services
 			return calendar;
 		}
 
-		private async Task<Calendar?> GetCalendarWithAllRelationsAsync(int calendarId)
+		private async Task<Calendar> GetCalendarWithAllRelationsAsync(int calendarId)
 		{
 			return await _context.Calendars
 				.Include(c => c.Events)
 				.Include(c => c.Accesses)
 				.Include(c => c.MemberCalendars)
 							.ThenInclude(mc => mc.Member)
-				.FirstOrDefaultAsync(c => c.Id == calendarId);
+				.FirstOrDefaultAsync(c => c.Id == calendarId)
+				?? throw new Exception("Kalendern hittades inte."); ;
 		}
 
 		private async Task DeleteAsync(Calendar calendar)

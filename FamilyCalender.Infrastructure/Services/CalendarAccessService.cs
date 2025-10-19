@@ -44,17 +44,10 @@ namespace FamilyCalender.Infrastructure.Services
         {
 			var calendarAccess = await _context.CalendarAccesses
 				.Where(ca => ca.UserId == userId && ca.CalendarId == calendarId)
-				.FirstOrDefaultAsync();
+				.FirstOrDefaultAsync() ?? throw new InvalidOperationException("Användaren är inte kopplad till denna kalender.");
 
-			if (calendarAccess != null)
-			{
-				_context.CalendarAccesses.Remove(calendarAccess);
-				await _context.SaveChangesAsync();
-			}
-			else
-			{
-				throw new InvalidOperationException("Användaren är inte kopplad till denna kalender.");
-			}
+			_context.CalendarAccesses.Remove(calendarAccess);
+			await _context.SaveChangesAsync();
 		}
 
 		public async Task UpdateCalendarAccessSettingsAsync(UserSettings settings)
