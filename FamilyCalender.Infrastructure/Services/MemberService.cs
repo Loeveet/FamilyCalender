@@ -25,33 +25,40 @@ namespace FamilyCalender.Infrastructure.Services
 
         public async Task<Member> GetMemberByIdAsync(int memberId)
         {
-			return await _context.Members.FirstOrDefaultAsync(m => m.Id == memberId) ?? throw new FileNotFoundException();
+			var member = await _context.Members.FirstOrDefaultAsync(m => m.Id == memberId)
+				?? throw new FileNotFoundException();
+
+			return member;
 		}
 
 		public async Task<List<Member>> GetMembersByIdAsync(List<int> memberIds)
 		{
-			return await _context.Members
-								 .Where(m => memberIds.Contains(m.Id))
-								 .Include(m => m.EventMemberDates)
-								 .ToListAsync();
+			var members = await _context.Members
+				.Where(m => memberIds.Contains(m.Id))
+				.Include(m => m.EventMemberDates)
+				.ToListAsync();
+
+			return members;
 		}
 
 		public async Task<List<Member>> GetMembersForCalendarAsync(int calendarId)
         {
-			return await _context.Members
-				.Include(m => m.MemberCalendars)
+			var members = await _context.Members
 				.Where(m => m.MemberCalendars.Any(mc => mc.CalendarId == calendarId))
+				.Include(m => m.MemberCalendars)
 				.ToListAsync();
+
+			return members;
 		}
 		public async Task<Member> UpdateMemberNameAsync(int memberId, string newName)
 		{
-			var member = await _context.Members.FirstOrDefaultAsync(m => m.Id == memberId);
-
 			if (string.IsNullOrWhiteSpace(newName))
 				throw new ArgumentException("Name can't be empty");
 
+			var member = await _context.Members.FirstOrDefaultAsync(m => m.Id == memberId)
+				?? throw new InvalidOperationException($"Member with ID {memberId} not found");
+
 			member.Name = newName;
-			_context.Members.Update(member);
 			await _context.SaveChangesAsync();
 			return member;
 		}
@@ -61,9 +68,9 @@ namespace FamilyCalender.Infrastructure.Services
 			var member = await _context.Members
 				.Include(m => m.MemberCalendars)
 				.Include(m => m.EventMemberDates)
-				.FirstOrDefaultAsync(m => m.Id == memberId);
+				.FirstOrDefaultAsync(m => m.Id == memberId)
+				?? throw new InvalidOperationException($"Member with ID {memberId} not found");
 
-			if (member == null) throw new FileNotFoundException();
 
 			_context.EventMemberDates.RemoveRange(member.EventMemberDates);
 			_context.MemberCalendars.RemoveRange(member.MemberCalendars);
@@ -81,22 +88,24 @@ namespace FamilyCalender.Infrastructure.Services
 				UserId = user.Id,
 				User = user
 			};
-			_context.Members.Add(member);
-			await _context.SaveChangesAsync();
 
-			await AddMemberToCalendarAsync(member.Id, calendarId);
+			_context.Members.Add(member);
+
+			await AddMemberToCalendarAsync(member, calendarId);
+
+			await _context.SaveChangesAsync();
 
 			return member;
 		}
-		private async Task AddMemberToCalendarAsync(int memberId, int calendarId)
+		private Task AddMemberToCalendarAsync(Member member, int calendarId)
 		{
 			var mc = new MemberCalendar
 			{
-				MemberId = memberId,
+				Member = member,
 				CalendarId = calendarId
 			};
 			_context.MemberCalendars.Add(mc);
-			await _context.SaveChangesAsync();
+			return Task.CompletedTask;
 		}
 	}
 }
