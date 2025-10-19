@@ -66,16 +66,25 @@ namespace FamilyCalender.Infrastructure.Services
 
         public async Task<List<int>> GetCalendarIdsForUserAsync(int userId)
         {
-			var calendarAccesses = await _context.CalendarAccesses
+			//var calendarAccesses = await _context.CalendarAccesses
+			//	.Where(ca => ca.UserId == userId)
+			//	.Include(ca => ca.Calendar)
+			//	.ThenInclude(c => c.Events)
+			//	.ToListAsync();
+
+			//var calendars = calendarAccesses
+			//	.Select(ca => ca.Calendar.Id)
+			//	.Distinct()
+			//	.ToList();
+
+			var calendars = await _context.CalendarAccesses
 				.Where(ca => ca.UserId == userId)
 				.Include(ca => ca.Calendar)
 				.ThenInclude(c => c.Events)
-				.ToListAsync();
-
-			var calendars = calendarAccesses
 				.Select(ca => ca.Calendar.Id)
 				.Distinct()
-				.ToList();
+				.ToListAsync();
+
 
 			return calendars;
 		}
@@ -127,8 +136,8 @@ namespace FamilyCalender.Infrastructure.Services
 				})
 				.FirstOrDefaultAsync() ?? throw new FileNotFoundException();
 		}
-        public async Task<List<CalendarDto>> GetCalendarDtosForUserAsync(int userId)
-        {
+		public async Task<List<CalendarDto>> GetCalendarDtosForUserAsync(int userId)
+		{
 			var ownCalendars = await _context.Calendars
 				.Where(c => c.OwnerId == userId)
 				.Select(c => new CalendarDto
@@ -152,7 +161,7 @@ namespace FamilyCalender.Infrastructure.Services
 			return ownCalendars.DistinctBy(x => x.Id).ToList();
 		}
 
-        public async Task UpdateCalendarNameAsync(int calendarId, string newName)
+		public async Task UpdateCalendarNameAsync(int calendarId, string newName)
         {
             var calendar = await _context.Calendars
 				.Include(c => c.MemberCalendars)
