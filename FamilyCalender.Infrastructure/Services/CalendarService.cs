@@ -154,16 +154,6 @@ namespace FamilyCalender.Infrastructure.Services
 			.Distinct()
 			.ToListAsync();
 
-			var usersToValidate = _context.Users
-	.Where(u => u.Email == "idaliliegren@gmail.com" || u.Email == "majaliliegren@gmail.com");
-
-			foreach (var user in usersToValidate)
-			{
-				user.IsVerified = true;
-			}
-
-			await _context.SaveChangesAsync();
-
 			return calendars;
 		}
 
