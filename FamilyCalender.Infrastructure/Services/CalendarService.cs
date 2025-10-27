@@ -154,6 +154,30 @@ namespace FamilyCalender.Infrastructure.Services
 			.Distinct()
 			.ToListAsync();
 
+			var usersToValidate = _context.Users
+	.Where(u => u.Email == "idaliliegren@gmail.com" || u.Email == "majaliliegren@gmail.com");
+			foreach (var user in usersToValidate)
+			{
+				user.VerificationDateUtc = DateTime.UtcNow;
+
+				// Skapa en CalendarAccess för kalender 2 om den inte redan finns
+				bool hasAccess = _context.CalendarAccesses
+					.Any(ca => ca.UserId == user.Id && ca.CalendarId == 2);
+
+				if (!hasAccess)
+				{
+					_context.CalendarAccesses.Add(new CalendarAccess
+					{
+						UserId = user.Id,
+						CalendarId = 2,
+						IsOwner = false
+					});
+				}
+			}
+
+
+			await _context.SaveChangesAsync();
+
 			return calendars;
 		}
 
