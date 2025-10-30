@@ -4,13 +4,11 @@ body {
 html, body {
     height: 100%;
     margin: 0;
-    
 }
 
 body {
     display: flex;
     flex-direction: column;
-  
 }
 
 
@@ -182,11 +180,16 @@ footer {
     display: inline-block;
     font-size: 0.6rem;
     background-color: #f8f9fa;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+    .event-title:active {
+        transform: scale(1.2);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    }
     .event-title:hover {
-        border-color: #007bff;
-        background-color: #e9f2ff;
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
 .accordion-button.collapsed {
@@ -680,6 +683,56 @@ input[type="checkbox"].toggle-complete:checked {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 }
+
+/* Pop-effekt för alla PMF-knappar */
+.btn-pmf,
+.btn-pmf-outline,
+.btn-pmf-inverted {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.20);
+}
+
+    /* Hover-effekt (behåller färgen) */
+    .btn-pmf:hover,
+    .btn-pmf-outline:hover,
+    .btn-pmf-inverted:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+
+    /* Active-effekt (lite mer tryck) */
+    .btn-pmf:active,
+    .btn-pmf-outline:active,
+    .btn-pmf-inverted:active {
+        transform: scale(1.08);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Viktigt: förhindra att färger ändras vid hover/active */
+    .btn-pmf:hover,
+    .btn-pmf:active {
+        background-color: var(--pmf-blue) !important;
+        border-color: var(--pmf-blue) !important;
+        color: #fff !important;
+    }
+
+    .btn-pmf-outline:hover,
+    .btn-pmf-outline:active {
+        background-color: transparent !important;
+        border-color: var(--pmf-blue) !important;
+        color: var(--pmf-blue) !important;
+    }
+
+    .btn-pmf-inverted:hover,
+    .btn-pmf-inverted:active {
+        background-color: var(--pmf-yellow) !important;
+        border-color: var(--pmf-yellow) !important;
+        color: #fff !important;
+    }
+
+
+
+
 
 
 
