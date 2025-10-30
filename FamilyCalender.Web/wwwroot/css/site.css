@@ -690,6 +690,7 @@ input[type="checkbox"].toggle-complete:checked {
 .btn-pmf-inverted {
     transition: transform 0.15s ease, box-shadow 0.15s ease;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.20);
+    will-change: transform;
 }
 
     /* Hover-effekt (behåller färgen) */
