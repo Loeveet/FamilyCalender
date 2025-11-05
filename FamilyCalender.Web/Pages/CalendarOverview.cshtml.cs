@@ -1,14 +1,15 @@
-using Microsoft.AspNetCore.Mvc;
-using FamilyCalender.Infrastructure.Services;
-using FamilyCalender.Web.ViewModels;
-using FamilyCalender.Core.Models.Entities;
 using FamilyCalender.Core.Interfaces.IServices;
+using FamilyCalender.Core.Models.Dto;
+using FamilyCalender.Core.Models.Entities;
+using FamilyCalender.Infrastructure.Services;
 using FamilyCalender.Web.Code;
-using System.Globalization;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using static FamilyCalender.Web.ViewModels.CalendarOverViewViewModel;
 using FamilyCalender.Web.News;
+using FamilyCalender.Web.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Globalization;
 using System.Net;
+using static FamilyCalender.Web.ViewModels.CalendarOverViewViewModel;
 
 
 namespace FamilyCalender.Web.Pages
@@ -60,7 +61,19 @@ namespace FamilyCalender.Web.Pages
 			}
 
 			var calendars = await _calendarManagementService.GetCalendarDtosForUserAsync(user.Id);
-            if (!calendarId.HasValue)
+
+			if (calendars == null || calendars.Count == 0)
+			{
+				ViewModel.CalendarDtos = new List<CalendarDto>();
+				ViewModel.SelectedCalendarId = 0;
+				ViewModel.DaysInMonth = new List<DayViewModel>();
+				ViewModel.SelectedView = CalendarView.Month;
+				DontScrollToToday = false;
+
+				return Page();
+			}
+
+			if (!calendarId.HasValue)
             {
                 var preferredCalendarId = await _userService.GetPreferredCalendarIdAsync(user.Id);
 
