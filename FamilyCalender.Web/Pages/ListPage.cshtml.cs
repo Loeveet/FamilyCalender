@@ -85,13 +85,8 @@ namespace FamilyCalender.Web.Pages
                 return Page();
             }
 
-            if (NewListType == ListTypeEnum.Unknown)
-            {
-				ModelState.AddModelError("NewListType", "Du måste välja typ av lista.");
-				return Page();
-			}
 
-            await _userListService.CreateListAsync(userId.Value, NewListName, CalendarId, NewListType);
+            await _userListService.CreateListAsync(userId.Value, NewListName, CalendarId, ListTypeEnum.Todolist);
             return RedirectToPage(new { calendarId = CalendarId, calendarName = CalendarName });
         }
 		public async Task<IActionResult> OnPostUpdateListNameAsync([FromBody] UpdateListDto data)

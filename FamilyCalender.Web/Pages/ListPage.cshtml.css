@@ -1,0 +1,25 @@
+﻿/*
+   ListPage.cshtml.css - Isolerad sidlayout
+   Här lägger vi:
+   - Endast det som är unikt för just denna sida.
+   - Aktiv markering av listtyp-väljaren (radioknappar).
+   - Vi rör INTE globala taggar som body/html eller generella knappar här.
+*/
+
+/* Markerad knapp i listtyp-väljaren */
+.btn-check:checked + .btn {
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
+}
+
+/* För extra tydlig aktiv stil per typ */
+.btn-check:checked + .btn-pmf-outline {
+    background-color: var(--pmf-blue);
+    color: #fff;
+    border-color: var(--pmf-blue);
+}
+
+.btn-check:checked + .btn-pmf-inverted {
+    background-color: #fff;
+    color: var(--pmf-yellow);
+    border-color: var(--pmf-yellow);
+}

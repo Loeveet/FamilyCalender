@@ -1,4 +1,20 @@
-﻿
+﻿/* =========================================================
+   BOOTSTRAP-OVERRIDES.CSS
+
+   Här lägger vi:
+   - Anpassningar av Bootstrap-komponenter
+   - PMF-knappvarianter
+   - Overrides för navbar, cards, accordion, tables
+   - Styling av Bootstrap-baserade formulär
+========================================================= */
+
+
+
+/* =========================================================
+   1. PMF BUTTON VARIANTS
+========================================================= */
+
+/* Primär PMF-knapp */
 .btn-pmf {
     --bs-btn-color: #FFF;
     --bs-btn-bg: var(--pmf-blue);
@@ -15,9 +31,10 @@
     --bs-btn-disabled-bg: #6c757d;
     --bs-btn-disabled-border-color: #6c757d;
     --bs-border-radius-pill: 50rem;
-    border-radius:50rem;
+    border-radius: 50rem;
 }
 
+/* Outline-variant */
 .btn-pmf-outline {
     --bs-btn-color: var(--pmf-blue);
     --bs-btn-border-color: var(--pmf-blue);
@@ -32,11 +49,12 @@
     --bs-btn-disabled-color: var(--pmf-blue);
     --bs-btn-disabled-bg: transparent;
     --bs-btn-disabled-border-color: var(--pmf-blue);
-    --bs-gradient: none; 
+    --bs-gradient: none;
     --bs-border-radius-pill: 50rem;
     border-radius: 50rem;
 }
 
+/* Inverterad variant */
 .btn-pmf-inverted {
     --bs-btn-color: #FFF;
     --bs-btn-bg: var(--pmf-yellow);
@@ -46,12 +64,275 @@
     --bs-btn-hover-border-color: var(--pmf-blue);
     --bs-border-radius-pill: 50rem;
     border-radius: 50rem;
-    /*--bs-btn-focus-shadow-rgb: 130,138,145;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #565e64;
-    --bs-btn-active-border-color: #51585e;
-    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #6c757d;
-    --bs-btn-disabled-border-color: #6c757d;*/
+}
+
+
+
+/* =========================================================
+   2. BUTTON EFFECTS & INTERACTIONS
+========================================================= */
+
+/* Pop-effekt för alla PMF-knappar */
+.btn-pmf,
+.btn-pmf-outline,
+.btn-pmf-inverted {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.20);
+    will-change: transform;
+}
+
+    /* Hover-effekt */
+    .btn-pmf:hover,
+    .btn-pmf-outline:hover,
+    .btn-pmf-inverted:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+
+    /* Active-effekt */
+    .btn-pmf:active,
+    .btn-pmf-outline:active,
+    .btn-pmf-inverted:active {
+        transform: scale(1.08);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Förhindra att färger ändras */
+    .btn-pmf:hover,
+    .btn-pmf:active {
+        background-color: var(--pmf-blue) !important;
+        border-color: var(--pmf-blue) !important;
+        color: #fff !important;
+    }
+
+    .btn-pmf-outline:hover,
+    .btn-pmf-outline:active {
+        background-color: transparent !important;
+        border-color: var(--pmf-blue) !important;
+        color: var(--pmf-blue) !important;
+    }
+
+    .btn-pmf-inverted:hover,
+    .btn-pmf-inverted:active {
+        background-color: var(--pmf-yellow) !important;
+        border-color: var(--pmf-yellow) !important;
+        color: #fff !important;
+    }
+
+
+
+/* =========================================================
+   3. STANDARD BOOTSTRAP BUTTON OVERRIDES
+========================================================= */
+
+/* Standard primary button */
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/* Large button */
+.btn-lg {
+    font-size: 1.2rem;
+    padding: 12px;
+    font-weight: 400;
+    border-radius: 2rem;
+}
+
+    .btn-lg:hover {
+        opacity: 0.9;
+    }
+
+/* Secondary button */
+.btn-secondary {
+    border-radius: 8px;
+}
+
+
+
+/* =========================================================
+   4. NAVIGATION OVERRIDES
+========================================================= */
+
+/* Active nav pills */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/* Navbar dropdown */
+.navbar .dropdown-toggle {
+    color: black !important;
+}
+
+/* Navbar transitions */
+.navbar .nav-link,
+.navbar .dropdown-toggle,
+.navbar .btn-link {
+    transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+    /* Navbar hover */
+    .navbar .nav-link:hover,
+    .navbar .dropdown-toggle:hover,
+    .navbar .btn-link:hover {
+        color: rgba(0, 0, 0, 0.7) !important;
+        opacity: 0.8;
+    }
+
+
+
+/* =========================================================
+   5. ACCORDION OVERRIDES
+========================================================= */
+
+/* Collapsed accordion */
+.accordion-button.collapsed {
+    border: 1px solid #007bff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .accordion-button.collapsed:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+/* Expanded accordion */
+.accordion-button:not(.collapsed) {
+    background-color: #0056b3;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .accordion-button:not(.collapsed):hover {
+        background-color: #004085;
+        color: white;
+    }
+
+
+
+/* =========================================================
+   6. TABLE OVERRIDES
+========================================================= */
+
+/* Idag-markering */
+table.table tr.today td {
+    background-color: var(--pmf-yellow);
+}
+
+/* Veckoseparator */
+table.table .week-separator {
+    text-align: center;
+    background-color: #5f6d7c;
+    background: linear-gradient(to right, #a6c1ee, #4f9bd2);
+    color: #fff;
+    padding: 5px;
+    margin: 0;
+    font-size: 1rem;
+    border: none;
+}
+
+/* Medlemsrad per vecka — gör cellerna genomskinliga så radens blå gradient
+   syns igenom (Bootstrap ger annars varje td en egen bakgrund som täcker den).
+   Samma blå band och vita text som veckoseparatorn ovanför. */
+table.table .extra-member-column-per-week td {
+    background-color: transparent;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Public holiday */
+/* td.public-holiday istället för .public-holiday: högre specificitet så den
+   vita bakgrunden vinner även när cellen också har klassen .today */
+table.table td.public-holiday {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    font-size: 0.6rem;
+    color: #be2f10 !important;
+    border: none;
+    background: #fff;
+}
+
+/* Muted red — past Sundays/holidays: still red, but greyed so they read as old days */
+.text-danger-muted {
+    color: #c27e77 !important;
+}
+
+/* Today column/header */
+table.table .today {
+    text-align: center;
+    background-color: var(--pmf-blue);
+    color: #FFF;
+    padding: 0;
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+/* Sticky table header */
+.table thead th.sticky {
+    position: sticky;
+    top: 4rem;
+    background-color: white;
+    z-index: 10;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+
+
+/* =========================================================
+   7. CARD OVERRIDES
+========================================================= */
+
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+.card-body {
+    padding: 2rem;
+    background-color: #ddd;
+}
+
+
+
+/* =========================================================
+   8. LIST GROUP OVERRIDES
+========================================================= */
+
+.list-group-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 5px;
+    transition: background-color 0.3s ease;
+}
+
+    .list-group-item:hover {
+        background-color: #e9ecef;
+    }
+
+
+
+/* =========================================================
+   9. FORM OVERRIDES
+========================================================= */
+
+/* Input groups */
+.input-group {
+    margin-bottom: 1rem;
+}
+
+/* Floating labels */
+.form-floating input {
+    border-radius: 8px;
 }

@@ -1,0 +1,12 @@
+﻿/*
+   HandleCalendar.cshtml.css - Isolerad sidlayout
+   Här lägger vi:
+   - Endast det som är unikt för just denna sida.
+   - Avstånd ovanför delningslänk-rutan.
+   - Vi rör INTE globala taggar som body/html eller generella knappar här.
+*/
+
+/* Luft ovanför delningslänken när den visas */
+.share-link-container {
+    margin-top: 20px;
+}

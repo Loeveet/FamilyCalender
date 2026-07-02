@@ -1,0 +1,92 @@
+﻿/* 
+   CalendarOverview.cshtml.css - Isolerad sidlayout
+   Här lägger vi:
+   - Endast det som är unikt för just denna sida.
+   - Layout-boxar (.login-container, .signup-container).
+   - Vi rör INTE globala taggar som body/html eller generella knappar här.
+*/
+
+.expanding-column {
+    flex-grow: 1;
+    /*overflow: hidden;*/
+    word-break: break-word;
+    min-width: 0;
+    max-width: 3.75rem;
+    min-width: 3.75rem;
+    font-size: 0.7rem; /* clamp(10px, 2vw, 20px);*/
+    /*white-space: nowrap;*/
+    text-align: center;
+}
+
+.fixed-day-column {
+    width: 10%;
+    white-space: nowrap;
+    text-align: center;
+    /*font-size: 0.7rem;*/
+    font-size: 12px;
+}
+
+.truncated-title {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: clamp(10px, 1.2vw, 14px);
+}
+
+/* Kortbaserad tabell-layout (flyttad från <style> i markupen).
+   OBS: dessa klasser används inte i nuvarande markup - bevarade som referens. */
+.table-container {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-header, .table-row {
+    display: flex;
+    padding: 0.5rem;
+    background-color: #00796b;
+    color: white;
+}
+
+.table-header {
+    font-weight: bold;
+}
+
+.table-cell {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    border-right: 1px solid #e0e0e0;
+}
+
+    .table-cell:last-child {
+        border-right: none;
+    }
+
+.table-row {
+    background-color: #b2dfdb;
+}
+
+/* Tabellrader/celler utan kantlinjer (separator-, idag- och helgdagsrader) */
+.borderless {
+    border: none;
+}
+
+/* Extra luft under kalendertabellen */ 
+.calendar-table-wrapper {
+    margin-bottom: 50px;
+}
+
+.calendar-table {
+    margin-bottom: 0;
+}
+
+table.table tr.calendar-row-today > td {
+    background-color: #f1f3f5;
+}

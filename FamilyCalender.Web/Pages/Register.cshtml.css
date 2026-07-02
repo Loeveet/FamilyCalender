@@ -1,0 +1,30 @@
+﻿/* 
+   Register.cshtml.css - Isolerad sidlayout
+   Här lägger vi:
+   - Endast det som är unikt för just denna sida.
+   - Layout-boxar (.login-container, .signup-container).
+   - Vi rör INTE globala taggar som body/html eller generella knappar här.
+*/
+
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Gör plats för ögat i lösenordsfälten */
+.password-input {
+    padding-right: 2.5rem;
+}
+

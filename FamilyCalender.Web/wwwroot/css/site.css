@@ -1,50 +1,144 @@
-body {
-    font-family: 'Roboto', sans-serif !important;
-}
-html, body {
+ï»¿/* =========================================================
+   SITE.CSS - Appens globala ramverk
+
+   HÃ¤r lÃ¤gger vi:
+   - Global layout (html, body, main, footer)
+   - Appens bakgrund och transparensregler
+   - App-specifika komponenter
+   - FormulÃ¤rkomponenter
+   - Responsivitet
+   - Kritiska kategorifÃ¤rger (lagras i databasen)
+========================================================= */
+
+
+
+/* =========================================================
+   1. GLOBAL LAYOUT & BASE
+========================================================= */
+
+html {
+    /* TillÃ¥t html att sÃ¤tta basramen */
     height: 100%;
-    margin: 0;
 }
 
 body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
     display: flex;
     flex-direction: column;
+    /* LÃ–SNINGEN PÃ… STRECKET: */
+    background-color: #eef4ff;
+    background-image: none !important; /* Rensar om det ligger nÃ¥gon gammal gradient och spÃ¶kar */
+    background-attachment: fixed; /* Detta spikar fast fÃ¤rgen i glaset pÃ¥ skÃ¤rmen! */
+}
+
+    /* GÃ¶r huvudytan transparent sÃ¥ att body-bakgrunden syns igenom */
+    body > .container, main {
+        background: transparent !important;
+    }
+
+main {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* Globala lÃ¤nkfÃ¤rger */
+a {
+    color: #0077cc;
+}
+
+/* FÃ¶r steg 1 och steg 2 */
+h4 {
+    font-size: 1.5rem;
 }
 
 
+
+/* =========================================================
+   2. GLOBAL HELPERS & UTILITIES
+========================================================= */
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+.center-text {
+    text-align: center;
+}
+
+.month-and-year {
+    min-width: 14rem;
+}
+
+.corner-icon {
+    width: 4rem;
+    border: none;
+}
+
+
+
+/* =========================================================
+   3. APP LAYOUT COMPONENTS
+========================================================= */
+
+/* Navbar */
+.app-navbar {
+    background-color: #eef4ff;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Huvudcontainer */
 .box-container {
-    padding-top:50px;
+    padding-top: 50px;
     padding-left: 15px;
     padding-right: 15px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.8);
-    height:90vh;
+    height: 90vh;
     color: #000;
-    margin-top:-20px;
-   
+    margin-top: -20px;
 }
 
-.center-text{
-    text-align:center;
+/* Sticky header */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 20;
+    padding: 10px 0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/*.bubble {
-    display: inline-block;
-    background-color: #ff6f61;
+/* Extra medlemskolumn - styr radens hÃ¶jd och bas */
+.extra-member-column-per-week {
+    border: none;
+    background: linear-gradient(to right, #a6c1ee, #4f9bd2);
+}
+
+/* Styr utseendet pÃ¥ cellerna inuti raden - samma blÃ¥ gradient/vita text som veckonumret */
+.extra-member-column-per-week td {
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    margin-left: 115px;
-    position: absolute;
-    transform: translateX(-50%) rotate(25deg);*/
-    /* top: 17rem; */
-    /*margin-bottom: -2rem;
     font-weight: bold;
-    margin-top: -55px;
-    font-size: 1rem;
-    animation: pop 0.3s ease-out;
-}*/
+}
 
+
+
+/* =========================================================
+   4. INTERACTIVE COMPONENTS
+========================================================= */
+
+/* Bubble */
 .bubble {
     display: inline-block;
     background-color: #ff6f61;
@@ -72,109 +166,7 @@ body {
         border-color: #ff6f61 transparent transparent transparent;
     }
 
-@keyframes pop {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-
-main {
-    flex: 1;
-}
-
-footer {
-    margin-top: auto; 
-}
-
-
-.extra-member-column-per-week {
-    background: linear-gradient(to right, #a6c1ee, #4f9bd2);
-}
-
-.extra-member-column-per-week td{
-    color: white;
-    font-weight:bold;
-}
-
-
-@media (max-width: 576px) {
-    .floating-button {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-        border: none;
-        background-color: dimgray;
-        color: white;
-        padding: 12px 16px;
-        border-radius: 50%;
-        font-size: 24px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s ease;
-        opacity: 0.5;
-    }
-
-        .floating-button:hover {
-            background-color: #0056b3;
-        }
-
-    .add-event-button {
-        display: none; /* Döljer knappen på små skärmar */
-    }
-
-  
-
-    .day-info-medium, .day-info-large {
-        display: none; /* Döljer både dagförkortning och fullständigt namn */
-    }
-}
-
-@media (min-width: 577px) and (max-width: 767px) {
-    .day-info-small {
-        display: none; /* Döljer bara datumet på mellanstora skärmar */
-    }
-
-    .day-info-large {
-        display: none; /* Döljer fullt namn på dag */
-    }
-
-   
-   
-}
-
-@media (min-width: 768px) {
-    .day-info-small {
-        display: none; /* Döljer bara datumet på stora skärmar */
-    }
-
-    .day-info-medium {
-        display: none; /* Döljer förkortat namn på dag på stora skärmar */
-    }   
-}
-
-@media(max-width: 767px) {
-    .fixed-btn {
-        position: fixed;
-        bottom: 1.2rem;
-        right: 1.5rem;
-        z-index: 1000;
-    }
-
-    #list-container {
-        padding-bottom: 2rem;
-    }
-    #listPage-container {
-        padding-bottom: 3rem;
-    }
-}
-
+/* Event title */
 .event-title {
     border: 1px solid #ccc;
     display: inline-block;
@@ -183,190 +175,139 @@ footer {
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-    .event-title:active {
-        transform: scale(1.2);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.25);
-    }
     .event-title:hover {
         transform: scale(1.1);
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-.accordion-button.collapsed {
-    border: 1px solid #007bff;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.accordion-button.collapsed:hover {
-    background-color: #0056b3;
-    color: white;
-}
-
-.accordion-button:not(.collapsed) {
-    background-color: #0056b3;
-    color: white;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.accordion-button:not(.collapsed):hover {
-    background-color: #004085;
-    color: white;
-}
-
-.month-and-year {
-    min-width: 14rem;
-}
-
-.expanding-column {
-    flex-grow: 1;
-    /*overflow: hidden;*/
-    word-break: break-word;
-    min-width: 0;
-    max-width: 3.75rem;
-    min-width: 3.75rem;
-    font-size: 0.7rem; /* clamp(10px, 2vw, 20px);*/
-    /*white-space: nowrap;*/
-    text-align:center;
-}
-
-
-table.table tr.today td {
-    background-color: var(--pmf-yellow); /*#a5c0ee;*/
-}
-
-
-
-table.table .week-separator {
-    text-align: center;
-    xxbackground-color: #5f6d7c;
-    background: linear-gradient(to right, #a6c1ee, #4f9bd2);
-    color: #fff;
-    padding: 5px;
-    margin: 0px;
-    font-size: 1rem;
-    border: none;
-}
-
-table.table .public-holiday {
-    text-align: center;
-    padding: 0px;
-    margin: 0px;
-    font-size: 0.6rem;
-    color: #be2f10 !important;
-    border: none;
-    
-    background:transparent;
-}
-
-table.table .today {
-    text-align: center;
-    /*background-color: #a5c0ee;*/
-    background-color: var(--pmf-blue); /*#a5c0ee;*/
-    color: #FFF;
-}
-
-
-.fixed-day-column {
-    width: 10%;
-    white-space: nowrap;
-    text-align: center;
-    /*font-size: 0.7rem;*/
-    font-size:12px;
-}
-
-.truncated-title {
-    display: block;
-    max-width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: clamp(10px, 1.2vw, 14px);
-}
-
-.navbar .dropdown-toggle {
-    color: black !important;
-}
-
-.navbar .nav-link,
-.navbar .dropdown-toggle,
-.navbar .btn-link {
-    transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
-}
-
-.navbar .nav-link:hover,
-.navbar .dropdown-toggle:hover,
-.navbar .btn-link:hover {
-    color: rgba(0, 0, 0, 0.7) !important;
-    opacity: 0.8;
-}
-
-.card {
-    border-radius: 12px;
-    transition: transform 0.2s ease-in-out;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-}
-
-.list-group-item {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 5px;
-    transition: background-color 0.3s ease;
-}
-
-    .list-group-item:hover {
-        background-color: #e9ecef;
+    .event-title:active {
+        transform: scale(1.2);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.25);
     }
 
-.btn-lg {
-    font-size: 18px;
-    padding: 12px;
-    font-weight: 600;
-    border-radius: 10px;
+/* Drag handles */
+.drag-handle,
+.drag-handle-list {
+    cursor: grab;
+    user-select: none;
+    font-size: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.btn-lg:hover {
-    opacity: 0.9;
-}
-
-
-.table thead th.sticky {
-    position: sticky;
-    top: 4rem;
-    background-color: white;
-    z-index: 10;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-.sticky-header {
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 20;
-    padding: 10px 0;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); 
+.drag-handle-list {
+    position: absolute;
+    top: 75%;
+    right: 0.25rem;
+    margin-right: 0.5rem;
+    transform: translateY(-50%);
+    z-index: 1;
 }
 
 
-.corner-icon {
-    width: 4rem;
+
+/* =========================================================
+   5. FORM COMPONENTS
+========================================================= */
+
+/* Color select */
+.color-select {
+    width: 100px;
+    height: 40px;
+    padding: 5px;
+    font-size: 1.2rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    appearance: none;
+    cursor: pointer;
+    text-align: center;
 }
 
-/* Boxar och text */
-.card {
-    border: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    .color-select option {
+        height: 30px;
+        padding: 10px;
+    }
+
+/* Checkbox */
+input[type="checkbox"].toggle-complete {
+    transform: scale(1.4);
+    cursor: pointer;
+    accent-color: #1e3a8a;
+    border: 1px solid #1e3a8a;
+    border-radius: 4px;
+}
+
+    input[type="checkbox"].toggle-complete:checked {
+        accent-color: #1e3a8a;
+        border-color: #1e3a8a;
+        background-color: #1e3a8a;
+    }
+
+/* Color dropdown */
+.color-dropdown {
+    position: relative;
+}
+
+    .color-dropdown > i {
+        position: absolute;
+        right: 25px;
+        top: 15px;
+    }
+
+.selected {
+    padding-top: 1rem;
+    padding-right: 1.25rem;
+    padding-bottom: 1rem;
+    padding-left: 1.25rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    border: 1px solid #ccc;
+}
+
+.options {
+    display: none;
+    position: absolute;
+    width: 100%;
+    top: 110%;
+    z-index: 1000;
+    background: white;
     border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-.card-body {
-    padding: 2rem;
-    background-color: #ddd;
+    .options div {
+        padding: 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+    }
+
+        .options div:hover {
+            background-color: #f0f0f0;
+        }
+
+
+
+/* Visa/dÃ¶lj-Ã¶ga i lÃ¶senordsfÃ¤lt (delas av Login, Register, ResetPassword) */
+.password-toggle-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2em;
+    z-index: 10;
+    background: white;
+    color: #6c757d;
 }
-/* Steg 1 - Blå Box */
+
+
+
+/* =========================================================
+   6. INFO / BOX COMPONENTS
+========================================================= */
+
+/* BlÃ¥ box */
 .blue-box {
     background-color: var(--pmf-blue);
     padding: 20px;
@@ -375,6 +316,29 @@ table.table .today {
     text-align: center;
 }
 
+/* Orange box */
+.orange-box {
+    background-color: var(--pmf-yellow);
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+    .orange-box .arrow {
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 20px solid var(--pmf-yellow);
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+/* Info box */
 .info-box {
     display: flex;
     align-items: center;
@@ -398,243 +362,30 @@ table.table .today {
     color: #00796b;
 }
 
-.orange-box {
-    background-color: var(--pmf-yellow);
-    padding: 20px;
-    border-radius: 8px;
-    position: relative;
-    text-align: center;
-    color: white;
-}
-
-    .orange-box .arrow {
-        width: 0;
-        height: 0;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-top: 20px solid var(--pmf-yellow);
-        position: absolute;
-        bottom: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-/* För steg 1 och steg 2 */
-h4 {
-    font-size: 1.5rem;
-}
-
-.input-group {
-    margin-bottom: 1rem;
-}
-
-.form-floating input {
-    border-radius: 8px;
-}
-
-.btn-secondary {
-    border-radius: 8px;
-}
-
-.list-group-item {
-    border-radius: 8px;
-}
-
-.color-select {
-    width: 100px;
-    height: 40px;
-    padding: 5px;
-    font-size: 1.2rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    appearance: none;
-    cursor: pointer;
-    text-align: center;
-}
-
-    .color-select option {
-        height: 30px;
-        padding: 10px;
-    }
-
-/* Bas-stil för checkboxen (okryssad) */
-input[type="checkbox"].toggle-complete {
-    transform: scale(1.4);
-    cursor: pointer;
-    accent-color: #1e3a8a;
-    border: 1px solid #1e3a8a;
-    border-radius: 4px;
-}
-
-/* När den är ikryssad */
-input[type="checkbox"].toggle-complete:checked {
-    accent-color: #1e3a8a; 
-    border-color: #1e3a8a; 
-    background-color: #1e3a8a;
-}
-
-/* NEVER rename these - they are being used when creating event with category, and the class name is being stored in database*/
-.event-color-category-blue {
-    background-color: #cce5ff;
-}
-.event-color-category-green {
-    background-color: #d4edda;
-}
-.event-color-category-yellow {
-    background-color: #fff3cd;
-}
-.event-color-category-pink {
-    background-color: #f8d7da;
-}
-.event-color-category-red {
-    background-color: #f8c1c1;
-}
-.event-color-category-purple {
-    background-color: #e2d6f9;
-}
-
-.event-color-category-blue-text {
-    color: #cce5ff;
-}
-.event-color-category-green-text {
-    color: #d4edda;
-}
-.event-color-category-yellow-text {
-    color: #fff3cd;
-}
-.event-color-category-pink-text {
-    color: #f8d7da;
-}
-.event-color-category-red-text {
-    color: #f8c1c1;
-}
-.event-color-category-purple-text {
-    color: #e2d6f9;
-}
-/* End of category colors */
 
 
+/* =========================================================
+   7. TEXT / EDITABLE COMPONENTS
+========================================================= */
 
-/* Style for color dropdown */
-/* Used on Creating new event and editing existing event */
-
-.color-dropdown {
-    position: relative;
-}
-
-.color-dropdown > i {
-    position: absolute;
-    right: 25px;
-    top: 15px;
-}
-
-.selected {
-    padding-top: 1rem;
-    padding-right: 1.25rem;
-    padding-bottom: 1rem;
-    padding-left: 1.25rem;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    border: 1px solid #ccc;
-}
-
-.options {
-    display: none;
-    position: absolute;
-    width: 100%;
-    top: 110%;
-    z-index: 1000;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.options div {
-    padding: 10px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-}
-
-    .options div:hover {
-        background-color: #f0f0f0;
-    }
-
-
-
-/* Generell stil för sidan */
-.account-verified-container {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 500px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-/* Rubrik för bekräftelse */
-.account-verified-heading {
-    margin-top: 0;
-    font-size: 1.5rem;
-    color: #333;
-}
-
-/* Undertitel med beskrivning */
-.account-verified-subheading {
-    color: #6c757d;
-    margin-top: 0.5rem;
-    font-size: 1.1rem;
-}
-
-/* Stil för knappen */
-.account-verified-btn {
-    width: 100%;
-    background-color: #4a90e2;
-    color: white;
-    border-radius: 4px;
-    padding: 1rem;
-    text-align: center;
-    display: inline-block;
-    margin-top: 1rem;
-    text-decoration: none;
-}
-
-    .account-verified-btn:hover {
-        background-color: #357ab7;
-    }
-
-.list-item-text:focus,
-.editable-text:focus {
-    outline: none;
-}
 .list-item-text,
-.editable-text{
+.editable-text {
     cursor: text;
     user-select: text;
 }
 
-.drag-handle,
-.drag-handle-list{
-    cursor: grab;
-    user-select: none;
-    font-size: 1.5rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
+    .list-item-text:focus,
+    .editable-text:focus {
+        outline: none;
+    }
 
-.drag-handle-list 
-{
-    position: absolute;
-    top: 75%;
-    right: 0.25rem;
-    margin-right: 0.5rem;
-    transform: translateY(-50%);
-    z-index: 1;
-}
 
-/* Behåll original för medlemmar */
+
+/* =========================================================
+   8. BADGES & EVENT UI
+========================================================= */
+
+/* Member badges */
 .member-badges {
     display: flex;
     flex-wrap: wrap;
@@ -654,18 +405,7 @@ input[type="checkbox"].toggle-complete:checked {
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 
-/* Tid- och datumblock: ingen blå bakgrund längre */
-/*.time-block {
-    display: flex;
-    align-items: center;
-    background: transparent;*/ /* ändrat från #f7faff */
-    /*padding: 0.4rem 0.7rem;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    font-size: 0.95rem;
-}*/
-
-/* Veckodags-badges som medlemmar */
+/* Weekday badges */
 .weekday-badges {
     display: flex;
     flex-wrap: wrap;
@@ -684,57 +424,154 @@ input[type="checkbox"].toggle-complete:checked {
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 
-/* Pop-effekt för alla PMF-knappar */
-.btn-pmf,
-.btn-pmf-outline,
-.btn-pmf-inverted {
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.20);
-    will-change: transform;
+
+
+/* =========================================================
+   9. EVENT CATEGORY COLORS
+   NEVER RENAME - Stored in database
+========================================================= */
+
+.event-color-category-blue {
+    background-color: #cce5ff;
 }
 
-    /* Hover-effekt (behåller färgen) */
-    .btn-pmf:hover,
-    .btn-pmf-outline:hover,
-    .btn-pmf-inverted:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+.event-color-category-green {
+    background-color: #d4edda;
+}
+
+.event-color-category-yellow {
+    background-color: #fff3cd;
+}
+
+.event-color-category-pink {
+    background-color: #f8d7da;
+}
+
+.event-color-category-red {
+    background-color: #f8c1c1;
+}
+
+.event-color-category-purple {
+    background-color: #e2d6f9;
+}
+
+.event-color-category-blue-text {
+    color: #cce5ff;
+}
+
+.event-color-category-green-text {
+    color: #d4edda;
+}
+
+.event-color-category-yellow-text {
+    color: #fff3cd;
+}
+
+.event-color-category-pink-text {
+    color: #f8d7da;
+}
+
+.event-color-category-red-text {
+    color: #f8c1c1;
+}
+
+.event-color-category-purple-text {
+    color: #e2d6f9;
+}
+
+
+
+/* =========================================================
+   10. RESPONSIVE
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .floating-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        border: none;
+        background-color: dimgray;
+        color: white;
+        padding: 12px 16px;
+        border-radius: 50%;
+        font-size: 24px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+        opacity: 0.5;
     }
 
-    /* Active-effekt (lite mer tryck) */
-    .btn-pmf:active,
-    .btn-pmf-outline:active,
-    .btn-pmf-inverted:active {
-        transform: scale(1.08);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        .floating-button:hover {
+            background-color: #0056b3;
+        }
+
+    .add-event-button {
+        display: none;
     }
 
-    /* Viktigt: förhindra att färger ändras vid hover/active */
-    .btn-pmf:hover,
-    .btn-pmf:active {
-        background-color: var(--pmf-blue) !important;
-        border-color: var(--pmf-blue) !important;
-        color: #fff !important;
+    .day-info-medium,
+    .day-info-large {
+        display: none;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 767px) {
+
+    .day-info-small {
+        display: none;
     }
 
-    .btn-pmf-outline:hover,
-    .btn-pmf-outline:active {
-        background-color: transparent !important;
-        border-color: var(--pmf-blue) !important;
-        color: var(--pmf-blue) !important;
+    .day-info-large {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) {
+
+    .day-info-small {
+        display: none;
     }
 
-    .btn-pmf-inverted:hover,
-    .btn-pmf-inverted:active {
-        background-color: var(--pmf-yellow) !important;
-        border-color: var(--pmf-yellow) !important;
-        color: #fff !important;
+    .day-info-medium {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .fixed-btn {
+        position: fixed;
+        bottom: 1.2rem;
+        right: 1.5rem;
+        z-index: 1000;
     }
 
+    #list-container {
+        padding-bottom: 2rem;
+    }
+
+    #listPage-container {
+        padding-bottom: 3rem;
+    }
+}
 
 
 
+/* =========================================================
+   11. ANIMATIONS
+========================================================= */
 
+@keyframes pop {
 
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
 
-
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
