@@ -138,7 +138,7 @@ namespace FamilyCalender.Web.Pages
         {
             if (!IsValidInput(selectedMemberIds))
             {
-                ModelState.AddModelError(string.Empty, "Titel, datum, medlem och kalender är obligatoriskt.");
+                ModelState.AddModelError(string.Empty, "Titel, datum, medlem och kalender Ã¤r obligatoriskt.");
                 return Page();
             }
 
@@ -207,8 +207,8 @@ namespace FamilyCalender.Web.Pages
         }
         private async Task LoadWeekViewData(int? calendarId, List<int> calendarIds, DateTime weekDate, List<PublicHolidayInfo> publicHolidays)
         {
-            // Sätt startdatum för veckan baserat på year, month och weekOffset
-            // Hämta events och andra data för veckan
+            // SÃ¤tt startdatum fÃ¶r veckan baserat pÃ¥ year, month och weekOffset
+            // HÃ¤mta events och andra data fÃ¶r veckan
             ViewModel.DaysInMonth = GenerateWeekDays(weekDate, ViewModel.CultureInfo, publicHolidays);
 
             if (calendarIds != null)

@@ -1,21 +1,19 @@
 ﻿ @page
 @model FamilyCalender.Web.Pages.CreateCalendarModel
 @{
+    Layout = "_Layout";
 }
 
 <a href="/CalendarOverview" class="btn btn-outline-dark btn-sm">
     <i class="bi bi-arrow-left"></i> Jag ångra mig - jag vill gå tillbaka
 </a>
 
-<div class="container mt-5" style="text-align:center">
+<div class="container mt-5 center-text">
     <h2>Skapa Kalender 📅</h2>
     
     
    
     <form method="post" class="mt-4">
-        <div class="mb-3">
-           
-        </div>
         
         <div class="orange-box mb-4">
             <div class="arrow"></div>
@@ -44,8 +42,6 @@
                 <h4 class="card-title"></h4>
                 <p>Skriv ett namn och klicka på lägg till</p>
                 <div class="input-group mb-2">
-                   
-                    <br/>
                     <div class="form-floating">
                         <input type="text" id="memberName" class="form-control"/>
                         <label class="form-label" for="memberName">Namn</label>
@@ -68,6 +64,6 @@
         </div>
 
 
-        <button type="submit" class="btn btn-pmf btn-lg"><i class="fa fa-save fa-1x"></i> Skapa kalender</button>
+        <button type="submit" class="btn btn-pmf btn-lg mb-5"><i class="fa fa-save fa-1x"></i> Skapa kalender</button>
     </form>
 </div>

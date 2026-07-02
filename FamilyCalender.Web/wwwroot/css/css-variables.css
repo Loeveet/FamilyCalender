@@ -1,4 +1,13 @@
-﻿:root {
+﻿/* 
+   CSS-VARIABLES.CSS - Design-tokens och färger
+   Här lägger vi:
+   - Alla centrala färgvärden (--pmf-blue, --pmf-yellow).
+   - Andra globala variabler som ska kunna ändras på ett enda ställe.
+*/
+
+:root {
     --pmf-blue: #1e3a8a;
     --pmf-yellow: #ff6f61;
+    --pmf-bg-main: #f4f4f9; /* Den minimalistiska gråa */
+    --pmf-border-color: #dee2e6;
 }

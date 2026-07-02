@@ -1,0 +1,18 @@
+﻿/*
+   HandleList.cshtml.css - Isolerad sidlayout
+   Här lägger vi:
+   - Endast det som är unikt för just denna sida.
+   - Pekvänlig markering av listradernas ikoner och kryssrutor.
+   - Vi rör INTE globala taggar som body/html eller generella knappar här.
+*/
+
+/* Soptunne-ikon för att ta bort en rad */
+.delete-item {
+    cursor: pointer;
+    font-size: 1.3rem;
+}
+
+/* Kryssruta för att markera rad som klar */
+.toggle-complete {
+    cursor: pointer;
+}
