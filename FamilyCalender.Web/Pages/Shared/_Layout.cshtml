@@ -76,35 +76,7 @@
                                 </li>
                             }
 
-                            <!-- if user is on Calendar overview this will be added-->
-                            @if (ViewData["ShowCalendarSelector"] as bool? == true && Model?.ViewModel?.CalendarDtos?.Count > 1)
-                            {
-                                var selectedId = Model.ViewModel.SelectedCalendarId;
-
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="calendarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        📅 Kalender
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="calendarDropdown">
-                                        @foreach (var calendarDto in Model.ViewModel.CalendarDtos)
-                                        {
-                                            <li>
-                                                <form method="post" asp-page-handler="SetPreferredCalendar" class="d-inline">
-                                                    <input type="hidden" name="calendarId" value="@calendarDto.Id" />
-                                                    <button type="submit" class="dropdown-item @(calendarDto.Id == selectedId ? "active fw-bold" : "")">
-                                                        @calendarDto.Name
-                                                        @if (calendarDto.Id == selectedId)
-                                                        {
-                                                            <span> ✔️</span>
-                                                        }
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
-                          
+                            @* Kalenderväljaren ligger numera på kalendernamnet i CalendarOverview *@
 
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-page="/UserSettings">👤 Min Profil</a>

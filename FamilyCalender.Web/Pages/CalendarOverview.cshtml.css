@@ -90,3 +90,29 @@
 table.table tr.calendar-row-today > td {
     background-color: #f1f3f5;
 }
+
+/* Kalendernamnet som dropdown-toggle - ska se ut som rubriken, inte som en knapp.
+   Ärver storlek/vikt från .h2 på wrappern istället för att hårdkoda rem-värden. */
+.calendar-title-toggle {
+    border: none;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    text-align: left;
+}
+
+    /* Dropdown-menyns poster ska ha vanlig brödtextstorlek, inte rubrikens */
+    .calendar-title-toggle + .dropdown-menu {
+        font-size: 1rem;
+        font-weight: 400;
+    }
+
+    .calendar-title-toggle:hover,
+    .calendar-title-toggle:focus {
+        color: var(--pmf-blue);
+        background: none;
+        box-shadow: none;
+    }
