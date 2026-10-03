@@ -3,306 +3,281 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model FamilyCalender.Web.Pages.EventDetailsModel
 @{
-	var culture = new System.Globalization.CultureInfo("sv-SE");
-	var baseHue = 220; // blå grundfärg
+    var culture = new System.Globalization.CultureInfo("sv-SE");
+
+    var members = Model.ViewModel.EventDetails.EventMemberDates
+            .Select(x => x.Member)
+            .Distinct()
+            .Where(m => m != null)
+            .ToList();
+
 }
 
 <div class="d-flex align-items-center">
-	<form method="post" asp-page-handler="RouteToIndex">
-		<button type="submit" class="btn btn-outline-dark btn-sm">
-			<i class="bi bi-arrow-left"></i> Tillbaka
-		</button>
-		<input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
-		<input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
-	</form>
+    <form method="post" asp-page-handler="RouteToIndex">
+        <button type="submit" class="btn btn-outline-dark btn-sm">
+            <i class="bi bi-arrow-left"></i> Tillbaka
+        </button>
+        <input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
+        <input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
+    </form>
 </div>
 
 <div class="container mt-4">
-	<div class="card shadow-sm p-3">
-		<h5 class="card-title text-center text-dark"><i class="bi bi-calendar-event"></i> Händelsedetaljer</h5>
-		<hr>
-		<!-- om vi vill veta vilken kalender den tillhör -->
-		@* 		<div class="mb-2">
-			<strong><i class="bi bi-calendar-event"></i> Kalender:</strong> @Model.ViewModel.EventDetails.Calendar.Name
-		</div> *@
+    <div class="card shadow-sm p-4">
+        <h1 class="h3 fw-bold text-dark mb-4">
+            @Model.ViewModel.EventDetails.Title
+        </h1>
 
-		<div class="mb-2">
-			<strong>Titel:</strong> @Model.ViewModel.EventDetails.Title
-		</div>
+        <div class="mb-3">
+            <div class="d-flex align-items-start gap-2">
+                <i class="bi bi-calendar3 text-secondary" aria-hidden="true"></i>
+                <div>
+                    @if (Model.ViewModel.IsSingleEvent)
+                    {
+                        <span class="fw-semibold">
+                            @Model.ViewModel.Day.ToString("dddd d MMMM yyyy", culture)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="fw-semibold">
+                            @Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date).ToString("d MMM yyyy", culture)
+                            –
+                            @Model.ViewModel.EventDetails.EventMemberDates.Max(x => x.Date).ToString("d MMM yyyy", culture)
+                        </span>
+                    }
+                </div>
+            </div>
 
+            @{
+                var startTime = Model.ViewModel.EventDetails.EventTime;
+                var stopTime = Model.ViewModel.EventDetails.EventStopTime;
+                var hasStartTime = !string.IsNullOrWhiteSpace(startTime);
+                var hasStopTime = !string.IsNullOrWhiteSpace(stopTime);
+            }
 
-		<div class="mb-2">
-			<strong>Beskrivning:</strong>
-			@if (string.IsNullOrEmpty(Model.ViewModel.EventDetails.Text))
-			{
-				<div><em>Ingen beskrivning angiven</em></div>
-			}
-			else
-			{
-				<div>
-					@Html.Raw(Model.ViewModel.EventDetails.Text.ReplaceLineEndings("<br/>"))
-				</div>
+            @if (hasStartTime || hasStopTime)
+            {
+                <div class="d-flex align-items-center gap-2 mt-2 text-secondary">
+                    <i class="bi bi-clock" aria-hidden="true"></i>
+                    <span>
+                        @if (hasStartTime && hasStopTime)
+                        {
+                            <text>@startTime–@stopTime</text>
+                        }
+                        else if (hasStartTime)
+                        {
+                            <text>Från @startTime</text>
+                        }
+                        else
+                        {
+                            <text>Till @stopTime</text>
+                        }
+                    </span>
+                </div>
+            }
+            @if (!Model.ViewModel.IsSingleEvent)
+            {
+                <div class="small text-secondary mt-2">
+                    @string.Join(" · ", Model.ViewModel.SortedDaysInSwedish)
+                </div>
+            }
 
-			}
-		</div>
-		<!-- om vi vill ha vilken färg den har -->
-		@* 		<div class="mb-2">
-			<strong>Kategorifärg:</strong> @Html.Raw(Model.ViewModel.GetCategoryColorDiamond()) @Model.ViewModel.GetCategoryColorName()
-		</div> *@
+        </div>
 
+        <div class="@(string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails.Text) ? "" : "mb-4")">
+            @* <div class="small text-secondary mb-2">Deltagare</div> *@
 
-		<div class="mb-3">
-			@* <strong>När:</strong> *@
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var member in members)
+                {
+                    <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis fw-normal px-3 py-2">
+                        @member.Name
+                    </span>
+                }
+            </div>
+        </div>
 
+        @if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails.Text))
+        {
+            <div>
+                @* <div class="small text-secondary mb-2">Beskrivning</div> *@
+                <div class="text-break">
+                    @foreach (var line in Model.ViewModel.EventDetails.Text.ReplaceLineEndings("\n").Split('\n'))
+                    {
+                        @line
+                        <br />
+                    }
+                </div>
+            </div>
+        }
+    </div>
 
-			@if (Model.ViewModel.IsSingleEvent)
-			{
-				<span>@Model.ViewModel.FormattedDate</span>
-			}
-			else
-			{
-				<span><strong>Start:</strong> @Model.ViewModel.EventDetails.EventMemberDates.Min(x => x.Date).ToString("yyyy-MM-dd")</span>
-				<span> – </span>
-				<span><strong>Slut:</strong> @Model.ViewModel.EventDetails.EventMemberDates.Max(x => x.Date).ToString("yyyy-MM-dd")</span>
-			}
+    <!-- Action Buttons -->
+    <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-pmf btn-lg w-75" data-bs-toggle="modal" data-bs-target="#editEventModal" aria-label="Redigera händelse">
+            <i class="bi bi-pencil-square"></i>
+            Redigera
+        </button>
+        <button class="btn btn-pmf-inverted btn-lg w-25" data-bs-toggle="modal" data-bs-target="#deleteEventModal" aria-label="Radera händelse">
+            <i class="bi bi-trash"></i>
 
-
-			@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) ||
-						!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
-			{
-				@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime) ||
-							!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
-				{
-					<div class="mb-2">
-						@* <i class="bi bi-clock"></i> *@
-						@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
-						{
-							<span><strong>Starttid:</strong> @Model.ViewModel.EventDetails.EventTime</span>
-						}
-						@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventStopTime))
-						{
-							@if (!string.IsNullOrWhiteSpace(Model.ViewModel.EventDetails?.EventTime))
-							{
-								<span> – </span>
-							}
-							<span><strong>Sluttid:</strong> @Model.ViewModel.EventDetails.EventStopTime</span>
-						}
-					</div>
-				}
-			}
-
-			@if (!Model.ViewModel.IsSingleEvent)
-			{
-				<div class="time-block weekday-badges">
-
-					@for (int i = 0; i < Model.ViewModel.SortedDaysInSwedish.Count; i++)
-					{
-						var day = Model.ViewModel.SortedDaysInSwedish[i];
-						var lightness = 45 + (i * 6);
-						if (lightness > 70) lightness = 70;
-						var color = $"hsl({baseHue}, 70%, {lightness}%)";
-
-						<span class="member-badge" style="background-color:@(color);">@day</span>
-					}
-				</div>
-			}
-
-		</div>
-
-
-
-		@{
-			var members = Model.ViewModel.EventDetails.EventMemberDates
-			.Select(x => x.Member)
-			.Distinct()
-			.Where(m => m != null)
-			.ToList();
-
-		}
-
-		<div class="mb-2">
-			<strong>
-				<i class="bi @(Model.ViewModel.IsSingleMember ? "bi-person-circle" : "bi-people-fill")"></i>
-				Gäller:
-			</strong>
-
-			<div class="member-badges mt-1 d-flex flex-wrap">
-				@for (int i = 0; i < members.Count; i++)
-				{
-					var lightness = 45 + (i * 6);
-					if (lightness > 70) lightness = 70;
-					var color = $"hsl({baseHue}, 70%, {lightness}%)";
-
-					<span class="member-badge" style="background-color:@(@color);">@members[i].Name</span>
-				}
-			</div>
-		</div>
-	</div>
-
-	<!-- Action Buttons -->
-	<div class="d-flex justify-content-between mt-3">
-		<button class="btn btn-pmf btn-lg flex-fill me-2" data-bs-toggle="modal" data-bs-target="#editEventModal">
-			<i class="bi bi-pencil-square"></i>
-			Redigera
-		</button>
-		<button class="btn btn-pmf-inverted btn-lg flex-fill ms-2" data-bs-toggle="modal" data-bs-target="#deleteEventModal">
-			<i class="bi bi-trash"></i>
-			Radera
-		</button>
-	</div>
+        </button>
+    </div>
 </div>
 
 <!-- Modal för att radera eventet-->
 <div class="modal fade" id="deleteEventModal" tabindex="-1" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<form method="post" asp-page-handler="DeleteEvent">
-				<div class="modal-header">
-					<h5 class="modal-title" id="deleteEventModalLabel">Radera händelse</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
-				</div>
-				<div class="modal-body">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="DeleteEvent">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteEventModalLabel">Radera händelse</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+                </div>
+                <div class="modal-body">
 
-					<!-- Enkelt event på en dag och en person -->
-					@if (Model.ViewModel.EventDetails.EventMemberDates.Count == 1 && Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Count() == 1)
-					{
-						<p>Det här är en händelse som endast gäller för en person och en dag.</p>
-						@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
-						{
-							var isOnlyMember = Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() == 1;
+                    <!-- Enkelt event på en dag och en person -->
+                    @if (Model.ViewModel.EventDetails.EventMemberDates.Count == 1 && Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Count() == 1)
+                    {
+                        <p>Det här är en händelse som endast gäller för en person och en dag.</p>
+                        @foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
+                        {
+                            var isOnlyMember = Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() == 1;
 
-							<div class="form-check">
-								<input class="form-check-input"
-									   type="checkbox"
-									   id="deleteMember-@member.Id"
-									   value="@member.Id"
-									   name="selectedMemberIds"
-									   @(isOnlyMember ? "checked disabled" : "") />
-								<label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
-							</div>
-							<input type="hidden" name="selectedMemberIds" value="@Model.ViewModel.Member.Id" />
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       id="deleteMember-@member.Id"
+                                       value="@member.Id"
+                                       name="selectedMemberIds"
+                                @(isOnlyMember ? "checked disabled" : "") />
+                                <label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
+                            </div>
+                            <input type="hidden" name="selectedMemberIds" value="@Model.ViewModel.Member.Id" />
 
-						}
-						<p>Vill du radera denna händelse?</p>
-					}
-					<!-- Enkelt event på flera personer -->
-					@if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() == 1 && Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() > 1)
-					{
-						<p>Den här händelsen gäller flera personer. Välj vilka du vill ta bort händelsen för:</p>
-						<div id="deleteMemberListSingle">
-							@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
-							{
-								var isSelectedMember = member.Id == Model.ViewModel.Member.Id;
+                        }
+                        <p>Vill du radera denna händelse?</p>
+                    }
+                    <!-- Enkelt event på flera personer -->
+                    @if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() == 1 && Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() > 1)
+                    {
+                        <p>Den här händelsen gäller flera personer. Välj vilka du vill ta bort händelsen för:</p>
+                        <div id="deleteMemberListSingle">
+                            @foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
+                            {
+                                var isSelectedMember = member.Id == Model.ViewModel.Member.Id;
 
-								<div class="form-check">
-									<input class="form-check-input member-checkbox"
-										   type="checkbox"
-										   id="deleteMember-@member.Id"
-										   value="@member.Id"
-										   name="selectedMemberIds"
-										   checked="@(isSelectedMember ? "checked" : null)"
-										   disabled="@(isSelectedMember ? "disabled" : null)" />
-									<label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
+                                <div class="form-check">
+                                    <input class="form-check-input member-checkbox"
+                                           type="checkbox"
+                                           id="deleteMember-@member.Id"
+                                           value="@member.Id"
+                                           name="selectedMemberIds"
+                                           checked="@(isSelectedMember ? "checked" : null)"
+                                           disabled="@(isSelectedMember ? "disabled" : null)" />
+                                    <label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
 
-									@if (isSelectedMember)
-									{
-										<input type="hidden" name="selectedMemberIds" value="@member.Id" />
-									}
-								</div>
-							}
-						</div>
-					}
-					<!-- Event inom ett intervall -->
-					@if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1)
-					{
-						<p>Den här händelsen är en del av ett intervall.</p>
-						<div class="form-check">
-							<input type="radio"
-								   class="form-check-input"
-								   id="deleteSingleEvent"
-								   name="deleteOption"
-								   value="single" checked />
-							<label class="form-check-label" for="deleteSingleEvent">
-								Radera endast den här händelsen: <strong>@Model.ViewModel.Day.ToString("yyyy-MM-dd")</strong>
-							</label>
-						</div>
-						<div class="form-check">
-							<input type="radio"
-								   class="form-check-input"
-								   id="deleteAllEvents"
-								   name="deleteOption"
-								   value="all" />
-							<label class="form-check-label" for="deleteAllEvents">Radera alla händelser inom intervallet</label>
-						</div>
-					}
-					<!-- Event inom ett intervall med flera personer -->
-					@if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1 && Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() > 1)
-					{
-						<p>Den här händelsen gäller flera personer och är en del av ett intervall. Välj vilka personer du vill ta bort för hela intervallet:</p>
-						<div id="deleteMemberListInterval">
-							@foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
-							{
-								var isSelectedMember = member.Id == Model.ViewModel.Member.Id;
+                                    @if (isSelectedMember)
+                                    {
+                                        <input type="hidden" name="selectedMemberIds" value="@member.Id" />
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                    <!-- Event inom ett intervall -->
+                    @if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1)
+                    {
+                        <p>Den här händelsen är en del av ett intervall.</p>
+                        <div class="form-check">
+                            <input type="radio"
+                                   class="form-check-input"
+                                   id="deleteSingleEvent"
+                                   name="deleteOption"
+                                   value="single" checked />
+                            <label class="form-check-label" for="deleteSingleEvent">
+                                Radera endast den här händelsen: <strong>@Model.ViewModel.Day.ToString("yyyy-MM-dd")</strong>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio"
+                                   class="form-check-input"
+                                   id="deleteAllEvents"
+                                   name="deleteOption"
+                                   value="all" />
+                            <label class="form-check-label" for="deleteAllEvents">Radera alla händelser inom intervallet</label>
+                        </div>
+                    }
+                    <!-- Event inom ett intervall med flera personer -->
+                    @if (Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Date).Distinct().Count() > 1 && Model.ViewModel.EventDetails.EventMemberDates.Select(x => x.Member).Distinct().Count() > 1)
+                    {
+                        <p>Den här händelsen gäller flera personer och är en del av ett intervall. Välj vilka personer du vill ta bort för hela intervallet:</p>
+                        <div id="deleteMemberListInterval">
+                            @foreach (var member in Model.ViewModel.EventDetails.EventMemberDates.Select(e => e.Member).Distinct())
+                            {
+                                var isSelectedMember = member.Id == Model.ViewModel.Member.Id;
 
-								<div class="form-check">
-									<input class="form-check-input member-checkbox"
-										   type="checkbox"
-										   id="deleteMember-@member.Id"
-										   value="@member.Id"
-										   name="selectedMemberIds"
-										   checked="@(isSelectedMember ? "checked" : null)"
-										   disabled="@(isSelectedMember ? "disabled" : null)" />
-									<label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
+                                <div class="form-check">
+                                    <input class="form-check-input member-checkbox"
+                                           type="checkbox"
+                                           id="deleteMember-@member.Id"
+                                           value="@member.Id"
+                                           name="selectedMemberIds"
+                                           checked="@(isSelectedMember ? "checked" : null)"
+                                           disabled="@(isSelectedMember ? "disabled" : null)" />
+                                    <label class="form-check-label" for="deleteMember-@member.Id">@member.Name</label>
 
-									@if (isSelectedMember)
-									{
-										<input type="hidden" name="selectedMemberIds" value="@member.Id" />
-									}
-								</div>
-							}
-						</div>
-					}
-				</div>
-				<div class="modal-footer">
-					<input type="hidden" asp-for="ViewModel.EventId" value="@Model.ViewModel.EventDetails.Id" />
-					<input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
-					<input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
-					<input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
-					<button type="submit" class="btn btn-pmf-inverted">Radera</button>
-					<button type="button" class="btn btn-pmf" data-bs-dismiss="modal">Avbryt</button>
-				</div>
-			</form>
-		</div>
-	</div>
+                                    @if (isSelectedMember)
+                                    {
+                                        <input type="hidden" name="selectedMemberIds" value="@member.Id" />
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" asp-for="ViewModel.EventId" value="@Model.ViewModel.EventDetails.Id" />
+                    <input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
+                    <input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
+                    <input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
+                    <button type="submit" class="btn btn-pmf-inverted">Radera</button>
+                    <button type="button" class="btn btn-pmf" data-bs-dismiss="modal">Avbryt</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- Modal för att redigera eventet -->
 <div class="modal fade" id="editEventModal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered modal-lg">
-		<div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
 
-			<div class="modal-header">
-				<h5 class="modal-title" id="editEventModalLabel">Redigera händelse</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
-			</div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="editEventModalLabel">Redigera händelse</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+            </div>
 
-			<div class="modal-body">
-				<form method="post" asp-page-handler="UpdateEvent" onsubmit="return validateEditForm()">
+            <div class="modal-body">
+                <form method="post" asp-page-handler="UpdateEvent" onsubmit="return validateEditForm()">
 
-					<div class="mb-3">
-						<b for="editEventTitle" class="form-label">Titel</b>
-						<input type="text" class="form-control" value="@Model.ViewModel.EventDetails.Title" asp-for=ViewModel.NewTitle id="editEventTitle" />
-						<small id="editEventTitleError" class="text-danger d-none">Titel måste finnas</small>
-					</div>
+                    <div class="mb-3">
+                        <b for="editEventTitle" class="form-label">Titel</b>
+                        <input type="text" class="form-control" value="@Model.ViewModel.EventDetails.Title" asp-for=ViewModel.NewTitle id="editEventTitle" />
+                        <small id="editEventTitleError" class="text-danger d-none">Titel måste finnas</small>
+                    </div>
 
-					<div class="mb-3">
-						<b for="eventText" class="form-label">Beskrivning</b>
-						<textarea rows="10" cols="3" class="form-control" asp-for="@Model.ViewModel.EventDetails.Text" id="eventText">
+                    <div class="mb-3">
+                        <b for="eventText" class="form-label">Beskrivning</b>
+                        <textarea rows="10" cols="3" class="form-control" asp-for="@Model.ViewModel.EventDetails.Text" id="eventText">
 						 </textarea>
-						<small id="eventTextError" class="text-danger d-none">Ange titel</small>
-					</div>
+                        <small id="eventTextError" class="text-danger d-none">Ange titel</small>
+                    </div>
 
-					@*
+                    @*
 					Old color picker - not looking so good on iOS and Android since user default takes over - no colors is shown only name
 					<div class="mb-3">
 					<b for="SelectedCategoryColor" class="form-label">Kategorifärg</b>
@@ -318,105 +293,105 @@
 					</div>
 					*@
 
-					<div class="mb-3">
-						<div class="color-dropdown" onclick="eventColorPickerHelper.ToggleDropdown(event)">
+                    <div class="mb-3">
+                        <div class="color-dropdown" onclick="eventColorPickerHelper.ToggleDropdown(event)">
 
-							@switch (Model.ViewModel.EventDetails.EventCategoryColor)
-							{
-								case EventCategoryColor.None:
-									<div class="selected" id="selectedColor">
-										Välj en kategorifärg
-									</div>
-									break;
-								case EventCategoryColor.Blue:
-									<div class="selected" id="selectedColor">
-										Blå (t.ex. för skola/arbete)
-									</div>
-									break;
-								case EventCategoryColor.Green:
-									<div class="selected" id="selectedColor">
-										Grön (t.ex. för träning/hälsa)
-									</div>
-									break;
-								case EventCategoryColor.Yellow:
-									<div class="selected" id="selectedColor">
-										Gul (t.ex. för familjeaktivitet)
-									</div>
-									break;
-								case EventCategoryColor.Pink:
-									<div class="selected" id="selectedColor">
-										Rosa (t.ex. för vård/egentid)
-									</div>
-									break;
-								case EventCategoryColor.Red:
-									<div class="selected" id="selectedColor">
-										Röd (t.ex. för viktigt/påminnelse)
-									</div>
-									break;
-								case EventCategoryColor.Purple:
-									<div class="selected" id="selectedColor">
-										Lila (t.ex. för fritid/kreativitet)
-									</div>
-									break;
+                            @switch (Model.ViewModel.EventDetails.EventCategoryColor)
+                            {
+                                case EventCategoryColor.None:
+                                    <div class="selected" id="selectedColor">
+                                        Välj en kategorifärg
+                                    </div>
+                                    break;
+                                case EventCategoryColor.Blue:
+                                    <div class="selected" id="selectedColor">
+                                        Blå (t.ex. för skola/arbete)
+                                    </div>
+                                    break;
+                                case EventCategoryColor.Green:
+                                    <div class="selected" id="selectedColor">
+                                        Grön (t.ex. för träning/hälsa)
+                                    </div>
+                                    break;
+                                case EventCategoryColor.Yellow:
+                                    <div class="selected" id="selectedColor">
+                                        Gul (t.ex. för familjeaktivitet)
+                                    </div>
+                                    break;
+                                case EventCategoryColor.Pink:
+                                    <div class="selected" id="selectedColor">
+                                        Rosa (t.ex. för vård/egentid)
+                                    </div>
+                                    break;
+                                case EventCategoryColor.Red:
+                                    <div class="selected" id="selectedColor">
+                                        Röd (t.ex. för viktigt/påminnelse)
+                                    </div>
+                                    break;
+                                case EventCategoryColor.Purple:
+                                    <div class="selected" id="selectedColor">
+                                        Lila (t.ex. för fritid/kreativitet)
+                                    </div>
+                                    break;
 
-								default:
-									<div class="selected" id="selectedColor">
-										Välj en kategorifärg
-									</div>
-									break;
-							}
+                                default:
+                                    <div class="selected" id="selectedColor">
+                                        Välj en kategorifärg
+                                    </div>
+                                    break;
+                            }
 
 
-							<div class="options" id="colorOptions">
-								<div style="background-color: #f8f9fa;" data-color="@EventCategoryColor.None">Ingen kategorifärg</div>
-								<div style="background-color: #cce5ff;" data-color="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</div>
-								<div style="background-color: #d4edda;" data-color="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</div>
-								<div style="background-color: #fff3cd;" data-color="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</div>
-								<div style="background-color: #f8d7da;" data-color="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</div>
-								<div style="background-color: #f8c1c1;" data-color="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</div>
-								<div style="background-color: #e2d6f9;" data-color="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</div>
-							</div>
+                            <div class="options" id="colorOptions">
+                                <div style="background-color: #f8f9fa;" data-color="@EventCategoryColor.None">Ingen kategorifärg</div>
+                                <div style="background-color: #cce5ff;" data-color="@EventCategoryColor.Blue">Blå (t.ex. för skola/arbete)</div>
+                                <div style="background-color: #d4edda;" data-color="@EventCategoryColor.Green">Grön (t.ex. för träning/hälsa)</div>
+                                <div style="background-color: #fff3cd;" data-color="@EventCategoryColor.Yellow">Gul (t.ex. för familjeaktivitet)</div>
+                                <div style="background-color: #f8d7da;" data-color="@EventCategoryColor.Pink">Rosa (t.ex. för vård/egentid)</div>
+                                <div style="background-color: #f8c1c1;" data-color="@EventCategoryColor.Red">Röd (t.ex. för viktigt/påminnelse)</div>
+                                <div style="background-color: #e2d6f9;" data-color="@EventCategoryColor.Purple">Lila (t.ex. för fritid/kreativitet)</div>
+                            </div>
 
-							<!-- Selected color ends up here for form submit -->
-							<input type="hidden" asp-for="@Model.ViewModel.EventDetails.EventCategoryColor" />
+                            <!-- Selected color ends up here for form submit -->
+                            <input type="hidden" asp-for="@Model.ViewModel.EventDetails.EventCategoryColor" />
 
-							<i class="bi bi-chevron-down"></i>
-						</div>
-					</div>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                    </div>
 
-					@if (Model.ViewModel.EventDetails.RepeatIntervalType == RepeatType.None)
-					{
-						<div class="mb-3">
-							<b for="eventDate" class="form-label">Datum</b>
-							<input type="date" id="eventDate" class="form-control"
-								   asp-for="ViewModel.Day" value="@Model.ViewModel.Day.ToString("yyyy-MM-dd")" />
-						</div>
-					}
+                    @if (Model.ViewModel.EventDetails.RepeatIntervalType == RepeatType.None)
+                    {
+                        <div class="mb-3">
+                            <b for="eventDate" class="form-label">Datum</b>
+                            <input type="date" id="eventDate" class="form-control"
+                                   asp-for="ViewModel.Day" value="@Model.ViewModel.Day.ToString("yyyy-MM-dd")" />
+                        </div>
+                    }
 
-					<div class="mb-3">
-						<b for="EventTime" class="form-label">Starttid</b>
-						<input type="time" id="eventTime" class="form-control" asp-for="@Model.ViewModel.EventDetails.EventTime">
-					</div>
-					<div class="mb-3">
-						<b for="EventTime" class="form-label">Sluttid</b>
-						<input type="time" id="eventStopTime" class="form-control" asp-for="@Model.ViewModel.EventDetails.EventStopTime">
-					</div>
-					<input type="hidden" asp-for="ViewModel.EventId" value="@Model.ViewModel.EventDetails.Id" />
-					<input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
-					<input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
-					<input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
+                    <div class="mb-3">
+                        <b for="EventTime" class="form-label">Starttid</b>
+                        <input type="time" id="eventTime" class="form-control" asp-for="@Model.ViewModel.EventDetails.EventTime">
+                    </div>
+                    <div class="mb-3">
+                        <b for="EventTime" class="form-label">Sluttid</b>
+                        <input type="time" id="eventStopTime" class="form-control" asp-for="@Model.ViewModel.EventDetails.EventStopTime">
+                    </div>
+                    <input type="hidden" asp-for="ViewModel.EventId" value="@Model.ViewModel.EventDetails.Id" />
+                    <input type="hidden" asp-for="ViewModel.Day" value="@Model.ViewModel.Day" />
+                    <input type="hidden" asp-for="ViewModel.MemberId" value="@Model.ViewModel.Member.Id" />
+                    <input type="hidden" asp-for="ViewModel.CalendarId" value="@Model.ViewModel.EventDetails.CalendarId" />
 
-					<button type="submit" class="btn btn-pmf">Spara ändringar</button>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-pmf-inverted" data-bs-dismiss="modal">Stäng</button>
-			</div>
-		</div>
-	</div>
+                    <button type="submit" class="btn btn-pmf">Spara ändringar</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-pmf-inverted" data-bs-dismiss="modal">Stäng</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script>
 
-	//initialize Color picker to set correct color on Model input field
-	eventColorPickerHelper.Init('ViewModel_EventDetails_EventCategoryColor');
+    //initialize Color picker to set correct color on Model input field
+    eventColorPickerHelper.Init('ViewModel_EventDetails_EventCategoryColor');
 </script>
