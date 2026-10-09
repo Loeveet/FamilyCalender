@@ -14,12 +14,13 @@ namespace FamilyCalender.Web.ViewModels
         public int MemberId { get; set; }
         public DateTime Day { get; set; }
         public ICollection<Member> Members { get; set; } = [];
+        public List<int> SelectedMemberIds { get; set; } = [];
         public string NewTitle { get; set; } = string.Empty;
         public ICollection<string> SelectedDays { get; set; } = [];
         public bool UpdateInterval { get; set; }
         public DateTime StartDate { get; set; } = DateTime.Now;
         public DateTime EndDate { get; set; } = DateTime.Now;
-		public DateTime NewDate { get; set; }
+		public DateTime? NewDate { get; set; }
         public int EventId { get; set; }
         public int CalendarId { get; set; }
         public int Year { get; set; }

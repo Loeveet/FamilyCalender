@@ -272,8 +272,10 @@
 
                     <div class="mb-3">
                         <b for="eventText" class="form-label">Beskrivning</b>
-                        <textarea rows="10" cols="3" class="form-control" asp-for="@Model.ViewModel.EventDetails.Text" id="eventText">
-						 </textarea>
+                        <textarea rows="2"
+                                  class="form-control"
+                                  asp-for="ViewModel.EventDetails.Text"
+                                  id="eventText"></textarea>
                         <small id="eventTextError" class="text-danger d-none">Ange titel</small>
                     </div>
 
@@ -358,13 +360,44 @@
                             <i class="bi bi-chevron-down"></i>
                         </div>
                     </div>
+                    @if (Model.ViewModel.IsSingleEvent)
+                    {
+                        <fieldset class="mb-3">
+                            <legend class="fs-6 fw-bold">Övriga deltagare</legend>
 
-                    @if (Model.ViewModel.EventDetails.RepeatIntervalType == RepeatType.None)
+                            <p class="small text-secondary">
+                                @Model.ViewModel.Member!.Name är alltid med i den här händelsen.
+                            </p>
+
+                            <input type="hidden"
+                                   name="ViewModel.SelectedMemberIds"
+                                   value="@Model.ViewModel.Member.Id" />
+
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var member in Model.ViewModel.Members
+                                    .Where(m => m.Id != Model.ViewModel.Member.Id))
+                                {
+                                    <input class="btn-check"
+                                           type="checkbox"
+                                           id="editMember-@member.Id"
+                                           name="ViewModel.SelectedMemberIds"
+                                           value="@member.Id"
+                                           checked="@Model.ViewModel.SelectedMemberIds.Contains(member.Id)" />
+
+                                    <label class="event-member-choice" for="editMember-@member.Id">
+                                        @member.Name
+                                    </label>
+                                }
+                            </div>
+                        </fieldset>
+                    }
+                    @if (Model.ViewModel.IsSingleEvent)
                     {
                         <div class="mb-3">
                             <b for="eventDate" class="form-label">Datum</b>
                             <input type="date" id="eventDate" class="form-control"
-                                   asp-for="ViewModel.Day" value="@Model.ViewModel.Day.ToString("yyyy-MM-dd")" />
+                                   asp-for="ViewModel.NewDate" asp-format="{0:yyyy-MM-dd}" required />
+                            <span asp-validation-for="ViewModel.NewDate" class="text-danger"></span>
                         </div>
                     }
 
@@ -394,4 +427,32 @@
 
     //initialize Color picker to set correct color on Model input field
     eventColorPickerHelper.Init('ViewModel_EventDetails_EventCategoryColor');
+
+    const description = document.getElementById('eventText');
+    const editModal = document.getElementById('editEventModal');
+
+    function resizeDescription() {
+        const maxHeight = window.innerHeight * 0.3;
+
+        description.style.maxHeight = maxHeight + 'px';
+        description.style.overflowY = 'auto';
+        description.style.height = 'auto';
+
+        const borderHeight = description.offsetHeight - description.clientHeight;
+        const contentHeight = description.scrollHeight + borderHeight;
+
+        description.style.height = Math.min(contentHeight, maxHeight) + 'px';
+    }
+
+    description.addEventListener('input', resizeDescription);
+    editModal.addEventListener('shown.bs.modal', resizeDescription);
 </script>
+@if (ViewData["ShowEditEventModal"] is true)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('editEventModal')).show();
+        });
+
+    </script>
+}
